@@ -36,7 +36,9 @@ class AllWalletsItem extends StatelessWidget {
                 dimension: constraints.maxHeight,
                 child:
                     leading ??
-                    ThemedIcon(iconPath: 'lib/modal/assets/icons/dots.svg'),
+                    const ThemedIcon(
+                      iconPath: 'lib/modal/assets/icons/dots.svg',
+                    ),
               ),
               Expanded(
                 child: Padding(

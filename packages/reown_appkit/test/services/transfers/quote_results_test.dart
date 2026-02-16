@@ -6,13 +6,13 @@ import 'package:reown_appkit/modal/services/transfers/models/quote_results.dart'
 void main() {
   group('GetQuoteStatusResult', () {
     test('creates instance correctly', () {
-      final result = GetQuoteStatusResult(status: QuoteStatus.success);
+      final result = const GetQuoteStatusResult(status: QuoteStatus.success);
 
       expect(result.status, QuoteStatus.success);
     });
 
     test('serializes to JSON correctly', () {
-      final result = GetQuoteStatusResult(status: QuoteStatus.pending);
+      final result = const GetQuoteStatusResult(status: QuoteStatus.pending);
 
       final json = result.toJson();
       expect(json['status'], 'pending');
@@ -45,7 +45,7 @@ void main() {
 
   group('GetExchangeAssetsResult', () {
     test('creates instance correctly', () {
-      final result = GetExchangeAssetsResult(
+      final result = const GetExchangeAssetsResult(
         exchangeId: 'binance',
         assets: {
           'eip155:1': [ethereumETH, ethereumUSDC],
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('serializes to JSON correctly', () {
-      final result = GetExchangeAssetsResult(
+      final result = const GetExchangeAssetsResult(
         exchangeId: 'binance',
         assets: {
           'eip155:1': [ethereumETH],
@@ -94,7 +94,7 @@ void main() {
     });
 
     test('handles empty assets map', () {
-      final result = GetExchangeAssetsResult(
+      final result = const GetExchangeAssetsResult(
         exchangeId: 'coinbase',
         assets: {},
       );
@@ -105,7 +105,7 @@ void main() {
 
   group('GetQuoteResult (Quote)', () {
     test('creates quote instance correctly', () {
-      final quote = Quote(
+      final quote = const Quote(
         type: QuoteType.directTransfer,
         origin: QuoteAmount(
           amount: '1000000000000000000',
@@ -142,7 +142,7 @@ void main() {
     });
 
     test('serializes to JSON correctly', () {
-      final quote = Quote(
+      final quote = const Quote(
         type: QuoteType.directTransfer,
         origin: QuoteAmount(
           amount: '1000000000000000000',

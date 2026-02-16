@@ -74,7 +74,7 @@ void main() {
     late MockWalletconnectPayPlatform mockPlatform;
 
     setUp(() {
-      walletconnectPayPlugin = WalletConnectPay(appId: '', apiKey: '');
+      walletconnectPayPlugin = const WalletConnectPay(appId: '', apiKey: '');
       mockPlatform = MockWalletconnectPayPlatform();
       WalletconnectPayPlatform.instance = mockPlatform;
     });
@@ -118,7 +118,7 @@ void main() {
       mockPlatform.setGetPaymentOptionsResponse(jsonEncode(mockResponse));
 
       final result = await walletconnectPayPlugin.getPaymentOptions(
-        request: GetPaymentOptionsRequest(
+        request: const GetPaymentOptionsRequest(
           paymentLink: 'https://pay.example.com/pay_json_123',
           accounts: ['eip155:8453:0xabc'],
         ),
@@ -137,7 +137,7 @@ void main() {
 
       expect(
         () => walletconnectPayPlugin.getPaymentOptions(
-          request: GetPaymentOptionsRequest(
+          request: const GetPaymentOptionsRequest(
             paymentLink: 'https://pay.example.com/pay',
             accounts: ['eip155:1:0x123'],
           ),
@@ -194,14 +194,14 @@ void main() {
       );
 
       await walletconnectPayPlugin.getPaymentOptions(
-        request: GetPaymentOptionsRequest(
+        request: const GetPaymentOptionsRequest(
           paymentLink: 'pay_json_456',
           accounts: ['eip155:1:0x123'],
         ),
       );
 
       final actions = await walletconnectPayPlugin.getRequiredPaymentActions(
-        request: GetRequiredPaymentActionsRequest(
+        request: const GetRequiredPaymentActionsRequest(
           paymentId: 'pay_json_456',
           optionId: 'opt_json_2',
         ),
@@ -227,7 +227,7 @@ void main() {
       mockPlatform.setConfirmPaymentResponse(jsonEncode(confirmResponse));
 
       final result = await walletconnectPayPlugin.confirmPayment(
-        request: ConfirmPaymentRequest(
+        request: const ConfirmPaymentRequest(
           paymentId: 'pay_json_789',
           optionId: 'opt_1',
           signatures: ['0x123'],
@@ -264,7 +264,7 @@ void main() {
     test('test_json_get_payment_options_empty_payment_link', () async {
       // In Dart, we validate at the model level, but the platform might also validate
       // This test ensures the request can be created (validation happens elsewhere)
-      final request = GetPaymentOptionsRequest(
+      final request = const GetPaymentOptionsRequest(
         paymentLink: '',
         accounts: ['eip155:1:0x123'],
       );
@@ -276,7 +276,7 @@ void main() {
 
     test('test_json_get_payment_options_empty_accounts', () async {
       // Similar to above, validation happens at platform level
-      final request = GetPaymentOptionsRequest(
+      final request = const GetPaymentOptionsRequest(
         paymentLink: 'pay_123',
         accounts: [],
       );
@@ -287,7 +287,7 @@ void main() {
 
     test('test_json_confirm_payment_empty_payment_id', () async {
       // Validation happens at platform level
-      final request = ConfirmPaymentRequest(
+      final request = const ConfirmPaymentRequest(
         paymentId: '',
         optionId: 'opt_1',
         signatures: [],
@@ -307,7 +307,7 @@ void main() {
       mockPlatform.setConfirmPaymentResponse(jsonEncode(confirmResponse));
 
       final result = await walletconnectPayPlugin.confirmPayment(
-        request: ConfirmPaymentRequest(
+        request: const ConfirmPaymentRequest(
           paymentId: 'pay_123',
           optionId: 'opt_1',
           signatures: ['0xsignature1', '0xsignature2'],
@@ -325,7 +325,7 @@ void main() {
 
     test('test_json_get_required_payment_actions_empty_payment_id', () async {
       // Validation happens at platform level
-      final request = GetRequiredPaymentActionsRequest(
+      final request = const GetRequiredPaymentActionsRequest(
         paymentId: '',
         optionId: 'opt_1',
       );
@@ -336,7 +336,7 @@ void main() {
 
     test('test_json_get_required_payment_actions_empty_option_id', () async {
       // Validation happens at platform level
-      final request = GetRequiredPaymentActionsRequest(
+      final request = const GetRequiredPaymentActionsRequest(
         paymentId: 'pay_123',
         optionId: '',
       );
@@ -394,7 +394,7 @@ void main() {
       mockPlatform.setGetPaymentOptionsResponse(jsonEncode(mockResponse));
 
       final result = await walletconnectPayPlugin.getPaymentOptions(
-        request: GetPaymentOptionsRequest(
+        request: const GetPaymentOptionsRequest(
           paymentLink: 'https://pay.example.com/pay_123',
           accounts: ['eip155:1:0xabc'],
           includePaymentInfo: true,

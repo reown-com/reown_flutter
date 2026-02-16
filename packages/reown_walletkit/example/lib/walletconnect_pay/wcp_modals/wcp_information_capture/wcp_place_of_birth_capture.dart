@@ -81,7 +81,7 @@ class _WCPPlaceOfBirthCaptureState extends State<WCPPlaceOfBirthCapture> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(height: StyleConstants.linear24),
-          WCModalTitle(text: 'What is your place of birth?'),
+          const WCModalTitle(text: 'What is your place of birth?'),
           const SizedBox(height: StyleConstants.linear32),
           WCPTextField(
             controller: _cityController,

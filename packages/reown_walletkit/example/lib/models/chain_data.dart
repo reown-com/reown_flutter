@@ -76,36 +76,36 @@ class ChainsDataList {
       color: Colors.black,
       rpc: ['https://rpc.walletconnect.org/v1'],
     ),
-    ChainMetadata(
+    const ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:11155111',
       name: 'Eth Sepolia',
       currency: 'ETH',
       logo:
           'https://pbs.twimg.com/profile_images/1878738447067652096/tXQbWfpf_400x400.jpg',
-      color: const Color.fromARGB(255, 0, 0, 0),
+      color: Color.fromARGB(255, 0, 0, 0),
       isTestnet: true,
       rpc: ['https://rpc.walletconnect.org/v1'],
     ),
-    ChainMetadata(
+    const ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:84531',
       name: 'Base Sepolia',
       currency: 'ETH',
       logo:
           'https://pbs.twimg.com/profile_images/1878738447067652096/tXQbWfpf_400x400.jpg',
-      color: const Color.fromARGB(255, 0, 0, 0),
+      color: Color.fromARGB(255, 0, 0, 0),
       isTestnet: true,
       rpc: ['https://sepolia.base.org'],
     ),
-    ChainMetadata(
+    const ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:80001',
       name: 'Polygon Mumbai',
       currency: 'MATIC',
       logo:
           'https://pbs.twimg.com/profile_images/1878738447067652096/tXQbWfpf_400x400.jpg',
-      color: const Color.fromARGB(255, 0, 0, 0),
+      color: Color.fromARGB(255, 0, 0, 0),
       isTestnet: true,
       rpc: ['https://matic-mumbai.chainstacklabs.com'],
     ),

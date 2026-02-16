@@ -262,7 +262,7 @@ class ReownCore implements IReownCore {
   @override
   void confirmOnlineStateOrThrow() {
     if (!connectivity.isOnline.value) {
-      throw ReownCoreError(code: -1, message: 'No internet connection');
+      throw const ReownCoreError(code: -1, message: 'No internet connection');
     }
   }
 }

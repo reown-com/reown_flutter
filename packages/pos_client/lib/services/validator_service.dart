@@ -32,7 +32,7 @@ mixin ValidatorService implements IValidatorService {
 
     final senderAddress = approvedSession.getSenderCaip10Account(chainId);
     if (senderAddress == null) {
-      throw StateError("No matching account found for chain $chainId");
+      throw StateError('No matching account found for chain $chainId');
     }
 
     final methods = NamespaceUtils.getNamespacesMethodsForChainId(

@@ -336,7 +336,7 @@ class BlockChainService implements IBlockChainService {
       return jsonResponse.result as T;
     }
     throw jsonResponse.error ??
-        ReownSignError(code: 0, message: 'Error parsing result');
+        const ReownSignError(code: 0, message: 'Error parsing result');
   }
 
   BigInt _parseEstimateGasResult(String gasResult) {

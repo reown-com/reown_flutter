@@ -59,7 +59,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                   child: Column(
                     children: [
                       // Screen header
-                      DtcHeader(
+                      const DtcHeader(
                         title: 'Scan to Pay',
                         description: 'Step 5: Customer scans QR',
                       ),
@@ -92,7 +92,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       // Payment Details Card
                       _PaymentInfoWidget(),
                       const SizedBox(height: 24),
-                      SizedBox(
+                      const SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: DtcRestartButton(),
@@ -105,7 +105,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: DtcFooter(),
+      bottomNavigationBar: const DtcFooter(),
     );
   }
 }
@@ -174,7 +174,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
   @override
   Widget build(BuildContext context) {
     if (_eventsPool.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final currentEvent = _eventsPool.last;
     return Column(
@@ -234,7 +234,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
         ),
         Visibility(
           visible: isLoading && !isFailed,
-          child: SizedBox.square(
+          child: const SizedBox.square(
             dimension: 8,
             child: CircularProgressIndicator(
               strokeWidth: 2.0,
@@ -247,7 +247,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
           child: Container(
             width: 10,
             height: 10,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.red,
               shape: BoxShape.circle,
             ),
@@ -277,7 +277,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
         return AlertDialog(
           title: Text(title),
           content: Text(message),
-          actions: [DtcRestartButton()],
+          actions: [const DtcRestartButton()],
         );
       },
     );
@@ -293,7 +293,7 @@ class _PaymentInfoWidget extends ConsumerWidget {
         children: [
           Text(
             '\$${paymentInfo.amount}',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -303,7 +303,7 @@ class _PaymentInfoWidget extends ConsumerWidget {
           const SizedBox(height: 8),
           Text(
             '${paymentInfo.token.symbol.toUpperCase()} on ${paymentInfo.token.network.name}',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
               fontWeight: FontWeight.normal,

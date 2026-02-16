@@ -137,7 +137,7 @@ class StepIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (isLast) StepLine(height: _topLineHeight),
+        if (isLast) const StepLine(height: _topLineHeight),
         Container(
           margin: !isLast ? const EdgeInsets.only(top: 24.0) : null,
           width: _circleSize,

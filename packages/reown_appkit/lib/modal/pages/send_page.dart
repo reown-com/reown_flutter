@@ -186,7 +186,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                       color: themeColors.background200,
                       width: 1.0,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(16.0)),
                   ),
                   padding: const EdgeInsets.all(6.0),
                   child: RoundedIcon(
@@ -214,7 +214,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                             title: ' ${_selectedToken.symbol}',
                             iconUrl: _selectedToken.iconUrl,
                             onTap: () {
-                              _widgetStack.push(SelectTokenPage());
+                              _widgetStack.push(const SelectTokenPage());
                             },
                           ),
                           Positioned(
@@ -223,7 +223,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                             child: Container(
                               decoration: BoxDecoration(
                                 color: themeColors.background150,
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                   Radius.circular(30.0),
                                 ),
                               ),
@@ -300,13 +300,13 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                   margin: const EdgeInsets.only(left: 60.0),
                   color: themeColors.background125,
                   height: kPadding8,
-                  child: SizedBox.square(dimension: 10.0),
+                  child: const SizedBox.square(dimension: 10.0),
                 ),
                 Container(
                   margin: const EdgeInsets.only(right: 60.0),
                   color: themeColors.background125,
                   height: kPadding8,
-                  child: SizedBox.square(dimension: 10.0),
+                  child: const SizedBox.square(dimension: 10.0),
                 ),
               ],
             ),

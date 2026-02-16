@@ -85,7 +85,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     final posInstance = ref.read(posClilentProvider);
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
-      appBar: DtcAppBar(showBackButton: false),
+      appBar: const DtcAppBar(showBackButton: false),
       body: SafeArea(
         child: Container(
           color: Colors.white,
@@ -98,7 +98,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                     children: [
                       Text(
                         'Welcome to ${posInstance.reOwnSign!.metadata.name}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -108,7 +108,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       const SizedBox(height: 12),
                       Text(
                         posInstance.reOwnSign!.metadata.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 18,
                           fontWeight: FontWeight.normal,
@@ -117,10 +117,10 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       const SizedBox(height: 40),
                       // Merchant Information Card
-                      DtcCard(
+                      const DtcCard(
                         child: Column(
                           children: [
-                            const Text(
+                            Text(
                               "Mario's Italian Restaurant",
                               style: TextStyle(
                                 color: Colors.black,
@@ -129,8 +129,8 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 8),
-                            const Text(
+                            SizedBox(height: 8),
+                            Text(
                               'Ready to accept crypto payments',
                               style: TextStyle(
                                 color: Colors.grey,
@@ -158,7 +158,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             elevation: 0,
                           ),
                           child: (_initializing)
-                              ? Center(
+                              ? const Center(
                                   child: CircularProgressIndicator(
                                     color: Colors.white,
                                   ),
@@ -191,7 +191,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: DtcFooter(),
+      bottomNavigationBar: const DtcFooter(),
     );
   }
 }

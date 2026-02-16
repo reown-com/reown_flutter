@@ -72,7 +72,7 @@ class SiweService implements ISiweService {
       address: '$chainId:$address',
       chainId: chainId,
       nonce: nonce,
-      type: messageParams.type ?? CacaoHeader(t: 'eip4361'),
+      type: messageParams.type ?? const CacaoHeader(t: 'eip4361'),
     );
 
     _appKit.core.logger.d('[$runtimeType] createMessage() called');

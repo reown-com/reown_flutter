@@ -11,7 +11,7 @@ import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -71,10 +71,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         theme: ThemeData(
           colorScheme: _isDarkMode
               ? ColorScheme.dark(
-                  primary: ReownAppKitModalThemeData().darkColors.accent100,
+                  primary:
+                      const ReownAppKitModalThemeData().darkColors.accent100,
                 )
               : ColorScheme.light(
-                  primary: ReownAppKitModalThemeData().lightColors.accent100,
+                  primary:
+                      const ReownAppKitModalThemeData().lightColors.accent100,
                 ),
         ),
         home: const MyHomePage(title: 'Kast DwE Demo'),
@@ -165,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text('Chain: ${_appKitModal.selectedChain?.chainId}'),
                 ],
               )
-            : CircularProgressIndicator(),
+            : const CircularProgressIndicator(),
       ),
     );
   }
@@ -230,13 +232,13 @@ class _KastMockedModalState extends State<KastMockedModal>
                     widget.appKitModal.disconnect();
                     Navigator.of(context).pop();
                   },
-                  child: Text('Disconnect wallet'),
+                  child: const Text('Disconnect wallet'),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             );
@@ -312,7 +314,7 @@ class _KastMockedModalState extends State<KastMockedModal>
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text('Close'),
+                  child: const Text('Close'),
                 ),
               ],
             );
@@ -411,7 +413,7 @@ class _KastMockedModalState extends State<KastMockedModal>
       // OPEN MODAL
       // widget.appKitModal.openDepositView();
       await widget.appKitModal.openModalView(
-        ReownAppKitModalDepositScreen(titleOverride: 'Deposit on Kast'),
+        const ReownAppKitModalDepositScreen(titleOverride: 'Deposit on Kast'),
       );
       await widget.appKitModal.selectChain(null);
     } catch (e) {
@@ -609,7 +611,7 @@ class _KastMockedModalState extends State<KastMockedModal>
     return Container(
       decoration: BoxDecoration(
         color: themeColors.background125,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40.0)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40.0)),
         border: Border(top: BorderSide(color: themeColors.background150)),
       ),
       child: SafeArea(
@@ -647,7 +649,7 @@ class _KastMockedModalState extends State<KastMockedModal>
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       IconButton(
                         icon: Icon(
                           Icons.close_rounded,
@@ -771,7 +773,7 @@ mixin StatusCheckUtils {
     if (status == 'PENDING') {
       if (count > 0) {
         // retry
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
         return checkTxStatus(appKitModal, chainId, txHash, count, callback);
       }
 

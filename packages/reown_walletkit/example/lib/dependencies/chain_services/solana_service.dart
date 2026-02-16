@@ -552,7 +552,7 @@ extension on String {
       final secKeyBytes = base58.decode(this);
       return Uint8List.fromList(secKeyBytes.sublist(0, 32));
     } catch (e) {
-      throw FormatException(
+      throw const FormatException(
         'Unable to parse private key. Expected comma-separated integers, hex string, or base58 string.',
       );
     }

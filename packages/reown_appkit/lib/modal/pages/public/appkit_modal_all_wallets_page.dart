@@ -72,7 +72,7 @@ class _AppKitModalAllWalletsPageState
       title: 'All wallets',
       onTapTitle: () => _controller.animateTo(
         0,
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.linear,
       ),
       onBack: () {
@@ -93,7 +93,9 @@ class _AppKitModalAllWalletsPageState
         ),
         child: Column(
           children: [
-            isSearchAvailable ? const AllWalletsHeader() : SizedBox.shrink(),
+            isSearchAvailable
+                ? const AllWalletsHeader()
+                : const SizedBox.shrink(),
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: _processScrollNotification,

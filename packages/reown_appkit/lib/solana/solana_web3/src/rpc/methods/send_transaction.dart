@@ -17,6 +17,6 @@ class SendTransaction extends JsonRpcTypeMethod<String> {
   }) : super(
          'sendTransaction',
          values: [signedTransaction],
-         config: config ?? SendTransactionConfig(),
+         config: config ?? const SendTransactionConfig(),
        );
 }

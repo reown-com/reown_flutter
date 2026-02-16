@@ -55,14 +55,14 @@ class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
         bottom: StyleConstants.linear8,
         right: StyleConstants.linear8,
       ),
-      child: Column(
+      child: const Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: StyleConstants.linear48),
-          const Center(child: WalletConnectLoading(size: 120.0)),
-          const SizedBox(height: StyleConstants.linear24),
+          SizedBox(height: StyleConstants.linear48),
+          Center(child: WalletConnectLoading(size: 120.0)),
+          SizedBox(height: StyleConstants.linear24),
         ],
       ),
     );

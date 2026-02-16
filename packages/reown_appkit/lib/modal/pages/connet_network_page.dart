@@ -124,7 +124,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
   @override
   Widget build(BuildContext context) {
     if (_appKitModal == null) {
-      return ContentLoading();
+      return const ContentLoading();
     }
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -233,7 +233,7 @@ class _WalletAvatar extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: themeColors.background125,
-                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(30.0)),
               ),
               padding: const EdgeInsets.all(1.0),
               clipBehavior: Clip.antiAlias,

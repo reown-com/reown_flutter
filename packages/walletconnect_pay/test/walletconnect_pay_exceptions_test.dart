@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:walletconnect_pay/models/walletconnect_pay_exceptions.dart';
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 import 'package:walletconnect_pay/walletconnect_pay_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -264,7 +263,10 @@ void main() {
     late MockWalletconnectPayPlatformWithErrors mockPlatform;
 
     setUp(() {
-      walletconnectPayPlugin = WalletConnectPay(appId: 'test', apiKey: 'test');
+      walletconnectPayPlugin = const WalletConnectPay(
+        appId: 'test',
+        apiKey: 'test',
+      );
       mockPlatform = MockWalletconnectPayPlatformWithErrors();
       WalletconnectPayPlatform.instance = mockPlatform;
     });
@@ -276,7 +278,7 @@ void main() {
 
       expect(
         () => walletconnectPayPlugin.getPaymentOptions(
-          request: GetPaymentOptionsRequest(
+          request: const GetPaymentOptionsRequest(
             paymentLink: 'pay_nonexistent',
             accounts: ['eip155:1:0x123'],
           ),
@@ -292,7 +294,7 @@ void main() {
 
       expect(
         () => walletconnectPayPlugin.getPaymentOptions(
-          request: GetPaymentOptionsRequest(
+          request: const GetPaymentOptionsRequest(
             paymentLink: 'pay_expired',
             accounts: ['eip155:1:0x123'],
           ),
@@ -311,7 +313,7 @@ void main() {
 
       expect(
         () => walletconnectPayPlugin.getRequiredPaymentActions(
-          request: GetRequiredPaymentActionsRequest(
+          request: const GetRequiredPaymentActionsRequest(
             paymentId: 'pay_123',
             optionId: 'opt_456',
           ),
@@ -330,7 +332,7 @@ void main() {
 
       expect(
         () => walletconnectPayPlugin.confirmPayment(
-          request: ConfirmPaymentRequest(
+          request: const ConfirmPaymentRequest(
             paymentId: 'pay_123',
             optionId: 'opt_456',
             signatures: ['0xsig'],
@@ -344,7 +346,7 @@ void main() {
       // Test that invalid JSON throws FormatException
       expect(
         () => walletconnectPayPlugin.getPaymentOptions(
-          request: GetPaymentOptionsRequest(
+          request: const GetPaymentOptionsRequest(
             paymentLink: 'pay_123',
             accounts: [],
           ),

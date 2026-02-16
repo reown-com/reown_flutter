@@ -5,42 +5,42 @@ import 'package:pos_client/utils/errors.dart';
 void main() {
   group('EVM JsonRpcError parsing', () {
     final evmErrors = [
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code -32000: insufficient funds for transfer',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code 3: execution reverted: ERC20: transfer amount exceeds balance, data: "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002645524332303a207472616e7366657220616d6f756e7420657863656564732062616c616e63650000000000000000000000000000000000000000000000000000"',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid Recipient: Address format is not supported: 0x.........',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Unable to parse amount with 6 decimals: digit 10 is out of range for base 10',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid Asset: Address format is not supported: ssssss',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid Sender: Wrong CAIP-10 format: sender',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code -32000: asdasdasdas',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code 3: execution reverted: ERC20: data: "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002645524332303a207472616e7366657220616d6f756e7420657863656564732062616c616e63650000000000000000000000000000000000000000000000000000"',
@@ -81,27 +81,27 @@ void main() {
 
   group('Solana JsonRpcError parsing', () {
     final solanaErrors = [
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid Recipient: Wrong CAIP-10 format: intent.caip10Recipient',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Unable to parse amount with 6 decimals: digit 18 is out of range for base 10',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid token mint address: String is the wrong size',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid Sender: Wrong CAIP-10 format: sender',
       ),
-      JsonRpcError(
+      const JsonRpcError(
         code: -9,
         message:
             'wc_pos_buildTransactions: Validation error: Invalid mint account owner: 11111111111111111111111111111111. Expected SPL Token program.',
@@ -133,7 +133,7 @@ void main() {
 
   group('Tron JsonRpcError parsing', () {
     final solanaErrors = [
-      JsonRpcError(
+      const JsonRpcError(
         code: -10,
         message:
             'wc_pos_checkTransaction: Validation error: Internal error: Broadcast failed: SIGERROR 56616c6964617465207369676e6174757265206572726f723a205369676e61747572652073697a65206973203634',
@@ -154,105 +154,105 @@ void main() {
   group('codes JsonRpcError parsing', () {
     final List<Map<JsonRpcError, PosApiError>> evmErrors = [
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18901,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidAsset,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18902,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidRecipient,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18903,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidSender,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18904,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidAmount,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18905,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidAddress,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18906,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidWalletResponse,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18907,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidTransactionId,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18920,
           message:
               'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code -32000: insufficient funds for transfer',
         ): PosApiError.insufficientFundsForTransfer,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18920,
           message:
               'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code 3: execution reverted: ERC20: transfer amount exceeds balance, data: "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002645524332303a207472616e7366657220616d6f756e7420657863656564732062616c616e63650000000000000000000000000000000000000000000000000000"',
         ): PosApiError.transferAmountExceedsBalance,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18920,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.failedToEstimateGas,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18940,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidProviderUrl,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18941,
           message:
               'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response',
         ): PosApiError.failedToEstimateGas,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18942,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.unknown,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18970,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
         ): PosApiError.invalidFormat,
       },
       {
-        JsonRpcError(
+        const JsonRpcError(
           code: -18971,
           message:
               'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',

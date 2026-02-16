@@ -21,7 +21,7 @@ void signAuthenticate({
     setUp(() async {
       clientA = await clientACreator(
         PROPOSER.copyWith(
-          redirect: Redirect(
+          redirect: const Redirect(
             native: 'clientA://',
             universal: 'https://lab.web3modal.com/dapp',
             linkMode: true,
@@ -30,7 +30,7 @@ void signAuthenticate({
       );
       clientB = await clientBCreator(
         RESPONDER.copyWith(
-          redirect: Redirect(
+          redirect: const Redirect(
             native: 'clientB://',
             universal: 'https://lab.web3modal.com/wallet',
             linkMode: true,
@@ -61,7 +61,7 @@ void signAuthenticate({
       );
 
       SessionAuthRequestResponse response = await clientA.authenticate(
-        params: SessionAuthRequestParams(
+        params: const SessionAuthRequestParams(
           chains: ['eip155:1'],
           domain: 'lab.web3modal.com',
           nonce: 'XpJ0thNvq9lNixmwN',

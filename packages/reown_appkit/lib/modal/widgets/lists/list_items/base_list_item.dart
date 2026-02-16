@@ -73,7 +73,7 @@ class BaseListItem extends StatelessWidget {
           child: Row(
             children: [
               Expanded(child: child),
-              trailing ?? SizedBox.shrink(),
+              trailing ?? const SizedBox.shrink(),
             ],
           ),
         ),

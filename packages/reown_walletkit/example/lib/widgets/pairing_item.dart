@@ -41,10 +41,10 @@ class PairingItem extends StatelessWidget {
                 padding: const EdgeInsets.all(1.0),
                 decoration: BoxDecoration(
                   border: Border.all(width: 1.0, color: Colors.grey),
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                 ),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                   child: SvgPicture.network(imageUrl),
                 ),
               );
@@ -53,7 +53,7 @@ class PairingItem extends StatelessWidget {
               backgroundImage: CachedNetworkImageProvider(imageUrl),
             );
           }
-          return CircleAvatar(backgroundColor: Colors.black12);
+          return const CircleAvatar(backgroundColor: Colors.black12);
         },
       ),
       title: Text(metadata.name),

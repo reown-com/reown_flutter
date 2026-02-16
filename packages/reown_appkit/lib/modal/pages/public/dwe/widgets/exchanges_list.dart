@@ -26,7 +26,7 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
   Widget build(BuildContext context) {
     final chainInfo = ModalProvider.of(context).instance.selectedChain;
     if (chainInfo == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     return ValueListenableBuilder(
@@ -42,10 +42,12 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
         }
 
         return FutureBuilder(
-          future: _dweService.getExchanges(params: GetExchangesParams(page: 1)),
+          future: _dweService.getExchanges(
+            params: const GetExchangesParams(page: 1),
+          ),
           builder: (context, snapshot) {
             if (!snapshot.hasData && !snapshot.hasError) {
-              return CircularLoader();
+              return const CircularLoader();
             }
             if (snapshot.hasError) {
               GetIt.I<IToastService>().show(

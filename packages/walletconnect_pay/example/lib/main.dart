@@ -59,7 +59,7 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Future<void> _initSdk() async {
-    _payClient = WalletConnectPay(apiKey: PaymentPage.wcpApiKey);
+    _payClient = const WalletConnectPay(apiKey: PaymentPage.wcpApiKey);
     try {
       final success = await _payClient.init();
       setState(() => _isInitialized = success);

@@ -44,7 +44,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
       setState(() {
         _position = (MediaQuery.of(context).size.width / 2) + 8.0;
         _appKitModal = ModalProvider.of(context).instance;
-        Future.delayed(Duration(milliseconds: 200), () {
+        Future.delayed(const Duration(milliseconds: 200), () {
           _animate();
         });
       });
@@ -124,8 +124,8 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (_appKitModal == null) return ContentLoading();
-    if (_appKitModal!.session == null) return ContentLoading();
+    if (_appKitModal == null) return const ContentLoading();
+    if (_appKitModal!.session == null) return const ContentLoading();
 
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);

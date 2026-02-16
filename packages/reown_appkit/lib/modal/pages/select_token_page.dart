@@ -95,7 +95,9 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
             ..._tokens.mapIndexed((index, token) {
               return AccountListItem(
                 padding: const EdgeInsets.all(0.0),
-                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                backgroundColor: const WidgetStatePropertyAll(
+                  Colors.transparent,
+                ),
                 iconWidget: Padding(
                   padding: const EdgeInsets.only(left: kPadding6),
                   child: Stack(
@@ -132,7 +134,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: themeColors.background150,
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(30.0),
                             ),
                           ),
@@ -167,7 +169,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                         color: themeColors.foreground100,
                       ),
                     ),
-                    SizedBox.square(dimension: kPadding6),
+                    const SizedBox.square(dimension: kPadding6),
                   ],
                 ),
                 onTap: () {

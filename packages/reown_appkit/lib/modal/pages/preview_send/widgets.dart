@@ -52,7 +52,7 @@ class SendRow extends StatelessWidget {
               ),
             ],
           ),
-          Expanded(child: SizedBox()),
+          const Expanded(child: SizedBox()),
           NetworkButton(
             serviceStatus: appKitModal.status,
             chainInfo: appKitModal.selectedChain,
@@ -91,7 +91,7 @@ class ReceiveRow extends StatelessWidget {
               height: 1.2,
             ),
           ),
-          Expanded(child: SizedBox()),
+          const Expanded(child: SizedBox()),
           AddressButton(
             service: appKitModal,
             child: Row(

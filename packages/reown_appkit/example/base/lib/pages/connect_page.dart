@@ -281,7 +281,7 @@ class __RequestButtonsState extends State<_RequestButtons> {
     final topic = widget.appKitModal.session!.topic ?? '';
     final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     if (chainId.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final approvedMethods = widget.appKitModal.getApprovedMethods(
@@ -340,7 +340,7 @@ class __RequestButtonsState extends State<_RequestButtons> {
           .map(
             (method) => PrimaryButton(
               title: method,
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(30.0)),
               buttonSize: BaseButtonSize.regular,
               onTap: () async {
                 // Uncomment to sign and submit real transaction
@@ -383,7 +383,7 @@ class __RequestButtonsState extends State<_RequestButtons> {
                     type: ToastificationType.error,
                     title: const Text('Method not implemented'),
                     context: context,
-                    autoCloseDuration: Duration(seconds: 2),
+                    autoCloseDuration: const Duration(seconds: 2),
                     alignment: Alignment.bottomCenter,
                   );
                 }
@@ -409,17 +409,17 @@ class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
   Widget build(BuildContext context) {
     final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     if (chainId.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace != 'eip155') {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
 
     return FutureBuilder<Widget>(
       future: contractCallsButton(widget.appKitModal, context),
       builder: (context, snapshot) {
-        return snapshot.data ?? SizedBox.shrink();
+        return snapshot.data ?? const SizedBox.shrink();
       },
     );
   }

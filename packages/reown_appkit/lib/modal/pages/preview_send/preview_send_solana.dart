@@ -191,7 +191,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
 
       if (_isSendEnabled) {
         _gasEstimationTimer ??= Timer.periodic(
-          Duration(seconds: 10),
+          const Duration(seconds: 10),
           _reEstimateGas,
         );
       } else {

@@ -90,11 +90,11 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
         mainAxisSize: MainAxisSize.min,
         children: [
           widget.appKitModal.status.isLoading
-              ? Row(
+              ? const Row(
                   children: [
-                    const SizedBox.square(dimension: kPadding6),
+                    SizedBox.square(dimension: kPadding6),
                     CircularLoader(size: 16.0, strokeWidth: 1.5),
-                    const SizedBox.square(dimension: kPadding6),
+                    SizedBox.square(dimension: kPadding6),
                   ],
                 )
               : (_tokenImage ?? '').isEmpty

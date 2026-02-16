@@ -187,7 +187,7 @@ class DWEService implements IDWEService {
             if (currentAttempt < maxAttempts && !_shouldStopLooping) {
               // Keep trying
               completer.call((quoteStatus, null));
-              await Future.delayed(Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 3));
             } else {
               // Max attempts reached or stopped by user, complete with appropriate status
               stopCheckingStatus();
@@ -298,7 +298,7 @@ class DWEService implements IDWEService {
             if (currentAttempt < maxAttempts && !_shouldStopLooping) {
               // Keep trying
               completer.call((quoteStatus, null));
-              await Future.delayed(Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 3));
             } else {
               // Max attempts reached or stopped by user, complete with appropriate status
               stopCheckingStatus();
@@ -346,7 +346,7 @@ class DWEService implements IDWEService {
             if (currentAttempt < maxAttempts && !_shouldStopLooping) {
               // Keep trying
               completer.call((quoteStatus, null));
-              await Future.delayed(Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 3));
             } else {
               // Max attempts reached or stopped by user, complete with appropriate status
               stopCheckingStatus();
@@ -394,7 +394,7 @@ class DWEService implements IDWEService {
             if (currentAttempt < maxAttempts && !_shouldStopLooping) {
               // Keep trying
               completer.call((quoteStatus, null));
-              await Future.delayed(Duration(seconds: 3));
+              await Future.delayed(const Duration(seconds: 3));
             } else {
               // Max attempts reached or stopped by user, complete with appropriate status
               stopCheckingStatus();
@@ -488,7 +488,7 @@ class DWEService implements IDWEService {
 
       final response = await http
           .get(url, headers: _requiredHeaders)
-          .timeout(Duration(seconds: 30));
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200 && response.body.isNotEmpty) {
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
@@ -536,7 +536,7 @@ class DWEService implements IDWEService {
     });
     final response = await http
         .post(url, headers: _requiredHeaders, body: body)
-        .timeout(Duration(seconds: 30));
+        .timeout(const Duration(seconds: 30));
 
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       final jsonResponse = jsonDecode(response.body);

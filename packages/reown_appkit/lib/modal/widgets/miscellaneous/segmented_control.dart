@@ -100,17 +100,17 @@ class _SegmentedControlState extends State<SegmentedControl> {
         decoration: BoxDecoration(
           color: themeColors.grayGlass002,
           borderRadius: radiuses.isSquare()
-              ? BorderRadius.all(Radius.zero)
+              ? const BorderRadius.all(Radius.zero)
               : BorderRadius.circular(16.0),
         ),
         thumbDecoration: BoxDecoration(
           color: themeColors.grayGlass002,
           borderRadius: radiuses.isSquare()
-              ? BorderRadius.all(Radius.zero)
+              ? const BorderRadius.all(Radius.zero)
               : BorderRadius.circular(16.0),
           border: Border.all(color: themeColors.grayGlass002, width: 1),
         ),
-        duration: Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 200),
         curve: Curves.linear,
         onValueChanged: (value) {
           setState(() {

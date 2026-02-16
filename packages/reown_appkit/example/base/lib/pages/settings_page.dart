@@ -224,7 +224,7 @@ class SettingsPageState extends State<SettingsPage> {
                           await widget.appKitModal.appKit!.core.storage
                               .deleteAll();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                               content: Text('Storage cleared'),
                               duration: Duration(seconds: 1),
                             ),

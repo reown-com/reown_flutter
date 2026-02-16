@@ -68,9 +68,9 @@ class MethodDialogState extends State<MethodDialog> {
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text)).then(
       (_) => toastification.show(
-        title: Text(StringConstants.copiedToClipboard),
+        title: const Text(StringConstants.copiedToClipboard),
         context: context,
-        autoCloseDuration: Duration(seconds: 2),
+        autoCloseDuration: const Duration(seconds: 2),
         alignment: Alignment.bottomCenter,
       ),
     );

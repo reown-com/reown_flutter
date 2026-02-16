@@ -26,7 +26,7 @@ class MagicService implements IMagicService {
   ConnectionMetadata get _selfMetadata =>
       ConnectionMetadata(metadata: _metadata, publicKey: '');
 
-  ConnectionMetadata get _peerMetadata => ConnectionMetadata(
+  ConnectionMetadata get _peerMetadata => const ConnectionMetadata(
     metadata: PairingMetadata(
       name: 'Social Wallet',
       description: '',
@@ -190,7 +190,7 @@ class MagicService implements IMagicService {
           if (_onLoadCount < 2 && Platform.isAndroid) return;
           await _runJavascript();
           await _fitToScreen();
-          Future.delayed(Duration(milliseconds: 600)).then((value) {
+          Future.delayed(const Duration(milliseconds: 600)).then((value) {
             if (_initializedCompleter.isCompleted) return;
             _initializedCompleter.complete(true);
           });
@@ -412,7 +412,7 @@ class MagicService implements IMagicService {
       final requestUri = uri.replace(queryParameters: queryParams);
       await _webViewController.loadRequest(requestUri, headers: headers);
       // in case connection message or even the request itself hangs there's no other way to continue the flow than timing it out.
-      _timeOutTimer ??= Timer.periodic(Duration(seconds: 1), _timeOut);
+      _timeOutTimer ??= Timer.periodic(const Duration(seconds: 1), _timeOut);
     } catch (e) {
       _initializedCompleter.complete(false);
     }

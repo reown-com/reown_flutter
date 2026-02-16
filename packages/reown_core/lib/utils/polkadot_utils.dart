@@ -9,7 +9,7 @@ class PolkadotChainUtils {
     final decoded = base58.decode(ss58Address);
 
     if (decoded.length < 33) {
-      throw FormatException('Too short to contain a public key');
+      throw const FormatException('Too short to contain a public key');
     }
 
     return decoded.sublist(1, 33);

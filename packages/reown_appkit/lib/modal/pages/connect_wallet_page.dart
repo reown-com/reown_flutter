@@ -61,7 +61,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
       final isOpen = _appkitModal?.isOpen ?? false;
       final isConnected = _appkitModal?.isConnected ?? false;
       if (isOpen && isConnected && !_siweService.enabled) {
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           if (!mounted) return;
           _appkitModal?.closeModal();
         });
@@ -91,7 +91,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   @override
   Widget build(BuildContext context) {
     if (_appkitModal == null) {
-      return ContentLoading();
+      return const ContentLoading();
     }
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -190,7 +190,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                           ),
                         )
                       : nonInstalledMobile(errorEvent)
-                      ? SizedBox.shrink()
+                      ? const SizedBox.shrink()
                       : Text(
                           webOnlyWallet ||
                                   _selectedSegment == SegmentOption.option2
@@ -339,7 +339,7 @@ class _WalletAvatar extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: themeColors.background125,
-                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(30.0)),
               ),
               padding: const EdgeInsets.all(1.0),
               clipBehavior: Clip.antiAlias,

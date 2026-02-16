@@ -40,7 +40,7 @@ class WCConnectionWidgetInfo extends StatelessWidget {
 
   Widget _buildElement(String text) {
     if (text.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return ElevatedButton(
       onPressed:

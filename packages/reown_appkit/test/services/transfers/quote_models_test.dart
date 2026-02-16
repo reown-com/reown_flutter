@@ -111,7 +111,7 @@ void main() {
 
   group('QuoteFeeExtension', () {
     test('formats fee correctly', () {
-      final fee = QuoteFee(
+      final fee = const QuoteFee(
         id: 'service',
         label: 'Service Fee',
         amount: '1000000000000000000', // 1 ETH with 18 decimals
@@ -124,7 +124,7 @@ void main() {
     });
 
     test('formats small fee correctly', () {
-      final fee = QuoteFee(
+      final fee = const QuoteFee(
         id: 'service',
         label: 'Service Fee',
         amount: '1000000', // 1 USDC with 6 decimals
@@ -139,7 +139,7 @@ void main() {
 
   group('QuoteExtension', () {
     test('formats amount with symbol', () {
-      final quote = Quote(
+      final quote = const Quote(
         type: QuoteType.directTransfer,
         origin: QuoteAmount(
           amount: '1000000000000000000', // 1 ETH
@@ -160,7 +160,7 @@ void main() {
     });
 
     test('formats amount without symbol', () {
-      final quote = Quote(
+      final quote = const Quote(
         type: QuoteType.directTransfer,
         origin: QuoteAmount(
           amount: '1000000000000000000', // 1 ETH
@@ -190,7 +190,7 @@ void main() {
 
   group('QuoteStepExtension', () {
     test('identifies deposit step correctly', () {
-      final step = QuoteStep.deposit(
+      final step = const QuoteStep.deposit(
         requestId: 'test-id',
         deposit: QuoteDeposit(
           amount: '1000000000000000000',
@@ -204,7 +204,7 @@ void main() {
     });
 
     test('identifies transaction step correctly', () {
-      final step = QuoteStep.transaction(
+      final step = const QuoteStep.transaction(
         requestId: 'test-id',
         transaction: {'type': 'transfer'},
       );

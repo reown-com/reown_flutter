@@ -196,55 +196,61 @@ enum SupportedNetwork {
   PosNetwork get posNetwork {
     switch (this) {
       case SupportedNetwork.ethereum:
-        return PosNetwork(name: 'Ethereum', chainId: 'eip155:1');
+        return const PosNetwork(name: 'Ethereum', chainId: 'eip155:1');
       case SupportedNetwork.polygon:
-        return PosNetwork(name: 'Polygon', chainId: 'eip155:137');
+        return const PosNetwork(name: 'Polygon', chainId: 'eip155:137');
       case SupportedNetwork.binanceSmartChain:
-        return PosNetwork(name: 'BNB Smart Chain', chainId: 'eip155:56');
+        return const PosNetwork(name: 'BNB Smart Chain', chainId: 'eip155:56');
       case SupportedNetwork.avalanche:
-        return PosNetwork(name: 'Avalanche', chainId: 'eip155:43114');
+        return const PosNetwork(name: 'Avalanche', chainId: 'eip155:43114');
       case SupportedNetwork.arbitrum:
-        return PosNetwork(name: 'Arbitrum One', chainId: 'eip155:42161');
+        return const PosNetwork(name: 'Arbitrum One', chainId: 'eip155:42161');
       case SupportedNetwork.optimism:
-        return PosNetwork(name: 'Optimism', chainId: 'eip155:10');
+        return const PosNetwork(name: 'Optimism', chainId: 'eip155:10');
       case SupportedNetwork.base:
-        return PosNetwork(name: 'Base', chainId: 'eip155:8453');
+        return const PosNetwork(name: 'Base', chainId: 'eip155:8453');
       case SupportedNetwork.fantom:
-        return PosNetwork(name: 'Fantom', chainId: 'eip155:250');
+        return const PosNetwork(name: 'Fantom', chainId: 'eip155:250');
       case SupportedNetwork.cronos:
-        return PosNetwork(name: 'Cronos', chainId: 'eip155:25');
+        return const PosNetwork(name: 'Cronos', chainId: 'eip155:25');
       case SupportedNetwork.polygonZkEVM:
-        return PosNetwork(name: 'Polygon zkEVM', chainId: 'eip155:1101');
+        return const PosNetwork(name: 'Polygon zkEVM', chainId: 'eip155:1101');
       case SupportedNetwork.sepolia:
-        return PosNetwork(name: 'Sepolia ETH', chainId: 'eip155:11155111');
+        return const PosNetwork(
+          name: 'Sepolia ETH',
+          chainId: 'eip155:11155111',
+        );
       case SupportedNetwork.gnosis:
-        return PosNetwork(name: 'Gnosis Chain', chainId: 'eip155:100');
+        return const PosNetwork(name: 'Gnosis Chain', chainId: 'eip155:100');
       case SupportedNetwork.zkSyncEra:
-        return PosNetwork(name: 'zkSync Era', chainId: 'eip155:324');
+        return const PosNetwork(name: 'zkSync Era', chainId: 'eip155:324');
       case SupportedNetwork.mantle:
-        return PosNetwork(name: 'Mantle', chainId: 'eip155:5000');
+        return const PosNetwork(name: 'Mantle', chainId: 'eip155:5000');
       case SupportedNetwork.klaytn:
-        return PosNetwork(name: 'Klaytn Mainnet', chainId: 'eip155:8217');
+        return const PosNetwork(name: 'Klaytn Mainnet', chainId: 'eip155:8217');
       case SupportedNetwork.celo:
-        return PosNetwork(name: 'Celo', chainId: 'eip155:42220');
+        return const PosNetwork(name: 'Celo', chainId: 'eip155:42220');
       case SupportedNetwork.linea:
-        return PosNetwork(name: 'Linea', chainId: 'eip155:59144');
+        return const PosNetwork(name: 'Linea', chainId: 'eip155:59144');
       case SupportedNetwork.baseSepolia:
-        return PosNetwork(name: 'Base Sepolia', chainId: 'eip155:84531');
+        return const PosNetwork(name: 'Base Sepolia', chainId: 'eip155:84531');
       case SupportedNetwork.solana:
-        return PosNetwork(
+        return const PosNetwork(
           name: 'Solana',
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         );
       case SupportedNetwork.solanaDevnet:
-        return PosNetwork(
+        return const PosNetwork(
           name: 'Solana Devnet',
           chainId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
         );
       case SupportedNetwork.tron:
-        return PosNetwork(name: 'Tron', chainId: 'tron:0x2b6653dc');
+        return const PosNetwork(name: 'Tron', chainId: 'tron:0x2b6653dc');
       case SupportedNetwork.tronTestnet:
-        return PosNetwork(name: 'Tron Testnet', chainId: 'tron:0xcd8690dc');
+        return const PosNetwork(
+          name: 'Tron Testnet',
+          chainId: 'tron:0xcd8690dc',
+        );
     }
   }
 }

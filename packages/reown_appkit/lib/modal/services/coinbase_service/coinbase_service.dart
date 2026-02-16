@@ -296,7 +296,7 @@ extension on SessionRequestParams {
         final jsonData = _getDataFromParamsList(method, params);
         return SignTypedDataV4(address: address, typedDataJson: jsonData);
       case 'eth_requestAccounts':
-        return RequestAccounts();
+        return const RequestAccounts();
       case 'eth_signTransaction':
       case MethodsConstants.ethSendTransaction:
         BigInt? weiValue;

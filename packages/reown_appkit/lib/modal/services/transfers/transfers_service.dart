@@ -162,7 +162,7 @@ class TransfersService implements ITransfersService {
             headers: _requiredHeaders,
             body: body,
           )
-          .timeout(Duration(seconds: 30));
+          .timeout(const Duration(seconds: 30));
       final responseBody = response.body;
       core.logger.d('[$runtimeType] -- quote response: $responseBody');
 

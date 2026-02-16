@@ -14,11 +14,11 @@ class RenderUtils {
   }
 
   static List<Color> get defaultAvatarColors => [
-    Color(0xFFf5ccfc),
-    Color(0xFFdba4f5),
-    Color(0xFF9a8ee8),
-    Color(0xFF6493da),
-    Color(0xFF6ebdea),
+    const Color(0xFFf5ccfc),
+    const Color(0xFFdba4f5),
+    const Color(0xFF9a8ee8),
+    const Color(0xFF6493da),
+    const Color(0xFF6ebdea),
   ];
 
   static List<Color> generateAvatarColors(String? address) {

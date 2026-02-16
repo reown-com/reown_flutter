@@ -148,7 +148,7 @@ class _ReownAppKitModalDepositScreenState
                           color: themeColors.foreground300,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       AssetsButton(
                         disabled: _dweService.preselectedAsset != null,
                       ),

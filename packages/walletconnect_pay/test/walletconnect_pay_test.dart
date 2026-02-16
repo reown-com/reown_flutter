@@ -44,7 +44,7 @@ void main() {
   });
 
   test('initialize', () async {
-    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+    WalletConnectPay walletconnectPayPlugin = const WalletConnectPay(
       appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
@@ -55,7 +55,7 @@ void main() {
   });
 
   test('confirmPayment', () async {
-    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+    WalletConnectPay walletconnectPayPlugin = const WalletConnectPay(
       appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
@@ -63,7 +63,7 @@ void main() {
     WalletconnectPayPlatform.instance = fakePlatform;
 
     final result = await walletconnectPayPlugin.confirmPayment(
-      request: ConfirmPaymentRequest(
+      request: const ConfirmPaymentRequest(
         paymentId: 'test-payment-id',
         optionId: 'test-option-id',
         signatures: ['test-signature'],
@@ -74,7 +74,7 @@ void main() {
   });
 
   test('getPaymentOptions', () async {
-    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+    WalletConnectPay walletconnectPayPlugin = const WalletConnectPay(
       appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
@@ -82,7 +82,7 @@ void main() {
     WalletconnectPayPlatform.instance = fakePlatform;
 
     final result = await walletconnectPayPlugin.getPaymentOptions(
-      request: GetPaymentOptionsRequest(
+      request: const GetPaymentOptionsRequest(
         paymentLink: 'https://test.com/pay',
         accounts: ['0x123'],
       ),
@@ -91,7 +91,7 @@ void main() {
   });
 
   test('getRequiredPaymentActions', () async {
-    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+    WalletConnectPay walletconnectPayPlugin = const WalletConnectPay(
       appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
@@ -99,7 +99,7 @@ void main() {
     WalletconnectPayPlatform.instance = fakePlatform;
 
     final result = await walletconnectPayPlugin.getRequiredPaymentActions(
-      request: GetRequiredPaymentActionsRequest(
+      request: const GetRequiredPaymentActionsRequest(
         optionId: 'test-option-id',
         paymentId: 'test-payment-id',
       ),

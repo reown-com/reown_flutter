@@ -66,10 +66,10 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     if (_appKitModal == null) {
-      return ContentLoading(viewHeight: 400.0);
+      return const ContentLoading(viewHeight: 400.0);
     }
     if (_appKitModal?.session == null) {
-      return ContentLoading(viewHeight: 400.0);
+      return const ContentLoading(viewHeight: 400.0);
     }
 
     return ModalNavbar(
@@ -194,7 +194,7 @@ class _UpgradeWalletButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: () => _widgetStack.push(UpgradeWalletPage()),
+          onTap: () => _widgetStack.push(const UpgradeWalletPage()),
         ),
       ],
     );
@@ -214,7 +214,7 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
     });
     final title = modalInstance.session!.sessionUsername;
     if (provider == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return Column(
       children: [
@@ -359,7 +359,7 @@ class _SelectNetworkButton extends StatelessWidget {
             color: themeColors.foreground100,
           ),
           onTap: () => _widgetStack.push(
-            ReownAppKitModalSelectNetworkPage(),
+            const ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
         ),
@@ -382,7 +382,7 @@ class _FundWalletButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(17.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(17.0)),
                 border: Border.fromBorderSide(
                   BorderSide(
                     color: themeColors.grayGlass002,
@@ -404,7 +404,7 @@ class _FundWalletButton extends StatelessWidget {
             ),
           ),
           title: 'Fund wallet',
-          onTap: () => _widgetStack.push(ReownAppKitModalDepositScreen()),
+          onTap: () => _widgetStack.push(const ReownAppKitModalDepositScreen()),
         ),
       ],
     );
@@ -427,7 +427,7 @@ class _ActivityButton extends StatelessWidget {
           iconBGColor: themeColors.accenGlass015,
           iconBorderColor: themeColors.accenGlass005,
           title: 'Activity',
-          onTap: () => _widgetStack.push(ActivityPage()),
+          onTap: () => _widgetStack.push(const ActivityPage()),
         ),
       ],
     );
@@ -499,7 +499,7 @@ class _SwitchSmartAccountButtonState extends State<_SwitchSmartAccountButton> {
             color: themeColors.foreground100,
           ),
           trailing: _loading
-              ? Row(
+              ? const Row(
                   children: [
                     CircularLoader(size: 18.0, strokeWidth: 2.0),
                     SizedBox.square(dimension: kPadding12),
@@ -546,7 +546,7 @@ class _DisconnectButton extends StatelessWidget {
           iconBGColor: themeColors.grayGlass010,
           iconBorderColor: themeColors.grayGlass005,
           trailing: service.status.isLoading
-              ? Row(
+              ? const Row(
                   children: [
                     CircularLoader(size: 18.0, strokeWidth: 2.0),
                     SizedBox.square(dimension: kPadding12),

@@ -175,7 +175,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _CircledSendWidget(),
-          SizedBox.square(dimension: kPadding12),
+          const SizedBox.square(dimension: kPadding12),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kPadding12),
             child: Column(
@@ -188,7 +188,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
                         color: themeColors.foreground200,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     Text(
                       widget.quoteResult.formattedAmount(),
                       style: themeData.textStyles.paragraph400,
@@ -232,14 +232,14 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
               ],
             ),
           ),
-          SizedBox.square(dimension: kPadding16),
+          const SizedBox.square(dimension: kPadding16),
           Divider(
             color: themeColors.grayGlass010,
             height: 0.0,
             indent: kPadding12,
             endIndent: kPadding12,
           ),
-          SizedBox.square(dimension: kPadding16),
+          const SizedBox.square(dimension: kPadding16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: kPadding12),
             child: Row(
@@ -250,7 +250,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
                     color: themeColors.foreground200,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Text(
                   '${widget.exchange.name} ',
                   style: themeData.textStyles.paragraph400,
@@ -263,8 +263,8 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
               ],
             ),
           ),
-          SizedBox.square(dimension: kPadding16),
-          SizedBox.square(dimension: kPadding8),
+          const SizedBox.square(dimension: kPadding16),
+          const SizedBox.square(dimension: kPadding8),
           Container(
             padding: const EdgeInsets.all(kPadding12),
             decoration: BoxDecoration(
@@ -290,7 +290,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
                         color: themeColors.foreground200,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     WalletItemChip(
                       value: '🕒 Est. ${widget.quoteResult.timeInSeconds} sec',
                       textStyle: themeData.textStyles.tiny400.copyWith(
@@ -300,7 +300,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
                     ),
                   ],
                 ),
-                SizedBox.square(dimension: kPadding12),
+                const SizedBox.square(dimension: kPadding12),
                 _PaymentDetails(
                   quoteResult: widget.quoteResult,
                   depositError: _depositError,
@@ -339,7 +339,7 @@ class _PaymentDetails extends StatelessWidget {
       children: [
         AccountListItem(
           padding: const EdgeInsets.all(0.0),
-          backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+          backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
           iconWidget: Padding(
             padding: const EdgeInsets.only(left: kPadding6),
             child: RoundedIcon(
@@ -360,7 +360,7 @@ class _PaymentDetails extends StatelessWidget {
               child: Builder(
                 builder: (_) {
                   if (status == QuoteStatus.waiting) {
-                    return CircularProgressIndicator(strokeWidth: 1.0);
+                    return const CircularProgressIndicator(strokeWidth: 1.0);
                   }
                   if (isError) {
                     return Icon(Icons.close, color: themeColors.error100);
@@ -373,7 +373,7 @@ class _PaymentDetails extends StatelessWidget {
         ),
         AccountListItem(
           padding: const EdgeInsets.all(0.0),
-          backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+          backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
           iconWidget: Padding(
             padding: const EdgeInsets.only(left: kPadding6),
             child: RoundedIcon(
@@ -395,7 +395,7 @@ class _PaymentDetails extends StatelessWidget {
                 builder: (_) {
                   if (status == QuoteStatus.waiting ||
                       status == QuoteStatus.pending) {
-                    return CircularProgressIndicator(strokeWidth: 1.0);
+                    return const CircularProgressIndicator(strokeWidth: 1.0);
                   }
                   if (isError) {
                     return Icon(Icons.close, color: themeColors.error100);
@@ -408,7 +408,7 @@ class _PaymentDetails extends StatelessWidget {
         ),
         AccountListItem(
           padding: const EdgeInsets.all(0.0),
-          backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+          backgroundColor: const WidgetStatePropertyAll(Colors.transparent),
           iconWidget: Padding(
             padding: const EdgeInsets.only(left: kPadding6),
             child: RoundedIcon(
@@ -434,7 +434,7 @@ class _PaymentDetails extends StatelessWidget {
                   if (isError) {
                     return Icon(Icons.close, color: themeColors.error100);
                   }
-                  return CircularProgressIndicator(strokeWidth: 1.0);
+                  return const CircularProgressIndicator(strokeWidth: 1.0);
                 },
               ),
             ),
@@ -462,7 +462,7 @@ class __CircledSendWidgetState extends State<_CircledSendWidget> {
     return FutureBuilder(
       future: _dweService.getFungiblePrice(asset: selectedAsset),
       builder: (context, snapshot) {
-        if (snapshot.data == null) return SizedBox.shrink();
+        if (snapshot.data == null) return const SizedBox.shrink();
         final fungible = snapshot.data!;
         final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
           fungible.chainId!,
@@ -482,7 +482,9 @@ class __CircledSendWidgetState extends State<_CircledSendWidget> {
                     width: 170.0,
                     height: 170.0,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(170.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(170.0),
+                      ),
                       border: Border.fromBorderSide(
                         BorderSide(
                           color: themeColors.accenGlass005,
@@ -496,7 +498,9 @@ class __CircledSendWidgetState extends State<_CircledSendWidget> {
                     width: 145.0,
                     height: 145.0,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(145.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(145.0),
+                      ),
                       border: Border.fromBorderSide(
                         BorderSide(
                           color: themeColors.accenGlass020,
@@ -510,7 +514,9 @@ class __CircledSendWidgetState extends State<_CircledSendWidget> {
                     width: 105.0,
                     height: 105.0,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(105.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(105.0),
+                      ),
                       border: Border.fromBorderSide(
                         BorderSide(
                           color: themeColors.accenGlass020,

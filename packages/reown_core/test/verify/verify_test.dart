@@ -57,7 +57,7 @@ void main() {
               },
               'expiresAt':
                   DateTime.now()
-                      .add(Duration(hours: 1))
+                      .add(const Duration(hours: 1))
                       .millisecondsSinceEpoch ~/
                   1000,
             }),
@@ -81,7 +81,7 @@ void main() {
       test('should handle expired public key', () async {
         // Arrange
         final expiredKey = JWK(
-          publicKey: PublicKey(
+          publicKey: const PublicKey(
             crv: 'P-256',
             ext: true,
             keyOps: ['verify'],
@@ -91,7 +91,7 @@ void main() {
           ),
           expiresAt:
               DateTime.now()
-                  .subtract(Duration(hours: 1))
+                  .subtract(const Duration(hours: 1))
                   .millisecondsSinceEpoch ~/
               1000,
         );
@@ -112,7 +112,7 @@ void main() {
               },
               'expiresAt':
                   DateTime.now()
-                      .add(Duration(hours: 1))
+                      .add(const Duration(hours: 1))
                       .millisecondsSinceEpoch ~/
                   1000,
             }),
@@ -141,7 +141,7 @@ void main() {
 
         when(mockVerifyStore.getItem()).thenReturn(
           JWK(
-            publicKey: PublicKey(
+            publicKey: const PublicKey(
               crv: 'P-256',
               ext: true,
               keyOps: ['verify'],
@@ -150,7 +150,9 @@ void main() {
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
             expiresAt:
-                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                DateTime.now()
+                    .add(const Duration(hours: 1))
+                    .millisecondsSinceEpoch ~/
                 1000,
           ),
         );
@@ -182,7 +184,7 @@ void main() {
         // Arrange
         const attestationId = 'test-id';
         const attestationJWT = null;
-        final expectedResponse = AttestationResponse(
+        final expectedResponse = const AttestationResponse(
           origin: 'https://example.com',
           attestationId: attestationId,
           isScam: false,
@@ -248,7 +250,7 @@ void main() {
     group('getValidation', () {
       test('should return SCAM when attestation is scam', () {
         // Arrange
-        final attestation = AttestationResponse(
+        final attestation = const AttestationResponse(
           origin: 'https://example.com',
           attestationId: 'test-id',
           isScam: true,
@@ -264,7 +266,7 @@ void main() {
 
       test('should return INVALID when origin is empty', () {
         // Arrange
-        final attestation = AttestationResponse(
+        final attestation = const AttestationResponse(
           origin: '',
           attestationId: 'test-id',
           isScam: false,
@@ -280,7 +282,7 @@ void main() {
 
       test('should return INVALID when metadataUri is null', () {
         // Arrange
-        final attestation = AttestationResponse(
+        final attestation = const AttestationResponse(
           origin: 'https://example.com',
           attestationId: 'test-id',
           isScam: false,
@@ -295,7 +297,7 @@ void main() {
 
       test('should return VALID when origins match', () {
         // Arrange
-        final attestation = AttestationResponse(
+        final attestation = const AttestationResponse(
           origin: 'https://example.com',
           attestationId: 'test-id',
           isScam: false,
@@ -311,7 +313,7 @@ void main() {
 
       test('should return INVALID when origins do not match', () {
         // Arrange
-        final attestation = AttestationResponse(
+        final attestation = const AttestationResponse(
           origin: 'https://example.com',
           attestationId: 'test-id',
           isScam: false,
@@ -331,7 +333,7 @@ void main() {
         test('should fetch and return public key successfully', () async {
           // Arrange
           final expectedJwk = JWK(
-            publicKey: PublicKey(
+            publicKey: const PublicKey(
               crv: 'P-256',
               ext: true,
               keyOps: ['verify'],
@@ -340,7 +342,9 @@ void main() {
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
             expiresAt:
-                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                DateTime.now()
+                    .add(const Duration(hours: 1))
+                    .millisecondsSinceEpoch ~/
                 1000,
           );
 
@@ -387,7 +391,7 @@ void main() {
         test('should persist public key successfully', () async {
           // Arrange
           final jwk = JWK(
-            publicKey: PublicKey(
+            publicKey: const PublicKey(
               crv: 'P-256',
               ext: true,
               keyOps: ['verify'],
@@ -396,7 +400,9 @@ void main() {
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
             expiresAt:
-                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                DateTime.now()
+                    .add(const Duration(hours: 1))
+                    .millisecondsSinceEpoch ~/
                 1000,
           );
 
@@ -427,7 +433,7 @@ void main() {
         test('should return persisted public key', () {
           // Arrange
           final expectedJwk = JWK(
-            publicKey: PublicKey(
+            publicKey: const PublicKey(
               crv: 'P-256',
               ext: true,
               keyOps: ['verify'],
@@ -436,7 +442,9 @@ void main() {
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
             expiresAt:
-                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                DateTime.now()
+                    .add(const Duration(hours: 1))
+                    .millisecondsSinceEpoch ~/
                 1000,
           );
 
@@ -467,7 +475,7 @@ void main() {
         test('should return cached public key when available', () async {
           // Arrange
           final cachedJwk = JWK(
-            publicKey: PublicKey(
+            publicKey: const PublicKey(
               crv: 'P-256',
               ext: true,
               keyOps: ['verify'],
@@ -476,7 +484,9 @@ void main() {
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
             expiresAt:
-                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                DateTime.now()
+                    .add(const Duration(hours: 1))
+                    .millisecondsSinceEpoch ~/
                 1000,
           );
 
@@ -510,7 +520,7 @@ void main() {
                   },
                   'expiresAt':
                       DateTime.now()
-                          .add(Duration(hours: 1))
+                          .add(const Duration(hours: 1))
                           .millisecondsSinceEpoch ~/
                       1000,
                 }),

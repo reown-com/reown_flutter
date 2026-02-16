@@ -80,7 +80,7 @@ class _WCPFullNameCaptureState extends State<WCPFullNameCapture> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(height: StyleConstants.linear24),
-          WCModalTitle(text: 'What\'s your name?'),
+          const WCModalTitle(text: 'What\'s your name?'),
           const SizedBox(height: StyleConstants.linear32),
           WCPTextField(
             controller: _firstNameController,

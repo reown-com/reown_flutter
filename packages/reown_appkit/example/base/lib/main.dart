@@ -28,7 +28,7 @@ Future<void> main() async {
       DeepLinkHandler.initListener();
 
       if (kDebugMode) {
-        runApp(MyApp());
+        runApp(const MyApp());
       } else {
         // Catch Flutter framework errors
         FlutterError.onError = (FlutterErrorDetails details) {
@@ -147,10 +147,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         theme: ThemeData(
           colorScheme: _isDarkMode
               ? ColorScheme.dark(
-                  primary: ReownAppKitModalThemeData().darkColors.accent100,
+                  primary:
+                      const ReownAppKitModalThemeData().darkColors.accent100,
                 )
               : ColorScheme.light(
-                  primary: ReownAppKitModalThemeData().lightColors.accent100,
+                  primary:
+                      const ReownAppKitModalThemeData().lightColors.accent100,
                 ),
         ),
         home: MyHomePage(
@@ -327,7 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // `getBalanceFallback` will be triggered if getting the balance from our blockchain API fails. You could place here your own getBalance method
       disconnectOnDispose: true,
       customWallets: [
-        ReownAppKitModalWalletInfo(
+        const ReownAppKitModalWalletInfo(
           listing: AppKitModalWalletListing(
             id: '00001',
             name: 'Reown Web Sample',
@@ -375,15 +377,15 @@ class _MyHomePageState extends State<MyHomePage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  content: Text('App will be closed to apply changes'),
+                  content: const Text('App will be closed to apply changes'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('Cancel'),
+                      child: const Text('Cancel'),
                     ),
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Ok'),
+                      child: const Text('Ok'),
                     ),
                   ],
                 );
@@ -519,7 +521,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     if (_pageDatas.isEmpty) {
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     final List<Widget> navRail = [];
     if (MediaQuery.of(context).size.width >= Constants.smallScreen) {
@@ -576,7 +578,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Color(0xFF667DFF),
+      selectedItemColor: const Color(0xFF667DFF),
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       // called when one tab is selected
@@ -713,7 +715,7 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
     setState(() {});
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('AppKit is connected'),
         duration: Duration(seconds: 2),
       ),
@@ -749,7 +751,7 @@ class _MyHomePageState extends State<MyHomePage> {
         content: Text(
           event?.message ?? event?.description ?? 'An error occurred',
         ),
-        duration: Duration(seconds: 2),
+        duration: const Duration(seconds: 2),
       ),
     );
   }

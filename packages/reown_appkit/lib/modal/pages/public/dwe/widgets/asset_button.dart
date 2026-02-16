@@ -34,7 +34,7 @@ class _AssetsButtonState extends State<AssetsButton> {
   Widget build(BuildContext context) {
     final selectedAsset = _dweService.depositAsset.value;
     if (selectedAsset == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
       selectedAsset.network,
@@ -76,7 +76,9 @@ class _AssetsButtonState extends State<AssetsButton> {
                           semanticsLabel: 'AppKitModalAssetButton',
                           size: widget.size,
                           onTap: () {
-                            _widgetStack.push(ConfiguredAssetsSelectorPage());
+                            _widgetStack.push(
+                              const ConfiguredAssetsSelectorPage(),
+                            );
                           },
                           buttonStyle: _buttonStyle,
                           child: Row(
@@ -155,7 +157,9 @@ class _AssetsButtonState extends State<AssetsButton> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: themeColors.background150,
-                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(30.0),
+                        ),
                       ),
                       padding: const EdgeInsets.all(1.0),
                       clipBehavior: Clip.antiAlias,

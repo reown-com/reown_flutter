@@ -148,7 +148,7 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
             Builder(
               builder: (_) {
                 if (firstItem == null) {
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
                 return Column(
                   children: [

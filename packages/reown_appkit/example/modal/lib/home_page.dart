@@ -230,7 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.removeTestNetworks();
 
     ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Base Sepolia',
         chainId: '84531',
         currency: 'SEP',
@@ -245,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       // Add custom chains
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
-        ReownAppKitModalNetworkInfo(
+        const ReownAppKitModalNetworkInfo(
           name: 'Polkadot',
           chainId: '91b171bb158e2d3848fa23a9f1c25182',
           chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
@@ -253,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
           rpcUrl: 'https://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
         ),
-        ReownAppKitModalNetworkInfo(
+        const ReownAppKitModalNetworkInfo(
           name: 'Westend',
           chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
           currency: 'DOT',
@@ -469,9 +469,9 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onRelayClientConnect(EventArgs? event) {
     setState(() {});
     toastification.show(
-      title: Text('Relay connected'),
+      title: const Text('Relay connected'),
       context: context,
-      autoCloseDuration: Duration(seconds: 2),
+      autoCloseDuration: const Duration(seconds: 2),
       alignment: Alignment.bottomCenter,
     );
   }
@@ -481,7 +481,7 @@ class _MyHomePageState extends State<MyHomePage> {
     toastification.show(
       title: Text('Relay error: ${event?.error}'),
       context: context,
-      autoCloseDuration: Duration(seconds: 2),
+      autoCloseDuration: const Duration(seconds: 2),
       alignment: Alignment.bottomCenter,
     );
   }
@@ -491,7 +491,7 @@ class _MyHomePageState extends State<MyHomePage> {
     toastification.show(
       title: Text('Relay disconnected: ${event?.toString()}'),
       context: context,
-      autoCloseDuration: Duration(seconds: 2),
+      autoCloseDuration: const Duration(seconds: 2),
       alignment: Alignment.bottomCenter,
     );
   }
@@ -499,7 +499,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     if (!_initialized) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return Scaffold(
       backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
@@ -596,7 +596,7 @@ class _ButtonsView extends StatelessWidget {
                   // appKit.openModalView(ReownAppKitModalQRCodePage());
                   // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
                   // appKit.openModalView(ReownAppKitModalAllWalletsPage());
-                  appKit.openModalView(ReownAppKitModalMainWalletsPage());
+                  appKit.openModalView(const ReownAppKitModalMainWalletsPage());
                 },
                 child: appKit.isConnected
                     ? Text(

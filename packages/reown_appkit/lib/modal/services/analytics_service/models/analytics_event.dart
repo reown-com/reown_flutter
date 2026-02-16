@@ -244,7 +244,7 @@ class UserRejectedEvent extends _AnalyticsEvent {
 
   @override
   CoreEventProperties? get properties =>
-      CoreEventProperties(message: 'User declined connection');
+      const CoreEventProperties(message: 'User declined connection');
 }
 
 class DisconnectSuccessEvent extends _AnalyticsEvent {

@@ -1917,7 +1917,7 @@ class ReownSign implements IReownSign {
     final walletAddress = AddressUtils.getDidAddressAddress(iss)!;
 
     if (cacaoPayload.aud.isEmpty) {
-      throw ReownSignError(code: -1, message: 'aud is required');
+      throw const ReownSignError(code: -1, message: 'aud is required');
     }
 
     String? statement = cacaoPayload.statement;
@@ -2679,10 +2679,10 @@ class ReownSign implements IReownSign {
     core.logger.d('[$runtimeType] dispatchEnvelope $url');
 
     if (envelope.isEmpty) {
-      throw ReownSignError(code: 0, message: 'Envelope not found');
+      throw const ReownSignError(code: 0, message: 'Envelope not found');
     }
     if (topic.isEmpty) {
-      throw ReownSignError(code: 0, message: 'Topic not found');
+      throw const ReownSignError(code: 0, message: 'Topic not found');
     }
 
     final session = sessions.get(topic);

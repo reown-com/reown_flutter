@@ -21,7 +21,7 @@ void main() {
 
   setUpAll(() {
     provideDummy<GetQuoteStatusResult>(
-      GetQuoteStatusResult(status: QuoteStatus.waiting),
+      const GetQuoteStatusResult(status: QuoteStatus.waiting),
     );
   });
 
@@ -50,7 +50,7 @@ void main() {
       when(
         mockTransfersService.getQuoteStatus(params: anyNamed('params')),
       ).thenAnswer(
-        (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
+        (_) async => const GetQuoteStatusResult(status: QuoteStatus.waiting),
       );
 
       dweService = DWEService(appKit: mockAppKit);
@@ -75,7 +75,7 @@ void main() {
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
         ).thenAnswer(
-          (_) async => GetQuoteStatusResult(status: QuoteStatus.success),
+          (_) async => const GetQuoteStatusResult(status: QuoteStatus.success),
         );
 
         dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
@@ -120,9 +120,9 @@ void main() {
         ).thenAnswer((_) async {
           callCount++;
           if (callCount < 3) {
-            return GetQuoteStatusResult(status: QuoteStatus.waiting);
+            return const GetQuoteStatusResult(status: QuoteStatus.waiting);
           }
-          return GetQuoteStatusResult(status: QuoteStatus.success);
+          return const GetQuoteStatusResult(status: QuoteStatus.success);
         });
 
         final completer = Completer<(QuoteStatus, dynamic)>();
@@ -170,9 +170,9 @@ void main() {
         ).thenAnswer((_) async {
           callCount++;
           if (callCount < 3) {
-            return GetQuoteStatusResult(status: QuoteStatus.pending);
+            return const GetQuoteStatusResult(status: QuoteStatus.pending);
           }
-          return GetQuoteStatusResult(status: QuoteStatus.success);
+          return const GetQuoteStatusResult(status: QuoteStatus.success);
         });
 
         final completer = Completer<(QuoteStatus, dynamic)>();
@@ -208,7 +208,7 @@ void main() {
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
         ).thenAnswer(
-          (_) async => GetQuoteStatusResult(status: QuoteStatus.failure),
+          (_) async => const GetQuoteStatusResult(status: QuoteStatus.failure),
         );
 
         dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
@@ -234,7 +234,8 @@ void main() {
           when(
             mockTransfersService.getQuoteStatus(params: anyNamed('params')),
           ).thenAnswer(
-            (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
+            (_) async =>
+                const GetQuoteStatusResult(status: QuoteStatus.waiting),
           );
 
           final completer = Completer<(QuoteStatus, dynamic)>();
@@ -273,7 +274,7 @@ void main() {
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
         ).thenAnswer(
-          (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
+          (_) async => const GetQuoteStatusResult(status: QuoteStatus.waiting),
         );
 
         dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
@@ -302,7 +303,7 @@ void main() {
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
         ).thenAnswer(
-          (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
+          (_) async => const GetQuoteStatusResult(status: QuoteStatus.waiting),
         );
 
         dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
@@ -356,7 +357,7 @@ void main() {
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
         ).thenAnswer(
-          (_) async => GetQuoteStatusResult(status: QuoteStatus.success),
+          (_) async => const GetQuoteStatusResult(status: QuoteStatus.success),
         );
 
         final completer = Completer<(QuoteStatus, dynamic)>();
@@ -387,7 +388,7 @@ void main() {
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
         ).thenAnswer(
-          (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
+          (_) async => const GetQuoteStatusResult(status: QuoteStatus.waiting),
         );
 
         dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (

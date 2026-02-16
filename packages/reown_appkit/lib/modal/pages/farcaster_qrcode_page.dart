@@ -64,7 +64,7 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
           direction: isPortrait ? Axis.vertical : Axis.horizontal,
           children: [
             Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child:
                   _qrQodeWidget ??
                   AspectRatio(
@@ -104,9 +104,9 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
                     padding: const EdgeInsets.symmetric(vertical: kPadding12),
                     child: PrimaryButton(
                       title: 'Open Farcaster',
-                      color: Color(0xFF855DCD),
+                      color: const Color(0xFF855DCD),
                       borderRadius: (radiuses.isSquare()
-                          ? BorderRadius.all(Radius.zero)
+                          ? const BorderRadius.all(Radius.zero)
                           : BorderRadius.circular(
                               BaseButtonSize.big.height / 2,
                             )),

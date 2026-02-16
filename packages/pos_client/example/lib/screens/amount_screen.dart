@@ -31,7 +31,7 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
   void _navigateToTokenScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => TokenScreen()),
+      MaterialPageRoute(builder: (context) => const TokenScreen()),
     );
   }
 
@@ -171,7 +171,7 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      SizedBox(
+                      const SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: DtcRestartButton(),
@@ -184,7 +184,7 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: DtcFooter(),
+      bottomNavigationBar: const DtcFooter(),
     );
   }
 }

@@ -23,7 +23,8 @@ class UriInputPopup extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         children: [
-          Text(StringConstants.enterUri, style: TextStyle(fontSize: 18.0)),
+          const Text(StringConstants.enterUri,
+              style: TextStyle(fontSize: 18.0)),
           const Text(
             StringConstants.enterUriMessage,
             textAlign: TextAlign.center,
@@ -39,7 +40,7 @@ class UriInputPopup extends StatelessWidget {
               enableSuggestions: false,
               autocorrect: false,
               cursorHeight: 16.0,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 isDense: true,
                 hintText: 'wc://as87d6...',

@@ -71,7 +71,7 @@ class _WalletFeaturesPageState extends State<WalletFeaturesPage>
   @override
   Widget build(BuildContext context) {
     if (_appKitModal == null) {
-      return ContentLoading(viewHeight: 400.0);
+      return const ContentLoading(viewHeight: 400.0);
     }
 
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -85,7 +85,7 @@ class _WalletFeaturesPageState extends State<WalletFeaturesPage>
         width: kNavbarHeight * 1.3,
         child: GestureDetector(
           onTap: () => _widgetStack.push(
-            ReownAppKitModalSelectNetworkPage(),
+            const ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
           child: Row(
@@ -198,7 +198,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
           AddressButton(
             service: widget.appKitModal,
             onTap: () {
-              _widgetStack.push(AccountPage());
+              _widgetStack.push(const AccountPage());
             },
           ),
           const SizedBox.square(dimension: kPadding8),
@@ -235,7 +235,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                   size: BaseButtonSize.big,
                   iconSize: 20.0,
                   fontSize: 1.0,
-                  onTap: () => _widgetStack.push(ReceivePage()),
+                  onTap: () => _widgetStack.push(const ReceivePage()),
                 ),
               ),
               const SizedBox.square(dimension: kPadding8),
@@ -251,7 +251,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                   fontSize: 1.0,
                   onTap: _tokens.isEmpty
                       ? null
-                      : () => _widgetStack.push(SendPage()),
+                      : () => _widgetStack.push(const SendPage()),
                 ),
               ),
             ],
@@ -280,7 +280,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                       ..._tokens.mapIndexed((index, token) {
                         return AccountListItem(
                           padding: const EdgeInsets.all(0.0),
-                          backgroundColor: WidgetStatePropertyAll(
+                          backgroundColor: const WidgetStatePropertyAll(
                             Colors.transparent,
                           ),
                           iconWidget: Padding(
@@ -315,7 +315,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       color: themeColors.background150,
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(30.0),
                                       ),
                                     ),
@@ -345,7 +345,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                                 style: themeData.textStyles.paragraph500
                                     .copyWith(color: themeColors.foreground100),
                               ),
-                              SizedBox.square(dimension: kPadding6),
+                              const SizedBox.square(dimension: kPadding6),
                             ],
                           ),
                         );
@@ -405,7 +405,7 @@ class _ReceiveFundsEmptyStateButton extends StatelessWidget {
           subtitleStyle: themeData.textStyles.tiny400.copyWith(
             color: themeColors.foreground150,
           ),
-          onTap: () => _widgetStack.push(ReceivePage()),
+          onTap: () => _widgetStack.push(const ReceivePage()),
         ),
         SizedBox.square(
           dimension: MediaQuery.of(context).padding.bottom + kPadding6,

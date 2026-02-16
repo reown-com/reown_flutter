@@ -224,7 +224,7 @@ class _AmountButton extends StatelessWidget {
             return RoundedRectangleBorder(
               side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
               borderRadius: radiuses.isSquare()
-                  ? BorderRadius.all(Radius.zero)
+                  ? const BorderRadius.all(Radius.zero)
                   : BorderRadius.circular(16.0),
             );
           }),

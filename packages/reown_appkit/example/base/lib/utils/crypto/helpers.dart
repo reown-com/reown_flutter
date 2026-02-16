@@ -309,12 +309,12 @@ Future<Widget> contractCallsButton(
     contract = PolygonBONSAIContract();
     future = _approveSend(appKitModal, contract);
   } else {
-    return SizedBox.shrink();
+    return const SizedBox.shrink();
   }
 
   return Column(
     children: [
-      Text(
+      const Text(
         'Smart Contract interaction',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
@@ -335,7 +335,7 @@ Future<Widget> contractCallsButton(
       ),
       PrimaryButton(
         title: title,
-        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+        borderRadius: const BorderRadius.all(Radius.circular(30.0)),
         buttonSize: BaseButtonSize.regular,
         onTap: () {
           MethodDialog.show(context, title, future.call());

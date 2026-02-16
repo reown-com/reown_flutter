@@ -385,7 +385,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     }
     if (sessionService.isMagic) {
       return _magicData?.self ??
-          ConnectionMetadata(
+          const ConnectionMetadata(
             publicKey: '',
             metadata: PairingMetadata(
               name: 'Email Wallet',
@@ -410,7 +410,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     }
     if (sessionService.isMagic) {
       return _magicData?.peer ??
-          ConnectionMetadata(
+          const ConnectionMetadata(
             publicKey: '',
             metadata: PairingMetadata(
               name: 'Email Wallet',

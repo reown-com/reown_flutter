@@ -75,9 +75,9 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void _approveSign(MagicRequestEvent? args) async {
     if (args?.request != null) {
       if (widget.appKitModal.isOpen) {
-        _widgetStack.push(ApproveTransactionPage());
+        _widgetStack.push(const ApproveTransactionPage());
       } else {
-        widget.appKitModal.openModalView(ApproveTransactionPage());
+        widget.appKitModal.openModalView(const ApproveTransactionPage());
       }
     }
   }
@@ -87,11 +87,11 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     final isOpen = widget.appKitModal.isOpen;
     if (isOpen) {
       _widgetStack.popAllAndPush(
-        SocialLoginPage(socialOption: AppKitSocialOption.Farcaster),
+        const SocialLoginPage(socialOption: AppKitSocialOption.Farcaster),
       );
     } else {
       widget.appKitModal.openModalView(
-        SocialLoginPage(socialOption: AppKitSocialOption.Farcaster),
+        const SocialLoginPage(socialOption: AppKitSocialOption.Farcaster),
       );
     }
   }
@@ -206,11 +206,11 @@ class _BalanceButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           appKit.status.isLoading
-              ? Row(
+              ? const Row(
                   children: [
-                    const SizedBox.square(dimension: kPadding6),
+                    SizedBox.square(dimension: kPadding6),
                     CircularLoader(size: 16.0, strokeWidth: 1.5),
-                    const SizedBox.square(dimension: kPadding6),
+                    SizedBox.square(dimension: kPadding6),
                   ],
                 )
               : tokenImage.isEmpty

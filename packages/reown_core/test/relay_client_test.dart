@@ -379,7 +379,7 @@ void main() {
           expect(() async {
             await coreDapp.relayClient.publishPayload(
               payload: payloadA,
-              options: PublishOptions(
+              options: const PublishOptions(
                 publishMethod: RelayClient.WC_PROPOSE_SESSION,
               ),
             );
@@ -388,7 +388,7 @@ void main() {
           expect(() async {
             await coreWallet.relayClient.publishPayload(
               payload: payloadB,
-              options: PublishOptions(
+              options: const PublishOptions(
                 publishMethod: RelayClient.WC_APPROVE_SESSION,
               ),
             );
@@ -481,7 +481,7 @@ void main() {
           const testMessage = 'test-message-456';
 
           // Create PublishOptions with tvf data
-          final publishOptions = PublishOptions(
+          final publishOptions = const PublishOptions(
             ttl: 300,
             tag: 1109,
             correlationId: 1756879922616218,
@@ -500,7 +500,7 @@ void main() {
 
           // Subscribe to the topic first
           await coreDapp.relayClient.subscribe(
-            options: SubscribeOptions(topic: testTopic),
+            options: const SubscribeOptions(topic: testTopic),
           );
 
           // Test that publish can be called without throwing
@@ -525,7 +525,7 @@ void main() {
           await coreDapp.pairing.activate(topic: response.topic);
 
           // Create PublishOptions with tvf data
-          final publishOptions = PublishOptions(
+          final publishOptions = const PublishOptions(
             ttl: 300,
             tag: 1109,
             correlationId: 1756879922616218,
@@ -563,7 +563,7 @@ void main() {
   group('PublishOptions Parameter Structure Tests', () {
     test('PublishOptionsExtension.toMap() correctly structures tvf data', () {
       // Test case 1: PublishOptions with tvf data
-      final publishOptionsWithTvf = PublishOptions(
+      final publishOptionsWithTvf = const PublishOptions(
         ttl: 300,
         tag: 1109,
         correlationId: 1756879922616218,
@@ -604,7 +604,7 @@ void main() {
     });
 
     test('PublishOptionsExtension.toMap() handles null tvf data', () {
-      final publishOptionsWithoutTvf = PublishOptions(
+      final publishOptionsWithoutTvf = const PublishOptions(
         ttl: 300,
         tag: 1109,
         correlationId: 1756879922616218,
@@ -629,7 +629,7 @@ void main() {
     });
 
     test('PublishOptionsExtension.toMap() handles empty tvf data', () {
-      final publishOptionsWithEmptyTvf = PublishOptions(
+      final publishOptionsWithEmptyTvf = const PublishOptions(
         ttl: 300,
         tag: 1109,
         correlationId: 1756879922616218,
@@ -654,7 +654,7 @@ void main() {
     });
 
     test('PublishOptionsExtension.toMap() handles partial tvf data', () {
-      final publishOptionsWithPartialTvf = PublishOptions(
+      final publishOptionsWithPartialTvf = const PublishOptions(
         ttl: 300,
         tag: 1109,
         correlationId: 1756879922616218,
@@ -685,7 +685,7 @@ void main() {
       // This test verifies that the PublishOptions.toMap() method produces
       // the correct parameter structure that matches the expected JSON-RPC format
 
-      final publishOptions = PublishOptions(
+      final publishOptions = const PublishOptions(
         ttl: 300,
         tag: 1109,
         correlationId: 1756879922616218,
@@ -753,7 +753,7 @@ void main() {
         // This test verifies the complete JSON-RPC request structure and will catch
         // if someone accidentally changes the implementation to nest tvf data under a 'tvf' key
 
-        final publishOptions = PublishOptions(
+        final publishOptions = const PublishOptions(
           ttl: 300,
           tag: 1109,
           correlationId: 1756879922616218,
@@ -882,7 +882,7 @@ void main() {
               'pairingTopic': pairingTopic,
               'sessionProposal': sessionProposal,
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               correlationId: correlationId,
               publishMethod: RelayClient.WC_PROPOSE_SESSION,
             ),
@@ -906,7 +906,7 @@ void main() {
               'pairingTopic': pairingTopic,
               'sessionProposal': sessionProposal,
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               correlationId: correlationId,
               publishMethod: RelayClient.WC_PROPOSE_SESSION,
             ),
@@ -930,7 +930,7 @@ void main() {
               'pairingTopic': pairingTopic,
               'sessionProposal': sessionProposal,
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               correlationId: correlationId,
               publishMethod: RelayClient.WC_PROPOSE_SESSION,
             ),
@@ -959,7 +959,7 @@ void main() {
               'sessionProposalResponse': sessionProposalResponse,
               'sessionSettlementRequest': sessionSettlementRequest,
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               correlationId: correlationId,
               publishMethod: RelayClient.WC_APPROVE_SESSION,
             ),
@@ -987,7 +987,7 @@ void main() {
               'sessionProposalResponse': sessionProposalResponse,
               'sessionSettlementRequest': sessionSettlementRequest,
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               correlationId: correlationId,
               publishMethod: RelayClient.WC_APPROVE_SESSION,
             ),
@@ -1015,7 +1015,7 @@ void main() {
               'sessionProposalResponse': sessionProposalResponse,
               'sessionSettlementRequest': sessionSettlementRequest,
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               correlationId: correlationId,
               publishMethod: RelayClient.WC_APPROVE_SESSION,
             ),
@@ -1058,7 +1058,7 @@ void main() {
               'pairingTopic': response.topic,
               'sessionProposal': 'testSessionProposal',
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               publishMethod: RelayClient.WC_PROPOSE_SESSION,
             ),
           );
@@ -1103,7 +1103,7 @@ void main() {
               'sessionProposalResponse': 'testSessionProposalResponse',
               'sessionSettlementRequest': 'testSessionSettlementRequest',
             },
-            options: PublishOptions(
+            options: const PublishOptions(
               publishMethod: RelayClient.WC_APPROVE_SESSION,
             ),
           );

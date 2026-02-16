@@ -297,7 +297,7 @@ class PhantomHelper {
       );
 
       final payload = <String, dynamic>{
-        ...JsonDecoder().convert(String.fromCharCodes(decryptedData!)),
+        ...const JsonDecoder().convert(String.fromCharCodes(decryptedData!)),
         if (phantomKey.isNotEmpty) 'phantom_encryption_public_key': phantomKey,
         if (phantomRequest.isNotEmpty) 'phantomRequest': phantomRequest,
       };

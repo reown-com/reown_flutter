@@ -253,7 +253,8 @@ class StacksService {
       if (stx != null) {
         final balance = stx['balance'] as String? ?? '0';
         final rawAmount = BigInt.parse(balance);
-        final quantity = rawAmount / BigInt.from(10).pow(6); // STX has 6 decimals
+        final quantity =
+            rawAmount / BigInt.from(10).pow(6); // STX has 6 decimals
 
         tokens.add({
           'name': 'Stacks',
@@ -285,7 +286,8 @@ class StacksService {
 
           // Try to get token price from CoinGecko if it's a known token
           final symbol = metadata['symbol'] ?? _extractTokenSymbol(tokenId);
-          final tokenPrice = await _getTokenPrice(symbol.toString().toLowerCase());
+          final tokenPrice =
+              await _getTokenPrice(symbol.toString().toLowerCase());
 
           tokens.add({
             'name': metadata['name'] ?? _extractTokenName(tokenId),

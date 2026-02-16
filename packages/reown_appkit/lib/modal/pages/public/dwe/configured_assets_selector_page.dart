@@ -53,7 +53,7 @@ class ConfiguredAssetsSelectorPage extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Center(
+                  child: const Center(
                     child: Text('No assets supported for this network'),
                   ),
                 ),
@@ -75,7 +75,7 @@ class ConfiguredAssetsSelectorPage extends StatelessWidget {
                   builder: (context, snapshot) {
                     return AccountListItem(
                       padding: const EdgeInsets.all(0.0),
-                      backgroundColor: WidgetStatePropertyAll(
+                      backgroundColor: const WidgetStatePropertyAll(
                         Colors.transparent,
                       ),
                       iconWidget: Padding(
@@ -96,7 +96,7 @@ class ConfiguredAssetsSelectorPage extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: themeColors.background150,
-                                    borderRadius: BorderRadius.all(
+                                    borderRadius: const BorderRadius.all(
                                       Radius.circular(30.0),
                                     ),
                                   ),

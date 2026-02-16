@@ -43,7 +43,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
           const SizedBox(height: StyleConstants.linear8),
           Text(
             '${requester!.metadata.name} ${StringConstants.wouldLikeToConnect}',
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: StyleConstants.linear8),
