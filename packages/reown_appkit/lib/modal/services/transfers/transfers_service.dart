@@ -205,7 +205,10 @@ class TransfersService implements ITransfersService {
   }) async {
     final url = Uri.parse(
       '$_baseUrl/assets/exchanges/$exchange',
-    ).replace(queryParameters: _requiredParams);
+    ).replace(queryParameters: {
+      ..._requiredParams,
+      'enableCoinbase': 'true',
+    });
     core.logger.d('[$runtimeType] getExchangeAssets request: $url');
     final response = await http.get(url, headers: _requiredHeaders);
     final responseBody = response.body;
