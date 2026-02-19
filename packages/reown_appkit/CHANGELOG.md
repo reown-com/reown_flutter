@@ -1,3 +1,7 @@
+## 1.8.3
+
+- Enabled Coinbase exchange in Deposit With Exchange flow
+
 ## 1.8.2
 
 - Improved deposit-exchange flow
