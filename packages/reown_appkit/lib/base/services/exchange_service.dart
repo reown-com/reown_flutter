@@ -28,7 +28,10 @@ class ExchangeService implements IExchangeService {
     // return JsonRpcResponse.fromJson(_getExchangesMockResponse);
 
     try {
-      return await _request(rpcRequest);
+      return await _request(
+        rpcRequest,
+        extraQueryParams: {'enableCoinbase': 'true'},
+      );
     } catch (e) {
       rethrow;
     }
@@ -74,14 +77,19 @@ class ExchangeService implements IExchangeService {
     }
   }
 
-  Future<JsonRpcResponse> _request(JsonRpcRequest rpcRequest) async {
+  Future<JsonRpcResponse> _request(
+    JsonRpcRequest rpcRequest, {
+    Map<String, String>? extraQueryParams,
+  }) async {
     final qParams = QueryParams(
       projectId: core.projectId,
       source: 'fund-wallet',
       st: CoreConstants.X_SDK_TYPE,
       sv: ReownCoreUtils.coreSdkVersion(packageVersion),
     ).toJson();
-    qParams['enableCoinbase'] = 'true';
+    if (extraQueryParams != null) {
+      qParams.addAll(extraQueryParams);
+    }
     final bodyRequest = jsonEncode(rpcRequest.toJson());
     core.logger.d('[$runtimeType] ${rpcRequest.method} request: $bodyRequest');
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);

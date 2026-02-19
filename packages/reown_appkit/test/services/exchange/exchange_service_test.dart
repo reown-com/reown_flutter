@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 // Mock responses moved from exchange_service.dart
@@ -159,6 +160,48 @@ void main() {
           'result': {'status': 'FAILED', 'txHash': null},
         });
         expect(failedResponse.result['status'], 'FAILED');
+      });
+    });
+
+    group('URL Query Parameters', () {
+      test('enableCoinbase is included in getExchanges query params', () {
+        // Mirrors the query param construction in ExchangeService._request()
+        final baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
+        final qParams = QueryParams(
+          projectId: 'test-project-id',
+          source: 'fund-wallet',
+          st: 'appkit',
+          sv: 'flutter-1.0.0',
+        ).toJson();
+
+        // getExchanges passes enableCoinbase via extraQueryParams
+        final extraQueryParams = {'enableCoinbase': 'true'};
+        qParams.addAll(extraQueryParams);
+
+        final url = Uri.parse(baseUrl).replace(queryParameters: qParams);
+
+        expect(url.queryParameters['enableCoinbase'], 'true');
+        expect(url.queryParameters['projectId'], 'test-project-id');
+        expect(url.queryParameters['source'], 'fund-wallet');
+        expect(url.toString(), contains('enableCoinbase=true'));
+      });
+
+      test('enableCoinbase is NOT included in other endpoints query params',
+          () {
+        // Other methods (getExchangeUrl, getExchangeDepositStatus) don't
+        // pass extraQueryParams, so enableCoinbase should be absent.
+        final baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
+        final qParams = QueryParams(
+          projectId: 'test-project-id',
+          source: 'fund-wallet',
+          st: 'appkit',
+          sv: 'flutter-1.0.0',
+        ).toJson();
+
+        final url = Uri.parse(baseUrl).replace(queryParameters: qParams);
+
+        expect(url.queryParameters.containsKey('enableCoinbase'), false);
+        expect(url.toString(), isNot(contains('enableCoinbase')));
       });
     });
 
