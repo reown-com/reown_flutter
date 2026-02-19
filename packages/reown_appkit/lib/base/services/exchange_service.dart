@@ -81,6 +81,7 @@ class ExchangeService implements IExchangeService {
       st: CoreConstants.X_SDK_TYPE,
       sv: ReownCoreUtils.coreSdkVersion(packageVersion),
     ).toJson();
+    qParams['enableCoinbase'] = 'true';
     final bodyRequest = jsonEncode(rpcRequest.toJson());
     core.logger.d('[$runtimeType] ${rpcRequest.method} request: $bodyRequest');
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
