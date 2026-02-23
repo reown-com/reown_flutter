@@ -100,7 +100,12 @@ jobs:
           flutter build ios $BUILD_ARGS
 
       - name: Set Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_26.1.app
+        run: |
+          if [ ! -d "/Applications/Xcode_26.2.app/Contents/Developer" ]; then
+            echo "Xcode_26.2 not found at /Applications/Xcode_26.2.app"
+            exit 1
+          fi
+          sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
 
       - name: Fastlane
         id: fastlane
