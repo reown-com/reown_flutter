@@ -71,7 +71,8 @@ class CustomButton extends StatelessWidget {
                 ? Border.all(color: _getBorderColor(context))
                 : null,
           ),
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.s2, vertical: AppSpacing.s3),
+          padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.s2, vertical: AppSpacing.s3),
           child: child,
         ),
       ),

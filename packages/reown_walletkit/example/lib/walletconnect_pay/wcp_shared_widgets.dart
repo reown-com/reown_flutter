@@ -103,9 +103,7 @@ class WCPStepsIndicator extends StatelessWidget {
           height: _barHeight,
           margin: EdgeInsets.only(right: index < totalSteps - 1 ? 8 : 0),
           decoration: BoxDecoration(
-            color: isActive || isCurrent
-                ? colors.accent
-                : colors.neutrals,
+            color: isActive || isCurrent ? colors.accent : colors.neutrals,
             borderRadius: BorderRadius.circular(3),
           ),
         );
@@ -163,9 +161,8 @@ class _WCPTextFieldState extends State<WCPTextField> {
   Widget build(BuildContext context) {
     final colors = context.colors;
     final isFocused = widget.focusNode.hasFocus;
-    final borderColor = isFocused
-        ? colors.accent.withValues(alpha: 0.4)
-        : colors.inputBorder;
+    final borderColor =
+        isFocused ? colors.accent.withValues(alpha: 0.4) : colors.inputBorder;
 
     return Container(
       height: 64.0,

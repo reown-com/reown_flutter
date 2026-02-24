@@ -242,7 +242,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: AppSpacing.s3, right: AppSpacing.s3, bottom: AppSpacing.s2),
+          padding: const EdgeInsets.only(
+              left: AppSpacing.s3, right: AppSpacing.s3, bottom: AppSpacing.s2),
           child: Align(
             alignment: AlignmentGeometry.centerRight,
             child: SizedBox(
@@ -346,7 +347,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             children: chainKeys.indexed
                 .map(
                   (e) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s05),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.s05),
                     child: CircleAvatar(
                       radius: e.$1 == _currentPage ? 4.0 : 3.0,
                       backgroundColor: e.$1 == _currentPage
@@ -367,7 +369,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 children: [
                   const SizedBox(height: AppSpacing.s5),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: AppSpacing.s3),
                     child: DataContainer(
                       title: 'Mnemonic phrase',
                       data: mnemonic,
@@ -416,7 +419,8 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
         const SizedBox(height: AppSpacing.s5),
         Divider(height: 1.0, color: colors.divider),
         Padding(
-          padding: EdgeInsets.only(left: AppSpacing.s3, right: AppSpacing.s3, top: AppSpacing.s3),
+          padding: EdgeInsets.only(
+              left: AppSpacing.s3, right: AppSpacing.s3, top: AppSpacing.s3),
           child: Row(
             children: [
               CachedNetworkImage(

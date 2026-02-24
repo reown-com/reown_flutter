@@ -56,7 +56,8 @@ class SessionItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppSpacing.s4, vertical: AppSpacing.s1),
+        margin: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s4, vertical: AppSpacing.s1),
         padding: const EdgeInsets.all(AppSpacing.s5),
         decoration: BoxDecoration(
           color: colors.backgroundSecondary,

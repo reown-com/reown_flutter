@@ -1737,7 +1737,7 @@ as String?,
 /// @nodoc
 mixin _$CollectDataAction {
 
- String? get url; List<CollectDataField> get fields;
+ String? get url; String? get schema; List<CollectDataField> get fields;
 /// Create a copy of CollectDataAction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1750,16 +1750,16 @@ $CollectDataActionCopyWith<CollectDataAction> get copyWith => _$CollectDataActio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectDataAction&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.fields, fields));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectDataAction&&(identical(other.url, url) || other.url == url)&&(identical(other.schema, schema) || other.schema == schema)&&const DeepCollectionEquality().equals(other.fields, fields));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(fields));
+int get hashCode => Object.hash(runtimeType,url,schema,const DeepCollectionEquality().hash(fields));
 
 @override
 String toString() {
-  return 'CollectDataAction(url: $url, fields: $fields)';
+  return 'CollectDataAction(url: $url, schema: $schema, fields: $fields)';
 }
 
 
@@ -1770,7 +1770,7 @@ abstract mixin class $CollectDataActionCopyWith<$Res>  {
   factory $CollectDataActionCopyWith(CollectDataAction value, $Res Function(CollectDataAction) _then) = _$CollectDataActionCopyWithImpl;
 @useResult
 $Res call({
- String? url, List<CollectDataField> fields
+ String? url, String? schema, List<CollectDataField> fields
 });
 
 
@@ -1787,9 +1787,10 @@ class _$CollectDataActionCopyWithImpl<$Res>
 
 /// Create a copy of CollectDataAction
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? url = freezed,Object? fields = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? url = freezed,Object? schema = freezed,Object? fields = null,}) {
   return _then(_self.copyWith(
 url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,schema: freezed == schema ? _self.schema : schema // ignore: cast_nullable_to_non_nullable
 as String?,fields: null == fields ? _self.fields : fields // ignore: cast_nullable_to_non_nullable
 as List<CollectDataField>,
   ));
@@ -1873,10 +1874,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? url,  List<CollectDataField> fields)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? url,  String? schema,  List<CollectDataField> fields)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CollectDataAction() when $default != null:
-return $default(_that.url,_that.fields);case _:
+return $default(_that.url,_that.schema,_that.fields);case _:
   return orElse();
 
 }
@@ -1894,10 +1895,10 @@ return $default(_that.url,_that.fields);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? url,  List<CollectDataField> fields)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? url,  String? schema,  List<CollectDataField> fields)  $default,) {final _that = this;
 switch (_that) {
 case _CollectDataAction():
-return $default(_that.url,_that.fields);}
+return $default(_that.url,_that.schema,_that.fields);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1911,10 +1912,10 @@ return $default(_that.url,_that.fields);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? url,  List<CollectDataField> fields)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? url,  String? schema,  List<CollectDataField> fields)?  $default,) {final _that = this;
 switch (_that) {
 case _CollectDataAction() when $default != null:
-return $default(_that.url,_that.fields);case _:
+return $default(_that.url,_that.schema,_that.fields);case _:
   return null;
 
 }
@@ -1926,10 +1927,11 @@ return $default(_that.url,_that.fields);case _:
 @JsonSerializable()
 
 class _CollectDataAction implements CollectDataAction {
-  const _CollectDataAction({this.url, final  List<CollectDataField> fields = const <CollectDataField>[]}): _fields = fields;
+  const _CollectDataAction({this.url, this.schema, final  List<CollectDataField> fields = const <CollectDataField>[]}): _fields = fields;
   factory _CollectDataAction.fromJson(Map<String, dynamic> json) => _$CollectDataActionFromJson(json);
 
 @override final  String? url;
+@override final  String? schema;
  final  List<CollectDataField> _fields;
 @override@JsonKey() List<CollectDataField> get fields {
   if (_fields is EqualUnmodifiableListView) return _fields;
@@ -1951,16 +1953,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectDataAction&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._fields, _fields));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectDataAction&&(identical(other.url, url) || other.url == url)&&(identical(other.schema, schema) || other.schema == schema)&&const DeepCollectionEquality().equals(other._fields, _fields));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(_fields));
+int get hashCode => Object.hash(runtimeType,url,schema,const DeepCollectionEquality().hash(_fields));
 
 @override
 String toString() {
-  return 'CollectDataAction(url: $url, fields: $fields)';
+  return 'CollectDataAction(url: $url, schema: $schema, fields: $fields)';
 }
 
 
@@ -1971,7 +1973,7 @@ abstract mixin class _$CollectDataActionCopyWith<$Res> implements $CollectDataAc
   factory _$CollectDataActionCopyWith(_CollectDataAction value, $Res Function(_CollectDataAction) _then) = __$CollectDataActionCopyWithImpl;
 @override @useResult
 $Res call({
- String? url, List<CollectDataField> fields
+ String? url, String? schema, List<CollectDataField> fields
 });
 
 
@@ -1988,9 +1990,10 @@ class __$CollectDataActionCopyWithImpl<$Res>
 
 /// Create a copy of CollectDataAction
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? url = freezed,Object? fields = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? url = freezed,Object? schema = freezed,Object? fields = null,}) {
   return _then(_CollectDataAction(
 url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,schema: freezed == schema ? _self.schema : schema // ignore: cast_nullable_to_non_nullable
 as String?,fields: null == fields ? _self._fields : fields // ignore: cast_nullable_to_non_nullable
 as List<CollectDataField>,
   ));
@@ -2269,7 +2272,7 @@ as CollectDataFieldType,
 /// @nodoc
 mixin _$PaymentOption {
 
- String get id; String get account; PayAmount get amount;@JsonKey(name: 'etaS') int get etaSeconds; List<Action> get actions;
+ String get id; String get account; PayAmount get amount;@JsonKey(name: 'etaS') int get etaSeconds; List<Action> get actions; CollectDataAction? get collectData;
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2282,16 +2285,16 @@ $PaymentOptionCopyWith<PaymentOption> get copyWith => _$PaymentOptionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.account, account) || other.account == account)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other.actions, actions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.account, account) || other.account == account)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other.actions, actions)&&(identical(other.collectData, collectData) || other.collectData == collectData));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,account,amount,etaSeconds,const DeepCollectionEquality().hash(actions));
+int get hashCode => Object.hash(runtimeType,id,account,amount,etaSeconds,const DeepCollectionEquality().hash(actions),collectData);
 
 @override
 String toString() {
-  return 'PaymentOption(id: $id, account: $account, amount: $amount, etaSeconds: $etaSeconds, actions: $actions)';
+  return 'PaymentOption(id: $id, account: $account, amount: $amount, etaSeconds: $etaSeconds, actions: $actions, collectData: $collectData)';
 }
 
 
@@ -2302,11 +2305,11 @@ abstract mixin class $PaymentOptionCopyWith<$Res>  {
   factory $PaymentOptionCopyWith(PaymentOption value, $Res Function(PaymentOption) _then) = _$PaymentOptionCopyWithImpl;
 @useResult
 $Res call({
- String id, String account, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds, List<Action> actions
+ String id, String account, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds, List<Action> actions, CollectDataAction? collectData
 });
 
 
-$PayAmountCopyWith<$Res> get amount;
+$PayAmountCopyWith<$Res> get amount;$CollectDataActionCopyWith<$Res>? get collectData;
 
 }
 /// @nodoc
@@ -2319,14 +2322,15 @@ class _$PaymentOptionCopyWithImpl<$Res>
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? account = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? account = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,Object? collectData = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as PayAmount,etaSeconds: null == etaSeconds ? _self.etaSeconds : etaSeconds // ignore: cast_nullable_to_non_nullable
 as int,actions: null == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
-as List<Action>,
+as List<Action>,collectData: freezed == collectData ? _self.collectData : collectData // ignore: cast_nullable_to_non_nullable
+as CollectDataAction?,
   ));
 }
 /// Create a copy of PaymentOption
@@ -2337,6 +2341,18 @@ $PayAmountCopyWith<$Res> get amount {
   
   return $PayAmountCopyWith<$Res>(_self.amount, (value) {
     return _then(_self.copyWith(amount: value));
+  });
+}/// Create a copy of PaymentOption
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CollectDataActionCopyWith<$Res>? get collectData {
+    if (_self.collectData == null) {
+    return null;
+  }
+
+  return $CollectDataActionCopyWith<$Res>(_self.collectData!, (value) {
+    return _then(_self.copyWith(collectData: value));
   });
 }
 }
@@ -2417,10 +2433,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions,  CollectDataAction? collectData)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentOption() when $default != null:
-return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions);case _:
+return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions,_that.collectData);case _:
   return orElse();
 
 }
@@ -2438,10 +2454,10 @@ return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actio
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions,  CollectDataAction? collectData)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentOption():
-return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions);}
+return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions,_that.collectData);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -2455,10 +2471,10 @@ return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actio
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions,  CollectDataAction? collectData)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentOption() when $default != null:
-return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions);case _:
+return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions,_that.collectData);case _:
   return null;
 
 }
@@ -2470,7 +2486,7 @@ return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actio
 @JsonSerializable()
 
 class _PaymentOption implements PaymentOption {
-  const _PaymentOption({required this.id, required this.account, required this.amount, @JsonKey(name: 'etaS') required this.etaSeconds, required final  List<Action> actions}): _actions = actions;
+  const _PaymentOption({required this.id, required this.account, required this.amount, @JsonKey(name: 'etaS') required this.etaSeconds, required final  List<Action> actions, this.collectData}): _actions = actions;
   factory _PaymentOption.fromJson(Map<String, dynamic> json) => _$PaymentOptionFromJson(json);
 
 @override final  String id;
@@ -2484,6 +2500,7 @@ class _PaymentOption implements PaymentOption {
   return EqualUnmodifiableListView(_actions);
 }
 
+@override final  CollectDataAction? collectData;
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
@@ -2498,16 +2515,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.account, account) || other.account == account)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other._actions, _actions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.account, account) || other.account == account)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other._actions, _actions)&&(identical(other.collectData, collectData) || other.collectData == collectData));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,account,amount,etaSeconds,const DeepCollectionEquality().hash(_actions));
+int get hashCode => Object.hash(runtimeType,id,account,amount,etaSeconds,const DeepCollectionEquality().hash(_actions),collectData);
 
 @override
 String toString() {
-  return 'PaymentOption(id: $id, account: $account, amount: $amount, etaSeconds: $etaSeconds, actions: $actions)';
+  return 'PaymentOption(id: $id, account: $account, amount: $amount, etaSeconds: $etaSeconds, actions: $actions, collectData: $collectData)';
 }
 
 
@@ -2518,11 +2535,11 @@ abstract mixin class _$PaymentOptionCopyWith<$Res> implements $PaymentOptionCopy
   factory _$PaymentOptionCopyWith(_PaymentOption value, $Res Function(_PaymentOption) _then) = __$PaymentOptionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String account, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds, List<Action> actions
+ String id, String account, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds, List<Action> actions, CollectDataAction? collectData
 });
 
 
-@override $PayAmountCopyWith<$Res> get amount;
+@override $PayAmountCopyWith<$Res> get amount;@override $CollectDataActionCopyWith<$Res>? get collectData;
 
 }
 /// @nodoc
@@ -2535,14 +2552,15 @@ class __$PaymentOptionCopyWithImpl<$Res>
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? account = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? account = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,Object? collectData = freezed,}) {
   return _then(_PaymentOption(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as PayAmount,etaSeconds: null == etaSeconds ? _self.etaSeconds : etaSeconds // ignore: cast_nullable_to_non_nullable
 as int,actions: null == actions ? _self._actions : actions // ignore: cast_nullable_to_non_nullable
-as List<Action>,
+as List<Action>,collectData: freezed == collectData ? _self.collectData : collectData // ignore: cast_nullable_to_non_nullable
+as CollectDataAction?,
   ));
 }
 
@@ -2554,6 +2572,18 @@ $PayAmountCopyWith<$Res> get amount {
   
   return $PayAmountCopyWith<$Res>(_self.amount, (value) {
     return _then(_self.copyWith(amount: value));
+  });
+}/// Create a copy of PaymentOption
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CollectDataActionCopyWith<$Res>? get collectData {
+    if (_self.collectData == null) {
+    return null;
+  }
+
+  return $CollectDataActionCopyWith<$Res>(_self.collectData!, (value) {
+    return _then(_self.copyWith(collectData: value));
   });
 }
 }

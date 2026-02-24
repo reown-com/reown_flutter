@@ -30,8 +30,7 @@ class WCPCollectDataBrowser {
     final callbackUrl = _getCallbackUrl();
     final separator = collectDataUrl.contains('?') ? '&' : '?';
     final encodedCallback = Uri.encodeComponent(callbackUrl);
-    final url =
-        '$collectDataUrl${separator}callbackUrl=$encodedCallback';
+    final url = '$collectDataUrl${separator}callbackUrl=$encodedCallback';
 
     final completer = Completer<Uri>();
 

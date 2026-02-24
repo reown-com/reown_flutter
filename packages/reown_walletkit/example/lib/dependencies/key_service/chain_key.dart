@@ -5,7 +5,8 @@ class ChainKey {
   final String privateKey;
   final String publicKey;
   final String address;
-  final String? addressRaw; // Canonical raw format for comparison (e.g., TON raw address)
+  final String?
+      addressRaw; // Canonical raw format for comparison (e.g., TON raw address)
   final String namespace;
 
   ChainKey({

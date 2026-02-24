@@ -103,6 +103,7 @@ sealed class BuyerInfo with _$BuyerInfo {
 sealed class CollectDataAction with _$CollectDataAction {
   const factory CollectDataAction({
     String? url,
+    String? schema,
     @Default(<CollectDataField>[]) List<CollectDataField> fields,
   }) = _CollectDataAction;
 
@@ -134,6 +135,7 @@ sealed class PaymentOption with _$PaymentOption {
     required PayAmount amount,
     @JsonKey(name: 'etaS') required int etaSeconds,
     required List<Action> actions,
+    CollectDataAction? collectData,
   }) = _PaymentOption;
 
   factory PaymentOption.fromJson(Map<String, dynamic> json) =>

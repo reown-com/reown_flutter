@@ -186,23 +186,25 @@ void main() {
         expect(url.toString(), contains('enableCoinbase=true'));
       });
 
-      test('enableCoinbase is NOT included in other endpoints query params',
-          () {
-        // Other methods (getExchangeUrl, getExchangeDepositStatus) don't
-        // pass extraQueryParams, so enableCoinbase should be absent.
-        final baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
-        final qParams = QueryParams(
-          projectId: 'test-project-id',
-          source: 'fund-wallet',
-          st: 'appkit',
-          sv: 'flutter-1.0.0',
-        ).toJson();
+      test(
+        'enableCoinbase is NOT included in other endpoints query params',
+        () {
+          // Other methods (getExchangeUrl, getExchangeDepositStatus) don't
+          // pass extraQueryParams, so enableCoinbase should be absent.
+          final baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
+          final qParams = QueryParams(
+            projectId: 'test-project-id',
+            source: 'fund-wallet',
+            st: 'appkit',
+            sv: 'flutter-1.0.0',
+          ).toJson();
 
-        final url = Uri.parse(baseUrl).replace(queryParameters: qParams);
+          final url = Uri.parse(baseUrl).replace(queryParameters: qParams);
 
-        expect(url.queryParameters.containsKey('enableCoinbase'), false);
-        expect(url.toString(), isNot(contains('enableCoinbase')));
-      });
+          expect(url.queryParameters.containsKey('enableCoinbase'), false);
+          expect(url.toString(), isNot(contains('enableCoinbase')));
+        },
+      );
     });
 
     group('Mock Response Validation', () {

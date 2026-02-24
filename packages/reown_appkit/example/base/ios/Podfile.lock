@@ -15,7 +15,7 @@ PODS:
   - package_info_plus (0.4.5):
     - Flutter
   - Sentry/HybridSDK (8.56.2)
-  - sentry_flutter (9.12.0):
+  - sentry_flutter (9.14.0):
     - Flutter
     - FlutterMacOS
     - Sentry/HybridSDK (= 8.56.2)
@@ -74,20 +74,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
 
 SPEC CHECKSUMS:
-  appcheck: 3c94d0ffc94bd639938cac7427d5b13df2795404
-  coinbase_wallet_sdk: c893738400ef78bd20e7f4195cbb38266f7d15e8
+  appcheck: 3a298b7b76bd61517fe8f2fa6b7a8ba328afb736
+  coinbase_wallet_sdk: 7ccd4e1a7940deba6ba9bd81beece999a2268c15
   CoinbaseWalletSDK: ea1f37512bbc69ebe07416e3b29bf840f5cc3152
-  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
+  connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
-  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
+  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
-  sentry_flutter: 26f4615de8bdc741318397fdc78ba3e4e08df07f
-  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
-  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
-  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
+  sentry_flutter: a9f60d84bfddcae9a0ebf834547702f8854766a1
+  shared_preferences_foundation: 5086985c1d43c5ba4d5e69a4e8083a389e2909e6
+  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
+  url_launcher_ios: bb13df5870e8c4234ca12609d04010a21be43dfa
+  webview_flutter_wkwebview: 29eb20d43355b48fe7d07113835b9128f84e3af4
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2

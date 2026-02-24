@@ -36,7 +36,8 @@ class WCConnectionWidgetInfo extends StatelessWidget {
           spacing: 4,
           runSpacing: 4,
           direction: Axis.horizontal,
-          children: model.elements!.map((e) => _buildElement(context, e)).toList(),
+          children:
+              model.elements!.map((e) => _buildElement(context, e)).toList(),
         ),
       ],
     );

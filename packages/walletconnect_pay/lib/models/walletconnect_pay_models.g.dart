@@ -125,6 +125,7 @@ Map<String, dynamic> _$BuyerInfoToJson(_BuyerInfo instance) =>
 _CollectDataAction _$CollectDataActionFromJson(Map<String, dynamic> json) =>
     _CollectDataAction(
       url: json['url'] as String?,
+      schema: json['schema'] as String?,
       fields:
           (json['fields'] as List<dynamic>?)
               ?.map((e) => CollectDataField.fromJson(e as Map<String, dynamic>))
@@ -135,6 +136,7 @@ _CollectDataAction _$CollectDataActionFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$CollectDataActionToJson(_CollectDataAction instance) =>
     <String, dynamic>{
       'url': instance.url,
+      'schema': instance.schema,
       'fields': instance.fields.map((e) => e.toJson()).toList(),
     };
 
@@ -169,6 +171,11 @@ _PaymentOption _$PaymentOptionFromJson(Map<String, dynamic> json) =>
       actions: (json['actions'] as List<dynamic>)
           .map((e) => Action.fromJson(e as Map<String, dynamic>))
           .toList(),
+      collectData: json['collectData'] == null
+          ? null
+          : CollectDataAction.fromJson(
+              json['collectData'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$PaymentOptionToJson(_PaymentOption instance) =>
@@ -178,6 +185,7 @@ Map<String, dynamic> _$PaymentOptionToJson(_PaymentOption instance) =>
       'amount': instance.amount.toJson(),
       'etaS': instance.etaSeconds,
       'actions': instance.actions.map((e) => e.toJson()).toList(),
+      'collectData': instance.collectData?.toJson(),
     };
 
 _Action _$ActionFromJson(Map<String, dynamic> json) => _Action(

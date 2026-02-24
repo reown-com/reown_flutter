@@ -163,7 +163,8 @@ class _ThemeSwitch extends StatelessWidget {
       listenable: themeProvider,
       builder: (context, _) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s3, vertical: AppSpacing.s2),
+          padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s3, vertical: AppSpacing.s2),
           child: Row(
             children: [
               Icon(
@@ -206,7 +207,8 @@ class _SecretKeysRow extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s3, vertical: AppSpacing.s3),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s3, vertical: AppSpacing.s3),
         child: Row(
           children: [
             Icon(Icons.key, color: colors.textPrimary, size: 20.0),

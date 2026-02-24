@@ -82,13 +82,13 @@ class VerifyBadge extends StatelessWidget {
     final (String label, Color color, Color textColor) = switch (validation) {
       _ when validation.valid => ('Verified', colors.success, Colors.white),
       _ when validation.scam => ('Unsafe', colors.error, Colors.white),
-      _ when validation.invalid =>
-        ('Mismatch', colors.warning, Colors.white),
+      _ when validation.invalid => ('Mismatch', colors.warning, Colors.white),
       _ => ('Unverified', colors.foregroundTertiary, colors.textPrimary),
     };
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: AppSpacing.s1),
+      padding:
+          const EdgeInsets.symmetric(horizontal: 10.0, vertical: AppSpacing.s1),
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(8.0),

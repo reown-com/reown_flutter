@@ -339,8 +339,7 @@ class AppColors extends ThemeExtension<AppColors> {
           Color.lerp(onBackgroundInvert, other.onBackgroundInvert, t)!,
       accent: Color.lerp(accent, other.accent, t)!,
       onAccent: Color.lerp(onAccent, other.onAccent, t)!,
-      accentCertified:
-          Color.lerp(accentCertified, other.accentCertified, t)!,
+      accentCertified: Color.lerp(accentCertified, other.accentCertified, t)!,
       bgSuccess: Color.lerp(bgSuccess, other.bgSuccess, t)!,
       bgError: Color.lerp(bgError, other.bgError, t)!,
       bgWarning: Color.lerp(bgWarning, other.bgWarning, t)!,

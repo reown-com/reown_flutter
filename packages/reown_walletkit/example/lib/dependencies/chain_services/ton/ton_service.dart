@@ -68,8 +68,7 @@ class TonService {
 
   /// Returns the wallet's TON keypair from the key service.
   TonKeyPair _getKeyPair() {
-    final keys =
-        GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     return TonKeyPair(sk: keys[0].privateKey, pk: keys[0].publicKey);
   }
 
@@ -282,8 +281,7 @@ class TonService {
     if (from is! String) {
       throw TonValidationError('From address must be a string');
     }
-    final keys =
-        GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     final walletKey = keys[0];
 
     // Compare addresses - dApps may send raw format (0:hex) or any friendly format
