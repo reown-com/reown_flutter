@@ -72,14 +72,14 @@ class SessionItem extends StatelessWidget {
                 children: [
                   Text(
                     metadata.name,
-                    style: context.textStyles.layerTextStyle2,
+                    style: context.textStyles.wcpTextPrimary,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: AppSpacing.s05),
                   Text(
                     _cleanUrl(metadata.url),
-                    style: context.textStyles.bodyText,
+                    style: context.textStyles.wcpTextSecondary,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),

@@ -84,6 +84,7 @@ class SUIService {
       final address = params['address'].toString();
       final message = params['message'].toString();
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
@@ -91,6 +92,7 @@ class SUIService {
         address: address,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
+        requester: requester,
       )) {
         final signature = await signMessage(message);
         response = response.copyWith(result: {'signature': signature});
@@ -136,6 +138,7 @@ class SUIService {
     //   "address": "0xd5f647edb77d4fda31d0304506447fb3c92e55aaf77bc5ed4b77c332dd4605fa"
     // }
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       transaction,
       method: pRequest.method,
@@ -143,6 +146,7 @@ class SUIService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
@@ -200,6 +204,7 @@ class SUIService {
     //   "address": "0xd5f647edb77d4fda31d0304506447fb3c92e55aaf77bc5ed4b77c332dd4605fa"
     // }
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       transaction,
       method: pRequest.method,
@@ -207,6 +212,7 @@ class SUIService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final keys = GetIt.I<IKeyService>().getKeysForChain(

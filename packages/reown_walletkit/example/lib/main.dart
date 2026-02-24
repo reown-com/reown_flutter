@@ -26,6 +26,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/scan_modal.dart';
+import 'package:toastification/toastification.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -104,14 +105,16 @@ class _MyAppState extends State<MyApp> {
     return ListenableBuilder(
       listenable: themeProvider,
       builder: (context, _) {
-        return MaterialApp(
-          navigatorKey: navigatorKey,
-          navigatorObservers: [SentryNavigatorObserver()],
-          title: StringConstants.appTitle,
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
-          themeMode: themeProvider.themeMode,
-          home: const MyHomePage(),
+        return ToastificationWrapper(
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            navigatorObservers: [SentryNavigatorObserver()],
+            title: StringConstants.appTitle,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: themeProvider.themeMode,
+            home: const MyHomePage(),
+          ),
         );
       },
     );

@@ -33,8 +33,10 @@ class VerifySection extends StatelessWidget {
         _cleanUrl(origin),
         style: TextStyle(
           color: colors.textTertiary,
-          fontSize: 14.0,
-          fontWeight: FontWeight.w500,
+          fontSize: 16.0,
+          fontWeight: FontWeight.w400,
+          letterSpacing: -0.16,
+          height: 18.0 / 16.0,
         ),
         overflow: TextOverflow.ellipsis,
       ),
