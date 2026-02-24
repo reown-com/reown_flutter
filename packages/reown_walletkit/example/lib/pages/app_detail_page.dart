@@ -167,7 +167,7 @@ class _AppInfoCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.s5),
       decoration: BoxDecoration(
-        color: colors.backgroundSecondary,
+        color: colors.foregroundPrimary,
         borderRadius: BorderRadius.circular(AppSpacing.s5),
       ),
       child: Row(
@@ -236,7 +236,7 @@ class _DetailCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppSpacing.s5),
       decoration: BoxDecoration(
-        color: colors.backgroundSecondary,
+        color: colors.foregroundPrimary,
         borderRadius: BorderRadius.circular(AppSpacing.s5),
       ),
       child: Column(
