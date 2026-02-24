@@ -149,7 +149,10 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
         widgetStack.popUntil(KeyConstants.depositPageKey);
       }
       GetIt.I<IToastService>().show(
-        ToastMessage(type: ToastType.success, text: 'Deposit successful'),
+        ToastMessage(
+          type: ToastType.success,
+          text: 'Deposit successful',
+        ),
       );
       return;
     }
