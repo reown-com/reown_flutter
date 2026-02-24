@@ -88,6 +88,7 @@ class StacksService {
       // );
       // debugPrint('[SampleWallet] getNonce $nonce');
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
@@ -95,6 +96,7 @@ class StacksService {
         address: address,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
+        requester: requester,
       )) {
         final signature = await signMessage(message);
         response = response.copyWith(result: {'signature': signature});
@@ -139,6 +141,7 @@ class StacksService {
       final amount = BigInt.parse(params['amount'].toString());
       // final amount = BigInt.parse('1000000');
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         jsonEncode(params),
         method: pRequest.method,
@@ -146,6 +149,7 @@ class StacksService {
         address: sender,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
+        requester: requester,
       )) {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
           chainSupported.chainId,

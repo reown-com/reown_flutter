@@ -16,7 +16,6 @@ import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
-import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 
 enum SupportedEVMMethods {
   ethSign,
@@ -131,6 +130,7 @@ class EVMService {
     final message = EthUtils.getUtf8Message(data.toString());
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       message,
       method: pRequest.method,
@@ -138,6 +138,7 @@ class EVMService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final signedTx = signMessage(message);
@@ -178,6 +179,7 @@ class EVMService {
     final message = EthUtils.getUtf8Message(data.toString());
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       message,
       method: pRequest.method,
@@ -185,6 +187,7 @@ class EVMService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final signature = _credentials.signToUint8List(utf8.encode(message));
@@ -220,6 +223,7 @@ class EVMService {
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       data,
       method: pRequest.method,
@@ -227,6 +231,7 @@ class EVMService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
@@ -290,6 +295,7 @@ class EVMService {
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       data,
       method: pRequest.method,
@@ -297,6 +303,7 @@ class EVMService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final signature = ethSignTypedDataV4(data);
@@ -330,6 +337,7 @@ class EVMService {
 
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     final transaction = await approveTransaction(
       data,
       method: pRequest.method,
@@ -337,6 +345,7 @@ class EVMService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     );
     if (transaction is Transaction) {
       try {
@@ -386,6 +395,7 @@ class EVMService {
     }
 
     // otherwise we continue with regular flow for eth_sendTransaction
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     await approveAndSendTransaction(
       pRequest.id,
       txParams,
@@ -393,6 +403,7 @@ class EVMService {
       pRequest.transportType.name,
       pRequest.verifyContext,
       topic,
+      requester: requester,
     );
   }
 
@@ -402,8 +413,9 @@ class EVMService {
     String chainId,
     String transportType,
     VerifyContext? verifyContext,
-    String topic,
-  ) async {
+    String topic, {
+    ConnectionMetadata? requester,
+  }) async {
     var response = JsonRpcResponse(id: requestId, jsonrpc: '2.0');
     final transaction = await approveTransaction(
       txParams,
@@ -411,6 +423,7 @@ class EVMService {
       chainId: chainId,
       transportType: transportType,
       verifyContext: verifyContext,
+      requester: requester,
     );
     if (transaction is Transaction) {
       try {
@@ -471,12 +484,14 @@ class EVMService {
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       jsonEncode(parameters),
       method: pRequest.method,
       chainId: pRequest.chainId,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final params = (parameters as List).first as Map<String, dynamic>;
@@ -554,14 +569,15 @@ class EVMService {
 
   Future<dynamic> approveTransaction(
     Map<String, dynamic> tJson, {
-    String? title,
     String? method,
     String? chainId,
     String? address,
     VerifyContext? verifyContext,
     required String transportType,
+    ConnectionMetadata? requester,
   }) async {
     Transaction transaction = tJson.toTransaction();
+    String? gasValue;
 
     final gasPrice = await ethClient.getGasPrice();
     try {
@@ -577,30 +593,24 @@ class EVMService {
         gasPrice: gasPrice,
         maxGas: gasLimit.toInt(),
       );
+      final gasPriceGwei = gasPrice.getInWei ~/ BigInt.from(1000000000);
+      gasValue = '${gasPriceGwei.toString()} GWEI | $gasLimit';
     } on RPCError catch (e) {
       return JsonRpcError(code: e.errorCode, message: e.message);
     }
-
-    final gweiGasPrice = (transaction.gasPrice?.getInWei ?? BigInt.zero) /
-        BigInt.from(1000000000);
 
     const encoder = JsonEncoder.withIndent('  ');
     final trx = encoder.convert(tJson);
 
     if (await MethodsUtils.requestApproval(
       trx,
-      title: title,
       method: method,
       chainId: chainId,
       address: address,
       transportType: transportType,
       verifyContext: verifyContext,
-      extraModels: [
-        WCConnectionModel(
-          title: 'Gas price',
-          elements: ['${gweiGasPrice.toStringAsFixed(2)} GWEI'],
-        ),
-      ],
+      requester: requester,
+      gasValue: gasValue,
     )) {
       return transaction;
     }

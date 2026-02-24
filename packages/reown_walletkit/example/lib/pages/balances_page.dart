@@ -183,7 +183,7 @@ class _BalancesPageState extends State<BalancesPage> {
                       Container(
                         height: 64.0,
                         decoration: BoxDecoration(
-                          color: colors.backgroundSecondary,
+                          color: colors.foregroundPrimary,
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         alignment: Alignment.center,
@@ -217,7 +217,7 @@ class _BalancesPageState extends State<BalancesPage> {
                           child: Container(
                             height: 64.0,
                             decoration: BoxDecoration(
-                              color: colors.backgroundSecondary,
+                              color: colors.foregroundPrimary,
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                             padding: const EdgeInsets.symmetric(

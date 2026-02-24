@@ -50,12 +50,14 @@ class SolanaService {
       // it's being sent encoded from dapp
       // final base58Decoded = base58.decode(message);
       // final decodedMessage = utf8.decode(base58Decoded);
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.address,
         transportType: pRequest.transportType.name,
+        requester: requester,
       )) {
         final signature = await signMessage(message);
 
@@ -98,13 +100,14 @@ class SolanaService {
 
       final keyPair = await _getKeyPair();
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
-        // Show Approval Modal
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.address,
         transportType: pRequest.transportType.name,
+        requester: requester,
       )) {
         // Sign the transaction.
         // if params contains `transaction` key we should parse that one and disregard the rest
@@ -177,13 +180,14 @@ class SolanaService {
 
       final keyPair = await _getKeyPair();
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
-        // Show Approval Modal
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.address,
         transportType: pRequest.transportType.name,
+        requester: requester,
       )) {
         if (params.containsKey('transactions')) {
           final transactions = params['transactions'] as List;
