@@ -8,6 +8,7 @@ import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/chain_icon_widget.dart';
+import 'package:reown_walletkit_wallet/widgets/shared/request_info_row.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/verify_section.dart';
 
 /// A single labeled content row shown inside [WCRequestModal].
@@ -115,7 +116,10 @@ class WCRequestModal extends StatelessWidget {
                 ...items.map(
                   (item) => Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.s2),
-                    child: _InfoRow(item: item),
+                    child: RequestInfoRow(
+                      label: item.label,
+                      value: item.value,
+                    ),
                   ),
                 ),
               ],
@@ -256,52 +260,6 @@ class _NetworkRow extends StatelessWidget {
             ),
           Text(
             chain.name,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: -0.16,
-              height: 18.0 / 16.0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.item});
-
-  final WCRequestItem item;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: colors.foregroundPrimary,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.s5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            item.label,
-            style: TextStyle(
-              color: colors.textTertiary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: -0.16,
-              height: 18.0 / 16.0,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.s2),
-          Text(
-            item.value,
             style: TextStyle(
               color: colors.textPrimary,
               fontSize: 16.0,

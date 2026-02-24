@@ -59,13 +59,60 @@ class MethodsUtils {
 
   static String _titleForMethod(String? method, String appName) {
     final suffix = appName.isNotEmpty ? ' for $appName' : '';
+    if (method == null) return 'Approve request$suffix';
+
     return switch (method) {
       'personal_sign' || 'eth_sign' => 'Sign a message$suffix',
       'eth_signTypedData' || 'eth_signTypedData_v4' => 'Sign typed data$suffix',
       'eth_signTransaction' => 'Sign transaction$suffix',
       'eth_sendTransaction' => 'Send transaction$suffix',
-      _ => 'Approve request$suffix',
+      'solana_signMessage' ||
+      'polkadot_signMessage' ||
+      'stx_signMessage' ||
+      'sui_signPersonalMessage' ||
+      'ton_signData' ||
+      'tron_signMessage' =>
+        'Sign a message$suffix',
+      'solana_signTransaction' ||
+      'solana_signAllTransactions' ||
+      'polkadot_signTransaction' ||
+      'sui_signTransaction' ||
+      'cosmos_signDirect' ||
+      'kadena_sign_v1' ||
+      'kadena_quicksign_v1' ||
+      'tron_signTransaction' =>
+        'Sign transaction$suffix',
+      'sui_signAndExecuteTransaction' ||
+      'ton_sendMessage' ||
+      'stx_transferStx' =>
+        'Send transaction$suffix',
+      'cosmos_getAccounts' || 'kadena_getAccounts_v1' => 'Share account$suffix',
+      _ => _titleFromMethodName(method, suffix),
     };
+  }
+
+  static String _titleFromMethodName(String method, String suffix) {
+    final normalized = method.toLowerCase();
+    if (normalized.contains('signmessage') ||
+        normalized.contains('signpersonal') ||
+        normalized.contains('signdata')) {
+      return 'Sign a message$suffix';
+    }
+    if (normalized.contains('signtransaction') ||
+        normalized.contains('signalltransactions') ||
+        normalized.contains('signdirect') ||
+        normalized.contains('quicksign')) {
+      return 'Sign transaction$suffix';
+    }
+    if (normalized.contains('send') ||
+        normalized.contains('execute') ||
+        normalized.contains('transfer')) {
+      return 'Send transaction$suffix';
+    }
+    if (normalized.contains('getaccounts')) {
+      return 'Share account$suffix';
+    }
+    return 'Approve request$suffix';
   }
 
   static String _itemLabelForMethod(String? method) {

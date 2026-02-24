@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:kadena_dart_sdk/kadena_dart_sdk.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
-import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
+import 'package:reown_walletkit_wallet/widgets/shared/request_info_row.dart';
 
 /// Multi-step signing modal for Kadena requests.
 ///
@@ -95,22 +95,29 @@ class _KadenaRequestWidgetState extends State<KadenaRequestWidget> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _InfoRow(
+                RequestInfoRow(
                   label: 'Pact Command',
                   value: jsonEncode(payload),
                 ),
                 ...caps.map(
-                  (cap) => Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.s2),
-                    child: _InfoRow(
-                      label: cap.name as String,
-                      value: (cap.args as List).isEmpty
-                          ? '—'
-                          : (cap.args as List)
-                              .map((a) => a.toString())
-                              .join(', '),
-                    ),
-                  ),
+                  (cap) {
+                    final dynamic rawName = cap.name;
+                    final String label = rawName?.toString() ?? 'Unknown';
+                    final dynamic rawArgs = cap.args;
+                    final List<dynamic> argsList =
+                        rawArgs is List ? rawArgs : const [];
+                    final String value = argsList.isEmpty
+                        ? '—'
+                        : argsList.map((a) => a.toString()).join(', ');
+
+                    return Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.s2),
+                      child: RequestInfoRow(
+                        label: label,
+                        value: value,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -149,53 +156,6 @@ class _KadenaRequestWidgetState extends State<KadenaRequestWidget> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: colors.foregroundPrimary,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      padding: const EdgeInsets.all(AppSpacing.s5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: colors.textTertiary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: -0.16,
-              height: 18.0 / 16.0,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.s2),
-          Text(
-            value,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: -0.16,
-              height: 18.0 / 16.0,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
