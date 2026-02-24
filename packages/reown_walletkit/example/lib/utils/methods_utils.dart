@@ -221,7 +221,12 @@ class MethodsUtils {
     bool success = true,
   }) {
     DeepLinkHandler.waiting.value = false;
-    final description = message ?? (success ? 'Return to your dApp' : null);
+    final normalizedMessage = message?.trim();
+    final hasMessage =
+        normalizedMessage != null && normalizedMessage.isNotEmpty;
+    final description = hasMessage
+        ? normalizedMessage
+        : (success ? 'Return to your dApp' : null);
     toastification.show(
       title: Text(title ?? (success ? 'Approved' : 'Error')),
       description: description != null ? Text(description) : null,
