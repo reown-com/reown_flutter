@@ -110,6 +110,10 @@ class _MyAppState extends State<MyApp> {
             theme: AppTheme.light(),
             darkTheme: AppTheme.dark(),
             themeMode: themeProvider.themeMode,
+            builder: (context, child) => DefaultTextStyle.merge(
+              style: const TextStyle(fontFamily: 'KH Teka'),
+              child: child ?? const SizedBox.shrink(),
+            ),
             home: const MyHomePage(),
           ),
         );

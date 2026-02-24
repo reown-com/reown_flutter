@@ -6,9 +6,14 @@ abstract final class AppTheme {
 
   static ThemeData light() {
     const colors = AppColors.light;
+    final textTheme = ThemeData(
+      brightness: Brightness.light,
+    ).textTheme.apply(fontFamily: _fontFamily);
     return ThemeData(
       brightness: Brightness.light,
       fontFamily: _fontFamily,
+      textTheme: textTheme,
+      primaryTextTheme: textTheme,
       colorScheme: ColorScheme.light(
         primary: colors.accent,
         surface: colors.background,
@@ -27,9 +32,14 @@ abstract final class AppTheme {
 
   static ThemeData dark() {
     const colors = AppColors.dark;
+    final textTheme = ThemeData(
+      brightness: Brightness.dark,
+    ).textTheme.apply(fontFamily: _fontFamily);
     return ThemeData(
       brightness: Brightness.dark,
       fontFamily: _fontFamily,
+      textTheme: textTheme,
+      primaryTextTheme: textTheme,
       colorScheme: ColorScheme.dark(
         primary: colors.accent,
         surface: colors.background,
