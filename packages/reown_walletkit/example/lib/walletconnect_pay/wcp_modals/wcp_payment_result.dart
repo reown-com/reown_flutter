@@ -112,7 +112,11 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                         height: 40.0,
                       ),
                       const SizedBox(height: AppSpacing.s6),
-                      WCModalTitle(text: 'Payment ${widget.status.name}'),
+                      WCModalTitle(
+                        text: widget.status == PaymentStatus.expired
+                            ? 'Payment expired'
+                            : 'Payment ${widget.status.name}',
+                      ),
                     ],
                   );
               }

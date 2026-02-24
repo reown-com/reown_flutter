@@ -11,6 +11,7 @@ import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_browser.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_why_we_need_info.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 
@@ -19,10 +20,14 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
     super.key,
     required this.paymentOptionsResponse,
     required this.paymentRequest,
+    this.infoButtonNotifier,
+    this.showInfoPageNotifier,
   });
 
   final PaymentOptionsResponse paymentOptionsResponse;
   final ConfirmPaymentRequest paymentRequest;
+  final ValueNotifier<bool>? infoButtonNotifier;
+  final ValueNotifier<bool>? showInfoPageNotifier;
 
   @override
   State<WCPPaymentDetailsWidget> createState() =>
@@ -107,6 +112,11 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
           setState(() {
             _collectDataCompletedIds.add(_selectedOption.id);
           });
+          widget.infoButtonNotifier?.value = false;
+        } else if (result is PaymentStatus) {
+          // Payment expired or failed during data collection — let the
+          // orchestrator show the result modal.
+          if (mounted) Navigator.of(context).pop(result);
         }
       } finally {
         setState(() => _isProcessing = false);
@@ -116,6 +126,57 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     }
   }
 
+  Widget _buildDetailsView(BuildContext context) {
+    final paymentInfo = paymentOptionsResponse.info!;
+    final selectedNeedsCollectData = _needsCollectData(_selectedOption);
+    final buttonText = selectedNeedsCollectData
+        ? 'Continue'
+        : 'Pay ${formatPayAmount(paymentInfo.amount)}';
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox.square(dimension: 20.0),
+        WCPMerchantHeader(merchant: paymentInfo.merchant),
+        const SizedBox(height: AppSpacing.s4),
+        WCPPaymentDetails(paymentInfo: paymentInfo),
+        const SizedBox(height: AppSpacing.s7),
+        WCPPaymentOptionList(
+          options: paymentOptionsResponse.options,
+          selectedOption: _selectedOption,
+          collectDataCompletedIds: _collectDataCompletedIds,
+          onOptionSelected: (option) {
+            setState(() {
+              confirmRequest = confirmRequest.copyWith(optionId: option.id);
+            });
+          },
+        ),
+        const SizedBox(height: AppSpacing.s5),
+        WCPrimaryButton(
+          onPressed: _handleConfirmOrNext,
+          enabled: !_isProcessing,
+          text: buttonText,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoView(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: AppSpacing.s7),
+        const WCPWhyWeNeedInfoBody(),
+        const SizedBox(height: AppSpacing.s7),
+        WCPrimaryButton(
+          onPressed: () => widget.showInfoPageNotifier!.value = false,
+          text: 'Got it!',
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final paymentInfo = paymentOptionsResponse.info;
@@ -123,44 +184,32 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       return const SizedBox.shrink();
     }
 
-    final selectedNeedsCollectData = _needsCollectData(_selectedOption);
-    final buttonText = selectedNeedsCollectData
-        ? 'Next'
-        : 'Pay ${formatPayAmount(paymentInfo.amount)}';
+    final showInfoPageNotifier = widget.showInfoPageNotifier;
+    if (showInfoPageNotifier != null) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.xxl),
+        ),
+        padding: EdgeInsets.zero,
+        child: ValueListenableBuilder<bool>(
+          valueListenable: showInfoPageNotifier,
+          builder: (context, showInfo, _) {
+            return showInfo
+                ? _buildInfoView(context)
+                : _buildDetailsView(context);
+          },
+        ),
+      );
+    }
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(AppRadius.xxl),
       ),
-      padding: const EdgeInsets.all(AppSpacing.s2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox.square(dimension: 20.0),
-          WCPMerchantHeader(merchant: paymentInfo.merchant),
-          const SizedBox(height: AppSpacing.s4),
-          WCPPaymentDetails(paymentInfo: paymentInfo),
-          const SizedBox(height: AppSpacing.s8),
-          WCPPaymentOptionList(
-            options: paymentOptionsResponse.options,
-            selectedOption: _selectedOption,
-            collectDataCompletedIds: _collectDataCompletedIds,
-            onOptionSelected: (option) {
-              setState(() {
-                confirmRequest = confirmRequest.copyWith(optionId: option.id);
-              });
-            },
-          ),
-          const SizedBox(height: AppSpacing.s8),
-          WCPrimaryButton(
-            onPressed: _handleConfirmOrNext,
-            enabled: !_isProcessing,
-            text: buttonText,
-          ),
-        ],
-      ),
+      padding: EdgeInsets.zero,
+      child: _buildDetailsView(context),
     );
   }
 }
@@ -206,27 +255,40 @@ class WCPPaymentOptionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // After IC is collected, show only the selected option
     final hasCompleted = collectDataCompletedIds.isNotEmpty;
-    final visibleOptions =
-        hasCompleted ? [selectedOption] : options;
+    final singleOptionReady =
+        options.length == 1 && !_optionNeedsCollectData(options.first);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: visibleOptions.map((option) {
-        final isSelected = option.id == selectedOption.id;
-        final hasCollectData = _optionNeedsCollectData(option);
-        return _PaymentOptionItem(
-          option: option,
-          isSelected: isSelected,
-          hasCollectData: hasCollectData,
-          onTap: () {
-            if (!isSelected) {
-              onOptionSelected(option);
-            }
-          },
-        );
-      }).toList(),
+    if (hasCompleted || singleOptionReady) {
+      return _ConfirmedPaymentOption(option: selectedOption);
+    }
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 280),
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(
+          scrollbars: false,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: options.map((option) {
+              final isSelected = option.id == selectedOption.id;
+              final hasCollectData = _optionNeedsCollectData(option);
+              return _PaymentOptionItem(
+                option: option,
+                isSelected: isSelected,
+                hasCollectData: hasCollectData,
+                onTap: () {
+                  if (!isSelected) {
+                    onOptionSelected(option);
+                  }
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -248,28 +310,28 @@ class _PaymentOptionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final display = option.amount.display;
     final colors = context.colors;
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
       child: Stack(
         children: [
           Container(
             decoration: BoxDecoration(
               color: isSelected
-                  ? colors.accent.withValues(alpha: 0.1)
-                  : colors.textSecondary.withValues(alpha: 0.05),
+                  ? colors.foregroundAccentPrimary010
+                  : colors.foregroundPrimary,
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isSelected ? colors.accent : Colors.transparent,
+                width: 1,
+              ),
             ),
-            margin: const EdgeInsets.only(
-              left: AppSpacing.s3,
-              right: AppSpacing.s3,
-              bottom: AppSpacing.s2,
-            ),
+            margin: const EdgeInsets.only(bottom: 6.0),
             padding: const EdgeInsets.all(AppSpacing.s4),
             height: 64.0,
             child: Row(
               children: [
                 CircleAvatar(
-                  radius: 12.0,
+                  radius: 16.0,
                   backgroundImage: NetworkImage(display.iconUrl ?? ''),
                 ),
                 const SizedBox(width: AppSpacing.s2),
@@ -278,43 +340,41 @@ class _PaymentOptionItem extends StatelessWidget {
                   style: TextStyle(
                     color: colors.textPrimary,
                     fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 const Spacer(),
                 if (hasCollectData)
                   Container(
+                    height: 38.0,
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 4.0,
+                      horizontal: AppSpacing.s2,
                     ),
                     margin: const EdgeInsets.only(right: AppSpacing.s2),
                     decoration: BoxDecoration(
-                      color: colors.accent.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(8),
+                      color: isSelected
+                          ? colors.accent.withValues(alpha: 0.9)
+                          : colors.foregroundTertiary,
+                      borderRadius: BorderRadius.circular(AppSpacing.s2),
                     ),
+                    alignment: Alignment.center,
                     child: Text(
                       'Info required',
                       style: TextStyle(
-                        color: colors.accent,
-                        fontSize: 12.0,
+                        color: isSelected
+                            ? Colors.white
+                            : colors.textPrimary,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                  ),
-                if (isSelected)
-                  Icon(Icons.radio_button_on, color: colors.accent)
-                else
-                  Icon(
-                    Icons.radio_button_off,
-                    color: colors.textTertiary,
                   ),
               ],
             ),
           ),
           Positioned(
-            bottom: 26,
-            left: 38,
+            bottom: 18,
+            left: 32,
             child: Visibility(
               visible: (display.networkIconUrl ?? '').isNotEmpty,
               child: Container(
@@ -330,6 +390,75 @@ class _PaymentOptionItem extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConfirmedPaymentOption extends StatelessWidget {
+  const _ConfirmedPaymentOption({required this.option});
+
+  final PaymentOption option;
+
+  @override
+  Widget build(BuildContext context) {
+    final display = option.amount.display;
+    final colors = context.colors;
+    return Container(
+      decoration: BoxDecoration(
+        color: colors.foregroundPrimary,
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      padding: const EdgeInsets.all(AppSpacing.s5),
+      child: Row(
+        children: [
+          Text(
+            'Pay with',
+            style: TextStyle(
+              color: colors.textTertiary,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'KH Teka',
+            ),
+          ),
+          const Spacer(),
+          Text(
+            formatPayAmount(option.amount),
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'KH Teka',
+            ),
+          ),
+          const SizedBox(width: AppSpacing.s2),
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              CircleAvatar(
+                radius: 16.0,
+                backgroundImage: NetworkImage(display.iconUrl ?? ''),
+              ),
+              if ((display.networkIconUrl ?? '').isNotEmpty)
+                Positioned(
+                  bottom: -2,
+                  right: -2,
+                  child: Container(
+                    padding: const EdgeInsets.all(2.0),
+                    decoration: BoxDecoration(
+                      color: colors.foregroundPrimary,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: CircleAvatar(
+                      radius: 8.0,
+                      backgroundImage:
+                          NetworkImage(display.networkIconUrl ?? ''),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),

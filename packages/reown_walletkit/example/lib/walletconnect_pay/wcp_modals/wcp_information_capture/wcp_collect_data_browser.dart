@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
@@ -85,7 +86,12 @@ class WCPCollectDataBrowser {
         return WCBottomSheetResult.next.name;
       }
 
-      return uri.queryParameters['error'] ?? 'Data collection failed';
+      // Return a typed PaymentStatus so the caller can show the result modal.
+      final code = uri.queryParameters['code'] ?? '';
+      final message = uri.queryParameters['message'] ?? '';
+      final isExpired = code == 'invalid_state' &&
+          message.toLowerCase().contains('expired');
+      return isExpired ? PaymentStatus.expired : PaymentStatus.failed;
     } catch (e) {
       lifecycleListener.dispose();
       DeepLinkHandler.oneShotInterceptor = null;

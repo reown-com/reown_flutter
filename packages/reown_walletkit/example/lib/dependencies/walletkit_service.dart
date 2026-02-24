@@ -27,6 +27,7 @@ import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_confirming_payment.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_get_payment_options.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_details.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_result.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connect_modal.dart';
 import 'package:reown_walletkit_wallet/main.dart' show navigatorKey;
@@ -755,12 +756,53 @@ class WalletKitService implements IWalletKitService {
 
   /// Processes the payment flow: shows payment details, confirms payment, and displays the result.
   Future<dynamic> _processPayment(PaymentOptionsResponse response) async {
+    final hasCollectData = response.options.any(
+      (o) => o.collectData?.url != null && o.collectData!.url!.isNotEmpty,
+    );
+    final infoButtonNotifier =
+        hasCollectData ? ValueNotifier<bool>(true) : null;
+    final showInfoPage = ValueNotifier<bool>(false);
     final result = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPPaymentDetailsWidget(
         paymentOptionsResponse: response,
         paymentRequest: _pendingPaymentRequest!,
+        infoButtonNotifier: infoButtonNotifier,
+        showInfoPageNotifier: showInfoPage,
+      ),
+      leadingWidget: ValueListenableBuilder<bool>(
+        valueListenable: showInfoPage,
+        builder: (_, isShowingInfo, __) {
+          if (isShowingInfo) {
+            return WCPSheetIconButton(
+              icon: Icons.arrow_back,
+              onPressed: () => showInfoPage.value = false,
+            );
+          }
+          if (infoButtonNotifier != null) {
+            return ValueListenableBuilder<bool>(
+              valueListenable: infoButtonNotifier,
+              builder: (_, visible, __) => visible
+                  ? WCPInfoButton(onTap: () => showInfoPage.value = true)
+                  : const SizedBox(width: 38),
+            );
+          }
+          return const SizedBox(width: 38);
+        },
       ),
     );
+
+    // Payment expired/failed during collectData — skip confirming, show result.
+    if (result is PaymentStatus) {
+      await _bottomSheetHandler.queueBottomSheet(
+        widget: WCPPaymentResult(
+          status: result,
+          info: _currentPaymentOptions!.info!,
+        ),
+      );
+      _pendingPaymentRequest = null;
+      _currentPaymentOptions = null;
+      return;
+    }
 
     if (result is! ConfirmPaymentRequest) {
       _pendingPaymentRequest = null;

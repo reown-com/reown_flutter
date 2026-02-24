@@ -77,9 +77,8 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       (item.showBackButton)
-                          ? _SheetIconButton(
+                          ? WCPSheetIconButton(
                               icon: Icons.arrow_back,
-                              colors: colors,
                               onPressed: () {
                                 if (Navigator.canPop(context)) {
                                   Navigator.of(context)
@@ -88,16 +87,15 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                               },
                             )
                           : item.leadingWidget ??
-                              const SizedBox(width: AppSpacing.s10),
+                              const SizedBox(width: 38.0),
                       (item.stepper.$1 > 0 && item.stepper.$2 > 0)
                           ? WCPStepsIndicator(
                               currentStep: item.stepper.$1,
                               totalSteps: item.stepper.$2,
                             )
-                          : const SizedBox(width: AppSpacing.s10),
-                      _SheetIconButton(
+                          : const SizedBox(width: 38.0),
+                      WCPSheetIconButton(
                         icon: Icons.close,
-                        colors: colors,
                         onPressed: () {
                           if (Navigator.canPop(context)) {
                             Navigator.of(context)
@@ -122,33 +120,5 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
   @override
   Widget build(BuildContext context) {
     return widget.child;
-  }
-}
-
-class _SheetIconButton extends StatelessWidget {
-  const _SheetIconButton({
-    required this.icon,
-    required this.colors,
-    required this.onPressed,
-  });
-
-  final IconData icon;
-  final AppColors colors;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        width: 38.0,
-        height: 38.0,
-        decoration: BoxDecoration(
-          color: colors.backgroundSecondary,
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Icon(icon, color: colors.textPrimary, size: 20.0),
-      ),
-    );
   }
 }

@@ -64,9 +64,10 @@ class WCPrimaryButton extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                color: colors.onAccent,
+                color: colors.textInvert,
                 fontSize: 16.0,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'KH Teka',
               ),
               textAlign: TextAlign.center,
             ),
@@ -216,7 +217,8 @@ class WCPPaymentDetails extends StatelessWidget {
         Expanded(
           child: RichText(
             textAlign: TextAlign.center,
-            maxLines: 2,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             text: TextSpan(
               style: TextStyle(
                 color: colors.textPrimary,
@@ -229,14 +231,6 @@ class WCPPaymentDetails extends StatelessWidget {
                 TextSpan(text: formatPayAmount(paymentInfo.amount)),
                 const TextSpan(text: ' to '),
                 TextSpan(text: paymentInfo.merchant.name),
-                const TextSpan(text: ' '),
-                WidgetSpan(
-                  child: SvgPicture.asset(
-                    'lib/walletconnect_pay/assets/verified.svg',
-                    width: 20.0,
-                    height: 20.0,
-                  ),
-                ),
               ],
             ),
           ),
@@ -295,6 +289,71 @@ class _DefaultLogo extends StatelessWidget {
         color: context.colors.onBackgroundInvert,
         fontSize: 32,
         fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+class WCPSheetIconButton extends StatelessWidget {
+  const WCPSheetIconButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 38.0,
+        height: 38.0,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(color: colors.foregroundTertiary, width: 1),
+          borderRadius: BorderRadius.circular(AppSpacing.s3),
+        ),
+        child: Icon(
+          icon,
+          color: colors.textPrimary,
+          size: 20.0,
+        ),
+      ),
+    );
+  }
+}
+
+class WCPInfoButton extends StatelessWidget {
+  const WCPInfoButton({super.key, this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 38.0,
+        height: 38.0,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          border: Border.all(color: colors.foregroundTertiary, width: 1),
+          borderRadius: BorderRadius.circular(AppSpacing.s3),
+        ),
+        child: SvgPicture.asset(
+          'assets/QuestionMark.svg',
+          width: 20.0,
+          height: 20.0,
+          colorFilter: ColorFilter.mode(
+            colors.textPrimary,
+            BlendMode.srcIn,
+          ),
+        ),
       ),
     );
   }
