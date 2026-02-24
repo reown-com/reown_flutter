@@ -16,7 +16,7 @@ PODS:
     - Flutter
     - YttriumUtilsWrapper (= 0.10.37)
   - Sentry/HybridSDK (8.56.2)
-  - sentry_flutter (9.12.0):
+  - sentry_flutter (9.14.0):
     - Flutter
     - FlutterMacOS
     - Sentry/HybridSDK (= 8.56.2)
@@ -97,7 +97,7 @@ SPEC CHECKSUMS:
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
   reown_yttrium_utils: 9c407bda2e3db1638eed33598cf58fde08fb48e0
   Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
-  sentry_flutter: 26f4615de8bdc741318397fdc78ba3e4e08df07f
+  sentry_flutter: 841fa2fe08dc72eb95e2320b76e3f751f3400cf5
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
