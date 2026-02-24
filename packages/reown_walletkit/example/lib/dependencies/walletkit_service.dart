@@ -531,7 +531,7 @@ class WalletKitService implements IWalletKitService {
   void _onSessionConnect(SessionConnect? args) {
     if (args != null) {
       final session = jsonEncode(args.session.toJson());
-      log('[SampleWallet] _onSessionConnect $session');
+      debugPrint('[SampleWallet] _onSessionConnect $session');
       MethodsUtils.handleRedirect(
         args.session.topic,
         args.session.peer.metadata.redirect,

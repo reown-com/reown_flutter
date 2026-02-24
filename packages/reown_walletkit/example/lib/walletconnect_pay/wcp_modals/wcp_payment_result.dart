@@ -37,7 +37,7 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: AppSpacing.s11),
+          const SizedBox(height: AppSpacing.s7),
           Builder(
             builder: (BuildContext context) {
               switch (widget.status) {
@@ -49,7 +49,7 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                         width: 40.0,
                         height: 40.0,
                       ),
-                      const SizedBox(height: AppSpacing.s6),
+                      const SizedBox(height: AppSpacing.s4),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,14 +74,6 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                                     ),
                                     const TextSpan(text: ' to '),
                                     TextSpan(text: widget.info.merchant.name),
-                                    const TextSpan(text: ' '),
-                                    WidgetSpan(
-                                      child: SvgPicture.asset(
-                                        'lib/walletconnect_pay/assets/verified.svg',
-                                        width: 20.0,
-                                        height: 20.0,
-                                      ),
-                                    ),
                                   ],
                                 ),
                               );
@@ -122,7 +114,7 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
               }
             },
           ),
-          const SizedBox(height: AppSpacing.s11),
+          const SizedBox(height: AppSpacing.s7),
           WCPrimaryButton(
             onPressed: () {
               Navigator.of(context).pop(WCBottomSheetResult.next.name);

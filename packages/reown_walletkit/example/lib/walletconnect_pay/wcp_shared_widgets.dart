@@ -21,7 +21,8 @@ class WCModalTitle extends StatelessWidget {
         style: TextStyle(
           color: colors.textPrimary,
           fontSize: 20.0,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
+          fontFamily: 'KH Teka',
         ),
         textAlign: TextAlign.center,
       ),

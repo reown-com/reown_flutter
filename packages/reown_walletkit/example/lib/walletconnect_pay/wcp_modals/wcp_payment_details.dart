@@ -62,11 +62,10 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
   }
 
   String _sign(Action action) {
-    final walletKitService = GetIt.I<IWalletKitService>();
     final method = action.walletRpc.method;
     final chainId = action.walletRpc.chainId;
     final params = action.walletRpc.params;
-    final service = walletKitService.getChainService<EVMService>(
+    final service = _walletKitService.getChainService<EVMService>(
       chainId: chainId,
     );
     switch (method) {
@@ -75,7 +74,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         final typedData = decodedParams.last;
         return service.ethSignTypedDataV4(typedData);
       case 'personal_sign':
-        return '';
+        throw UnimplementedError('personal_sign not yet implemented');
       default:
         throw UnimplementedError('Unsupported signing method: $method');
     }
@@ -119,7 +118,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
           if (mounted) Navigator.of(context).pop(result);
         }
       } finally {
-        setState(() => _isProcessing = false);
+        if (mounted) setState(() => _isProcessing = false);
       }
     } else {
       await _signAndPay();
@@ -255,11 +254,11 @@ class WCPPaymentOptionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasCompleted = collectDataCompletedIds.isNotEmpty;
+    final selectedCompleted = collectDataCompletedIds.contains(selectedOption.id);
     final singleOptionReady =
         options.length == 1 && !_optionNeedsCollectData(options.first);
 
-    if (hasCompleted || singleOptionReady) {
+    if (selectedCompleted || singleOptionReady) {
       return _ConfirmedPaymentOption(option: selectedOption);
     }
 

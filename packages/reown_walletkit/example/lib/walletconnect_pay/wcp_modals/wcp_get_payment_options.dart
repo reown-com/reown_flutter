@@ -64,6 +64,8 @@ class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
           const SizedBox(height: AppSpacing.s11),
           const Center(child: WalletConnectLoading(size: 120.0)),
           const SizedBox(height: AppSpacing.s6),
+          WCModalTitle(text: 'Preparing your payment...'),
+          const SizedBox(height: AppSpacing.s6),
         ],
       ),
     );
