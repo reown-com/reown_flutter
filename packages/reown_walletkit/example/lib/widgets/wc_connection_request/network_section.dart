@@ -34,7 +34,7 @@ class NetworkSection extends StatelessWidget {
     if (isSingleChain) {
       return Container(
         decoration: BoxDecoration(
-          color: colors.backgroundSecondary,
+          color: colors.foregroundPrimary,
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         padding: const EdgeInsets.symmetric(
