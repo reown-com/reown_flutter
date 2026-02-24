@@ -26,6 +26,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/scan_modal.dart';
+import 'package:toastification/toastification.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -53,9 +54,6 @@ Future<void> main() async {
           options.dsn = DartDefines.sentryDSN;
           options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
           options.attachScreenshot = true;
-          // Adds request headers and IP for users,
-          // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
-          options.sendDefaultPii = true;
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
           // We recommend adjusting this value in production.
           options.tracesSampleRate = 1.0;
@@ -104,14 +102,20 @@ class _MyAppState extends State<MyApp> {
     return ListenableBuilder(
       listenable: themeProvider,
       builder: (context, _) {
-        return MaterialApp(
-          navigatorKey: navigatorKey,
-          navigatorObservers: [SentryNavigatorObserver()],
-          title: StringConstants.appTitle,
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
-          themeMode: themeProvider.themeMode,
-          home: const MyHomePage(),
+        return ToastificationWrapper(
+          child: MaterialApp(
+            navigatorKey: navigatorKey,
+            navigatorObservers: [SentryNavigatorObserver()],
+            title: StringConstants.appTitle,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: themeProvider.themeMode,
+            builder: (context, child) => DefaultTextStyle.merge(
+              style: const TextStyle(fontFamily: 'KH Teka'),
+              child: child ?? const SizedBox.shrink(),
+            ),
+            home: const MyHomePage(),
+          ),
         );
       },
     );
@@ -264,7 +268,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildHeader(AppColors colors) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4, vertical: AppSpacing.s3),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s4, vertical: AppSpacing.s3),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -366,35 +371,36 @@ class _MyHomePageState extends State<MyHomePage> {
         highlightColor: Colors.transparent,
       ),
       child: BottomNavigationBar(
-      currentIndex: _selectedIndex,
-      unselectedItemColor: colors.textSecondary,
-      selectedItemColor: colors.backgroundInvert,
-      selectedFontSize: 12.0,
-      unselectedFontSize: 12.0,
-      iconSize: 24.0,
-      showUnselectedLabels: true,
-      type: BottomNavigationBarType.fixed,
-      onTap: (int index) => setState(() => _selectedIndex = index),
-      items: _pageDatas.asMap().entries.map((entry) {
-        final isSelected = entry.key == _selectedIndex;
-        final e = entry.value;
-        return BottomNavigationBarItem(
-          icon: Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.s2, bottom: AppSpacing.s1),
-            child: SvgPicture.asset(
-              e.svgIcon,
-              width: 24.0,
-              height: 24.0,
-              colorFilter: ColorFilter.mode(
-                isSelected ? colors.backgroundInvert : colors.textSecondary,
-                BlendMode.srcIn,
+        currentIndex: _selectedIndex,
+        unselectedItemColor: colors.textSecondary,
+        selectedItemColor: colors.backgroundInvert,
+        selectedFontSize: 12.0,
+        unselectedFontSize: 12.0,
+        iconSize: 24.0,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        onTap: (int index) => setState(() => _selectedIndex = index),
+        items: _pageDatas.asMap().entries.map((entry) {
+          final isSelected = entry.key == _selectedIndex;
+          final e = entry.value;
+          return BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.only(
+                  top: AppSpacing.s2, bottom: AppSpacing.s1),
+              child: SvgPicture.asset(
+                e.svgIcon,
+                width: 24.0,
+                height: 24.0,
+                colorFilter: ColorFilter.mode(
+                  isSelected ? colors.backgroundInvert : colors.textSecondary,
+                  BlendMode.srcIn,
+                ),
               ),
             ),
-          ),
-          label: e.title,
-        );
-      }).toList(),
-    ),
+            label: e.title,
+          );
+        }).toList(),
+      ),
     );
   }
 }

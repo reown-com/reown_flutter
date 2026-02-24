@@ -19,6 +19,14 @@ class AppTypography {
         fontWeight: FontWeight.w500,
       );
 
+  TextStyle get heading6 => TextStyle(
+        color: _c.textPrimary,
+        fontFamily: 'KH Teka',
+        fontSize: 20.0,
+        fontStyle: FontStyle.normal,
+        fontWeight: FontWeight.w400,
+      );
+
   TextStyle get buttonText => TextStyle(
         color: _c.onAccent,
         fontSize: 16.0,

@@ -46,6 +46,7 @@ class TronService {
       final address = params['address'].toString();
       final message = params['message'].toString();
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
@@ -53,6 +54,7 @@ class TronService {
         address: address,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
+        requester: requester,
       )) {
         // Convert signature to hex string (r, s, v) → 65 bytes
         final signatureHex = await signMessage(message);
@@ -105,6 +107,7 @@ class TronService {
 
     const encoder = JsonEncoder.withIndent('  ');
     final message = encoder.convert(transactionJson);
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       message,
       method: pRequest.method,
@@ -112,6 +115,7 @@ class TronService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
