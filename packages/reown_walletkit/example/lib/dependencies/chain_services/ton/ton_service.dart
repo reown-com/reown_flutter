@@ -12,7 +12,6 @@ import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.da
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
-import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 
 import 'package:reown_yttrium_utils/models/ton.dart';
 
@@ -124,6 +123,7 @@ class TonService {
         address: address ?? '',
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
+        requester: session?.peer,
       )) {
         final signature = await signMessage(text);
         final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -200,21 +200,18 @@ class TonService {
           .toList();
 
       const encoder = JsonEncoder.withIndent('  ');
+      final messagesText = messages
+          .map((m) => encoder.convert(m.toJson()))
+          .join('\n\n');
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
-        '',
+        messagesText,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: address,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
-        extraModels: messages
-            .map(
-              (m) => WCConnectionModel(
-                title: 'Message',
-                elements: [encoder.convert(m.toJson())],
-              ),
-            )
-            .toList(),
+        requester: requester,
       )) {
         final signature = await _tonClient.sendMessage(
           networkId: chainSupported.chainId,

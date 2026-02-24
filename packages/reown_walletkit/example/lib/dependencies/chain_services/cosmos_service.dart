@@ -39,6 +39,7 @@ class CosmosService {
     final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     final address = keys[0].address;
 
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       '',
       method: pRequest.method,
@@ -46,6 +47,7 @@ class CosmosService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       final publicKey = keys[0].publicKey;
       response = response.copyWith(
@@ -74,6 +76,7 @@ class CosmosService {
     final trxPayload = parameters as Map<String, dynamic>;
     const encoder = JsonEncoder.withIndent('  ');
     final message = encoder.convert(trxPayload);
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       message,
       method: pRequest.method,
@@ -81,6 +84,7 @@ class CosmosService {
       address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       final publicKey = keys[0].publicKey;
       response = response.copyWith(

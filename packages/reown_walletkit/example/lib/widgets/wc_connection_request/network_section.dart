@@ -21,16 +21,43 @@ class NetworkSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final isSingleChain = chains.length == 1;
+
+    final headerLabelStyle = TextStyle(
+      color: colors.textTertiary,
+      fontSize: 16.0,
+      fontWeight: FontWeight.w400,
+      letterSpacing: -0.16,
+      height: 18.0 / 16.0,
+    );
+
+    if (isSingleChain) {
+      return Container(
+        decoration: BoxDecoration(
+          color: colors.foregroundPrimary,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s4,
+          vertical: 14.0,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text('Network', style: headerLabelStyle),
+            ),
+            ChainIcon(
+              logoUrl: chains.first.logo,
+              size: 24.0,
+              showBorder: false,
+            ),
+          ],
+        ),
+      );
+    }
 
     return ExpandableSection(
-      headerLeft: Text(
-        'Network',
-        style: TextStyle(
-          color: colors.textTertiary,
-          fontSize: 14.0,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      headerLeft: Text('Network', style: headerLabelStyle),
       headerRight: ChainIcons(
         logoUrls: chains
             .where((c) => selectedChainIds.contains(c.chainId))

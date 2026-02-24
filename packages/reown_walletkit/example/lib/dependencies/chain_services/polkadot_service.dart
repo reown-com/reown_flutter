@@ -86,6 +86,7 @@ class PolkadotService {
         dotkeyPair.ss58Format = 0;
       }
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
@@ -93,6 +94,7 @@ class PolkadotService {
         address: dotkeyPair.address,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
+        requester: requester,
       )) {
         final hexSignature = await signMessage(message);
 
@@ -167,6 +169,7 @@ class PolkadotService {
 
     const encoder = JsonEncoder.withIndent('  ');
     final message = encoder.convert(trxPayload);
+    final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
     if (await MethodsUtils.requestApproval(
       message,
       method: pRequest.method,
@@ -174,6 +177,7 @@ class PolkadotService {
       address: dotkeyPair.address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
+      requester: requester,
     )) {
       try {
         // Get info necessary to build an extrinsic

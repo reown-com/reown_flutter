@@ -52,12 +52,14 @@ class SolanaService2 {
       // it's being sent encoded from dapp
       final base58Decoded = base58.decode(message);
       final decodedMessage = utf8.decode(base58Decoded);
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         decodedMessage,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.pubkey.toBase58(),
         transportType: pRequest.transportType.name,
+        requester: requester,
       )) {
         final signature = await signMessage(message);
 
@@ -102,13 +104,14 @@ class SolanaService2 {
 
       final keyPair = await _getKeyPair();
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
-        // Show Approval Modal
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.pubkey.toBase58(),
         transportType: pRequest.transportType.name,
+        requester: requester,
       )) {
         // Sign the transaction.
         // if params contains `transaction` key we should parse that one and disregard the rest, see https://docs.walletconnect.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
@@ -182,13 +185,14 @@ class SolanaService2 {
 
       final keyPair = await _getKeyPair();
 
+      final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
-        // Show Approval Modal
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.pubkey.toBase58(),
         transportType: pRequest.transportType.name,
+        requester: requester,
       )) {
         if (params.containsKey('transactions')) {
           final transactions = params['transactions'] as List;

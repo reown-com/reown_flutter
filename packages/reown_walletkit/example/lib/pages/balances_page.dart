@@ -175,14 +175,15 @@ class _BalancesPageState extends State<BalancesPage> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.all(AppSpacing.s6),
-                          child: CircularProgressIndicator(color: colors.accent),
+                          child:
+                              CircularProgressIndicator(color: colors.accent),
                         ),
                       )
                     else if (_filteredBalances.isEmpty)
                       Container(
                         height: 64.0,
                         decoration: BoxDecoration(
-                          color: colors.backgroundSecondary,
+                          color: colors.foregroundPrimary,
                           borderRadius: BorderRadius.circular(20.0),
                         ),
                         alignment: Alignment.center,
@@ -216,7 +217,7 @@ class _BalancesPageState extends State<BalancesPage> {
                           child: Container(
                             height: 64.0,
                             decoration: BoxDecoration(
-                              color: colors.backgroundSecondary,
+                              color: colors.foregroundPrimary,
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                             padding: const EdgeInsets.symmetric(
@@ -248,9 +249,8 @@ class _BalancesPageState extends State<BalancesPage> {
                                           imageUrl: iconUrl,
                                           width: 32.0,
                                           height: 32.0,
-                                          errorWidget:
-                                              (context, url, error) =>
-                                                  const SizedBox.shrink(),
+                                          errorWidget: (context, url, error) =>
+                                              const SizedBox.shrink(),
                                         ),
                                       ),
                                     ),
@@ -376,14 +376,12 @@ class _BalancesFilterWidget extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       side: BorderSide(
-                        color:
-                            isSelected ? colors.accent : colors.inputBorder,
+                        color: isSelected ? colors.accent : colors.inputBorder,
                       ),
                     ),
                     labelStyle: TextStyle(
                       fontSize: 13.0,
-                      color:
-                          isSelected ? colors.accent : colors.textPrimary,
+                      color: isSelected ? colors.accent : colors.textPrimary,
                     ),
                   ),
                 );

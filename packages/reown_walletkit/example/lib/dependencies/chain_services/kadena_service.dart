@@ -138,9 +138,13 @@ class KadenaService {
         signingPubKey: keys[0].publicKey,
       );
 
+      final requester = _walletKit.sessions.get(topic)?.peer;
       // Show the sign widget
       final List<bool>? approved = await _bottomSheetService.queueBottomSheet(
-        widget: KadenaRequestWidget(payloads: [payload]),
+        widget: KadenaRequestWidget(
+          requester: requester,
+          payloads: [payload],
+        ),
       );
 
       // If the user approved, sign the request
@@ -190,9 +194,11 @@ class KadenaService {
         chainSupported.chainId,
       );
 
+      final requester = _walletKit.sessions.get(topic)?.peer;
       // Show the sign widget
       final List<bool>? approved = await _bottomSheetService.queueBottomSheet(
         widget: KadenaRequestWidget(
+          requester: requester,
           payloads: [
             ...(quicksignRequest.commandSigDatas
                 .map((e) => PactCommandPayload.fromJson(jsonDecode(e.cmd)))
