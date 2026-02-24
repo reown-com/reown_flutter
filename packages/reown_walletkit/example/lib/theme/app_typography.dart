@@ -21,9 +21,10 @@ class AppTypography {
 
   TextStyle get heading6 => TextStyle(
         color: _c.textPrimary,
+        fontFamily: 'KH Teka',
         fontSize: 20.0,
+        fontStyle: FontStyle.normal,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.6,
       );
 
   TextStyle get buttonText => TextStyle(
