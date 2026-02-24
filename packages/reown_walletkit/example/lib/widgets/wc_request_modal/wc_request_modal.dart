@@ -3,6 +3,7 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
@@ -85,12 +86,7 @@ class WCRequestModal extends StatelessWidget {
         // Title
         Text(
           title,
-          style: TextStyle(
-            color: colors.textPrimary,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w400,
-            letterSpacing: -0.6,
-          ),
+          style: context.textStyles.heading6,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.s5),

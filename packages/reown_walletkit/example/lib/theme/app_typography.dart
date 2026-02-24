@@ -19,6 +19,13 @@ class AppTypography {
         fontWeight: FontWeight.w500,
       );
 
+  TextStyle get heading6 => TextStyle(
+        color: _c.textPrimary,
+        fontSize: 20.0,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.6,
+      );
+
   TextStyle get buttonText => TextStyle(
         color: _c.onAccent,
         fontSize: 16.0,

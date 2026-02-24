@@ -4,6 +4,7 @@ import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
@@ -178,11 +179,7 @@ class _WCConnectModalState extends State<WCConnectModal> {
         // Title
         Text(
           'Connect your wallet to ${metadata.name}',
-          style: TextStyle(
-            color: colors.textPrimary,
-            fontSize: 18.0,
-            fontWeight: FontWeight.w600,
-          ),
+          style: context.textStyles.heading6,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.s5),
