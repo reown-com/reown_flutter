@@ -79,6 +79,7 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                       (item.showBackButton)
                           ? WCPSheetIconButton(
                               icon: Icons.arrow_back,
+                              showBorder: false,
                               onPressed: () {
                                 if (Navigator.canPop(context)) {
                                   Navigator.of(context)

@@ -42,11 +42,7 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
         color: Colors.transparent,
         borderRadius: BorderRadius.circular(AppRadius.xxl),
       ),
-      padding: const EdgeInsets.only(
-        left: AppSpacing.s2,
-        bottom: AppSpacing.s2,
-        right: AppSpacing.s2,
-      ),
+      padding: EdgeInsets.zero,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,

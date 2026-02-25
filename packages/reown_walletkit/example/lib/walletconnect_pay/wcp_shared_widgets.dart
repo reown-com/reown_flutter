@@ -46,6 +46,7 @@ class WCPrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
+      height: 48.0,
       child: InkWell(
         onTap: enabled ? onPressed : null,
         borderRadius: BorderRadius.circular(AppRadius.md),
@@ -60,8 +61,8 @@ class WCPrimaryButton extends StatelessWidget {
             ),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.s4,
-              vertical: AppSpacing.s4,
             ),
+            alignment: Alignment.center,
             child: Text(
               text,
               style: TextStyle(
@@ -300,10 +301,12 @@ class WCPSheetIconButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.onPressed,
+    this.showBorder = true,
   });
 
   final IconData icon;
   final VoidCallback onPressed;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -315,7 +318,9 @@ class WCPSheetIconButton extends StatelessWidget {
         height: 38.0,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          border: Border.all(color: colors.foregroundTertiary, width: 1),
+          border: showBorder
+              ? Border.all(color: colors.foregroundTertiary, width: 1)
+              : null,
           borderRadius: BorderRadius.circular(AppSpacing.s3),
         ),
         child: Icon(

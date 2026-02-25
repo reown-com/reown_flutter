@@ -56,6 +56,7 @@ class _Header extends StatelessWidget {
       children: [
         WCPSheetIconButton(
           icon: Icons.arrow_back,
+          showBorder: false,
           onPressed: () => Navigator.of(context).pop(),
         ),
         WCPSheetIconButton(

@@ -772,21 +772,30 @@ class WalletKitService implements IWalletKitService {
       leadingWidget: ValueListenableBuilder<bool>(
         valueListenable: showInfoPage,
         builder: (_, isShowingInfo, __) {
-          if (isShowingInfo) {
-            return WCPSheetIconButton(
-              icon: Icons.arrow_back,
-              onPressed: () => showInfoPage.value = false,
-            );
-          }
-          if (infoButtonNotifier != null) {
-            return ValueListenableBuilder<bool>(
-              valueListenable: infoButtonNotifier,
-              builder: (_, visible, __) => visible
-                  ? WCPInfoButton(onTap: () => showInfoPage.value = true)
-                  : const SizedBox(width: 38),
-            );
-          }
-          return const SizedBox(width: 38);
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            child: isShowingInfo
+                ? WCPSheetIconButton(
+                    key: const ValueKey('back_button'),
+                    icon: Icons.arrow_back,
+                    showBorder: false,
+                    onPressed: () => showInfoPage.value = false,
+                  )
+                : infoButtonNotifier != null
+                    ? ValueListenableBuilder<bool>(
+                        key: const ValueKey('info_button'),
+                        valueListenable: infoButtonNotifier,
+                        builder: (_, visible, __) => visible
+                            ? WCPInfoButton(
+                                onTap: () => showInfoPage.value = true,
+                              )
+                            : const SizedBox(width: 38),
+                      )
+                    : const SizedBox(
+                        key: ValueKey('spacer'),
+                        width: 38,
+                      ),
+          );
         },
       ),
     );

@@ -40,12 +40,26 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
   late ConfirmPaymentRequest confirmRequest;
   final Set<String> _collectDataCompletedIds = {};
   bool _isProcessing = false;
+  bool _isForward = true;
 
   @override
   void initState() {
     super.initState();
     paymentOptionsResponse = widget.paymentOptionsResponse;
     confirmRequest = widget.paymentRequest;
+    widget.showInfoPageNotifier?.addListener(_onInfoPageToggled);
+  }
+
+  @override
+  void dispose() {
+    widget.showInfoPageNotifier?.removeListener(_onInfoPageToggled);
+    super.dispose();
+  }
+
+  void _onInfoPageToggled() {
+    setState(() {
+      _isForward = widget.showInfoPageNotifier!.value;
+    });
   }
 
   PaymentOption get _selectedOption {
@@ -140,7 +154,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         WCPMerchantHeader(merchant: paymentInfo.merchant),
         const SizedBox(height: AppSpacing.s4),
         WCPPaymentDetails(paymentInfo: paymentInfo),
-        const SizedBox(height: AppSpacing.s7),
+        const SizedBox(height: AppSpacing.s3),
         WCPPaymentOptionList(
           options: paymentOptionsResponse.options,
           selectedOption: _selectedOption,
@@ -185,18 +199,62 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
 
     final showInfoPageNotifier = widget.showInfoPageNotifier;
     if (showInfoPageNotifier != null) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppRadius.xxl),
-        ),
-        padding: EdgeInsets.zero,
+      return ClipRect(
         child: ValueListenableBuilder<bool>(
           valueListenable: showInfoPageNotifier,
           builder: (context, showInfo, _) {
-            return showInfo
-                ? _buildInfoView(context)
-                : _buildDetailsView(context);
+            return AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              alignment: Alignment.topCenter,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
+                layoutBuilder: (currentChild, previousChildren) {
+                  return Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      ...previousChildren.map((child) => Positioned(
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            child: child,
+                          )),
+                      if (currentChild != null) currentChild,
+                    ],
+                  );
+                },
+                transitionBuilder: (child, animation) {
+                  final isInfoView = child.key == const ValueKey('info');
+                  final beginOffset = Offset(
+                    isInfoView
+                        ? (_isForward ? 0.3 : -0.3)
+                        : (_isForward ? -0.3 : 0.3),
+                    0.0,
+                  );
+                  return FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: beginOffset,
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
+                    ),
+                  );
+                },
+                child: showInfo
+                    ? KeyedSubtree(
+                        key: const ValueKey('info'),
+                        child: _buildInfoView(context),
+                      )
+                    : KeyedSubtree(
+                        key: const ValueKey('details'),
+                        child: _buildDetailsView(context),
+                      ),
+              ),
+            );
           },
         ),
       );
@@ -230,7 +288,6 @@ class DefaultLogo extends StatelessWidget {
   }
 }
 
-
 class WCPPaymentOptionList extends StatelessWidget {
   const WCPPaymentOptionList({
     super.key,
@@ -254,7 +311,8 @@ class WCPPaymentOptionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedCompleted = collectDataCompletedIds.contains(selectedOption.id);
+    final selectedCompleted =
+        collectDataCompletedIds.contains(selectedOption.id);
     final singleOptionReady =
         options.length == 1 && !_optionNeedsCollectData(options.first);
 
@@ -262,29 +320,47 @@ class WCPPaymentOptionList extends StatelessWidget {
       return _ConfirmedPaymentOption(option: selectedOption);
     }
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 280),
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(
-          scrollbars: false,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: options.map((option) {
-              final isSelected = option.id == selectedOption.id;
-              final hasCollectData = _optionNeedsCollectData(option);
-              return _PaymentOptionItem(
-                option: option,
-                isSelected: isSelected,
-                hasCollectData: hasCollectData,
-                onTap: () {
-                  if (!isSelected) {
-                    onOptionSelected(option);
-                  }
-                },
-              );
-            }).toList(),
+    return ShaderMask(
+      shaderCallback: (bounds) => const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Colors.transparent,
+          Colors.black,
+          Colors.black,
+          Colors.transparent,
+        ],
+        stops: [0.0, 0.06, 0.94, 1.0],
+      ).createShader(bounds),
+      blendMode: BlendMode.dstIn,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 280),
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            scrollbars: false,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: AppSpacing.s4),
+                ...options.map((option) {
+                  final isSelected = option.id == selectedOption.id;
+                  final hasCollectData = _optionNeedsCollectData(option);
+                  return _PaymentOptionItem(
+                    option: option,
+                    isSelected: isSelected,
+                    hasCollectData: hasCollectData,
+                    onTap: () {
+                      if (!isSelected) {
+                        onOptionSelected(option);
+                      }
+                    },
+                  );
+                }),
+                const SizedBox(height: AppSpacing.s4),
+              ],
+            ),
           ),
         ),
       ),
@@ -300,6 +376,9 @@ class _PaymentOptionItem extends StatelessWidget {
     required this.onTap,
   });
 
+  static const _selectionDuration = Duration(milliseconds: 220);
+  static const _selectionCurve = Curves.easeOutCubic;
+
   final PaymentOption option;
   final bool isSelected;
   final bool hasCollectData;
@@ -311,86 +390,107 @@ class _PaymentOptionItem extends StatelessWidget {
     final colors = context.colors;
     return GestureDetector(
       onTap: onTap,
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? colors.foregroundAccentPrimary010
-                  : colors.foregroundPrimary,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: isSelected ? colors.accent : Colors.transparent,
-                width: 1,
-              ),
-            ),
-            margin: const EdgeInsets.only(bottom: 6.0),
-            padding: const EdgeInsets.all(AppSpacing.s4),
-            height: 64.0,
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 16.0,
-                  backgroundImage: NetworkImage(display.iconUrl ?? ''),
-                ),
-                const SizedBox(width: AppSpacing.s2),
-                Text(
-                  formatPayAmount(option.amount),
-                  style: TextStyle(
-                    color: colors.textPrimary,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w400,
+      child: AnimatedContainer(
+        duration: _selectionDuration,
+        curve: _selectionCurve,
+        decoration: BoxDecoration(
+          color: colors.foregroundPrimary,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? colors.accent : Colors.transparent,
+            width: 1,
+          ),
+        ),
+        margin: const EdgeInsets.only(bottom: 6.0),
+        height: 68.0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: AnimatedOpacity(
+                    duration: _selectionDuration,
+                    curve: _selectionCurve,
+                    opacity: isSelected ? 1.0 : 0.0,
+                    child: Container(color: colors.foregroundAccentPrimary010),
                   ),
                 ),
-                const Spacer(),
-                if (hasCollectData)
-                  Container(
-                    height: 38.0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.s2,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
+                child: Row(
+                  children: [
+                    Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        CircleAvatar(
+                          radius: 16.0,
+                          backgroundImage: NetworkImage(display.iconUrl ?? ''),
+                        ),
+                        if ((display.networkIconUrl ?? '').isNotEmpty)
+                          Positioned(
+                            bottom: -2,
+                            right: -2,
+                            child: Container(
+                              padding: const EdgeInsets.all(1.5),
+                              decoration: BoxDecoration(
+                                color: colors.backgroundSecondary,
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: CircleAvatar(
+                                radius: 8.0,
+                                backgroundImage:
+                                    NetworkImage(display.networkIconUrl ?? ''),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    margin: const EdgeInsets.only(right: AppSpacing.s2),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? colors.accent.withValues(alpha: 0.9)
-                          : colors.foregroundTertiary,
-                      borderRadius: BorderRadius.circular(AppSpacing.s2),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Info required',
+                    const SizedBox(width: AppSpacing.s2),
+                    Text(
+                      formatPayAmount(option.amount),
                       style: TextStyle(
-                        color: isSelected
-                            ? Colors.white
-                            : colors.textPrimary,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
+                        color: colors.textPrimary,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
                       ),
                     ),
-                  ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 18,
-            left: 32,
-            child: Visibility(
-              visible: (display.networkIconUrl ?? '').isNotEmpty,
-              child: Container(
-                padding: const EdgeInsets.all(1.5),
-                decoration: BoxDecoration(
-                  color: colors.backgroundSecondary,
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: CircleAvatar(
-                  radius: 6.0,
-                  backgroundImage:
-                      NetworkImage(display.networkIconUrl ?? ''),
+                    const Spacer(),
+                    if (hasCollectData)
+                      AnimatedContainer(
+                        duration: _selectionDuration,
+                        curve: _selectionCurve,
+                        height: 28.0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.s2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? colors.accent.withValues(alpha: 0.9)
+                              : colors.foregroundTertiary,
+                          borderRadius: BorderRadius.circular(AppSpacing.s2),
+                        ),
+                        alignment: Alignment.center,
+                        child: AnimatedDefaultTextStyle(
+                          duration: _selectionDuration,
+                          curve: _selectionCurve,
+                          style: TextStyle(
+                            color:
+                                isSelected ? Colors.white : colors.textPrimary,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          child: const Text('Info required'),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -410,7 +510,9 @@ class _ConfirmedPaymentOption extends StatelessWidget {
         color: colors.foregroundPrimary,
         borderRadius: BorderRadius.circular(16.0),
       ),
-      padding: const EdgeInsets.all(AppSpacing.s5),
+      height: 68.0,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
+      alignment: Alignment.center,
       child: Row(
         children: [
           Text(
