@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
@@ -14,16 +15,10 @@ class WCModalTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     return Center(
       child: Text(
         text,
-        style: TextStyle(
-          color: colors.textPrimary,
-          fontSize: 20.0,
-          fontWeight: FontWeight.w400,
-          fontFamily: 'KH Teka',
-        ),
+        style: context.textStyles.heading6,
         textAlign: TextAlign.center,
       ),
     );
@@ -65,11 +60,8 @@ class WCPrimaryButton extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               text,
-              style: TextStyle(
+              style: context.textStyles.wcpTextPrimary.copyWith(
                 color: colors.textInvert,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'KH Teka',
               ),
               textAlign: TextAlign.center,
             ),
@@ -184,15 +176,12 @@ class _WCPTextFieldState extends State<WCPTextField> {
         focusNode: widget.focusNode,
         onSubmitted: widget.onSubmitted,
         style: widget.textStyle ??
-            TextStyle(
+            context.textStyles.buttonText.copyWith(
               color: colors.textPrimary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w500,
             ),
         placeholder: widget.label,
-        placeholderStyle: TextStyle(
+        placeholderStyle: context.textStyles.wcpTextPrimary.copyWith(
           color: colors.textTertiary,
-          fontSize: 16.0,
         ),
         decoration: const BoxDecoration(),
         padding: EdgeInsets.zero,
@@ -211,7 +200,6 @@ class WCPPaymentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -222,12 +210,7 @@ class WCPPaymentDetails extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             text: TextSpan(
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 20.0,
-                fontFamily: 'KH Teka',
-                fontWeight: FontWeight.w400,
-              ),
+              style: context.textStyles.heading6,
               children: [
                 const TextSpan(text: 'Pay '),
                 TextSpan(text: formatPayAmount(paymentInfo.amount)),
@@ -291,6 +274,7 @@ class _DefaultLogo extends StatelessWidget {
         color: context.colors.onBackgroundInvert,
         fontSize: 32,
         fontWeight: FontWeight.bold,
+        letterSpacing: -0.32,
       ),
     );
   }

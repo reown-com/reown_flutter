@@ -5,6 +5,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/utils/namespace_model_builder.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
@@ -42,7 +43,11 @@ class WCConnectionRequestWidget extends StatelessWidget {
           const SizedBox(height: AppSpacing.s2),
           Text(
             '${requester!.metadata.name} ${StringConstants.wouldLikeToConnect}',
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            style: context.textStyles.heading6.copyWith(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              letterSpacing: -0.18,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppSpacing.s2),
@@ -153,7 +158,10 @@ class VerifyHeader extends StatelessWidget {
         Expanded(
           child: Text(
             title,
-            style: TextStyle(color: iconColor, fontWeight: FontWeight.bold),
+            style: context.textStyles.bodyTextBold.copyWith(
+              color: iconColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],
@@ -176,7 +184,12 @@ class VerifyBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(origin, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          origin,
+          style: context.textStyles.bodyTextBold.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox.square(dimension: 8.0),
         Container(
           padding: const EdgeInsets.all(AppSpacing.s2),
@@ -191,7 +204,10 @@ class VerifyBanner extends StatelessWidget {
               Text(
                 text,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: color, fontWeight: FontWeight.bold),
+                style: context.textStyles.bodyTextBold.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
