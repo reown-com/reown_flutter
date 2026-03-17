@@ -85,7 +85,7 @@ class WCPWhyWeNeedInfoBody extends StatelessWidget {
             fontWeight: FontWeight.w400,
             height: 1.0,
           ),
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.start,
         ),
         const SizedBox(height: AppSpacing.s2),
         Text(
@@ -97,7 +97,7 @@ class WCPWhyWeNeedInfoBody extends StatelessWidget {
             fontWeight: FontWeight.w400,
             height: 1.125,
           ),
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.start,
         ),
         const SizedBox(height: AppSpacing.s2),
         Text(
@@ -110,7 +110,7 @@ class WCPWhyWeNeedInfoBody extends StatelessWidget {
             fontWeight: FontWeight.w400,
             height: 1.125,
           ),
-          textAlign: TextAlign.left,
+          textAlign: TextAlign.start,
         ),
       ],
     );
