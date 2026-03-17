@@ -75,41 +75,42 @@ class WCPWhyWeNeedInfoBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Why we need your information?',
+          'Why do we collect personal details?',
           style: TextStyle(
             color: colors.textPrimary,
             fontSize: 20.0,
             fontWeight: FontWeight.w400,
             height: 1.0,
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         const SizedBox(height: AppSpacing.s2),
         Text(
-          'For regulatory compliance, we collect basic information on your '
-          'first payment: full name, date of birth, and place of birth.',
+          'To meet compliance requirements, some basic information is '
+          'collected from WalletConnect Pay users.',
           style: TextStyle(
-            color: colors.textTertiary,
+            color: colors.textSecondary,
             fontSize: 16.0,
             fontWeight: FontWeight.w400,
             height: 1.125,
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
         const SizedBox(height: AppSpacing.s2),
         Text(
-          'This information is tied to your wallet address and this specific '
-          'network. If you use the same wallet on this network again, you '
-          "won't need to provide it again.",
+          'This is typically a one-time step\u2014if you use the same wallet '
+          'on this network again, you won\'t need to provide the info again, '
+          'unless your information changes.',
           style: TextStyle(
-            color: colors.textTertiary,
+            color: colors.textSecondary,
             fontSize: 16.0,
             fontWeight: FontWeight.w400,
             height: 1.125,
           ),
-          textAlign: TextAlign.center,
+          textAlign: TextAlign.start,
         ),
       ],
     );
