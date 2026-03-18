@@ -23,6 +23,8 @@ class WebSocketHandler implements IWebSocketHandler {
 
   StreamController<String>? _inputController;
   StreamController<String>? _outputController;
+  StreamSubscription<String>? _inputSubscription;
+  StreamSubscription<String>? _outputSubscription;
 
   @override
   Future<void> setup({required String url}) async {
@@ -51,17 +53,37 @@ class WebSocketHandler implements IWebSocketHandler {
     _outputController = StreamController<String>.broadcast(sync: true);
 
     // Split the incoming stream to support multiple listeners
-    _socket!.stream.cast<String>().listen(
+    _inputSubscription = _socket!.stream.cast<String>().listen(
       (data) => _inputController?.add(data),
-      onError: (error) => _inputController?.addError(error),
-      onDone: () => _inputController?.close(),
+      onError: (error) {
+        try {
+          _inputController?.addError(error);
+        } catch (_) {}
+      },
+      onDone: () {
+        try {
+          _inputController?.close();
+        } catch (_) {}
+      },
     );
 
     // Route outgoing messages through the output controller
-    _outputController!.stream.listen(
-      (data) => _socket?.sink.add(data),
-      onError: (error) => _socket?.sink.addError(error),
-      onDone: () => _socket?.sink.close(),
+    _outputSubscription = _outputController!.stream.listen(
+      (data) {
+        try {
+          _socket?.sink.add(data);
+        } catch (_) {}
+      },
+      onError: (error) {
+        try {
+          _socket?.sink.addError(error);
+        } catch (_) {}
+      },
+      onDone: () {
+        try {
+          _socket?.sink.close();
+        } catch (_) {}
+      },
     );
 
     _channel = StreamChannel(_inputController!.stream, _outputController!.sink);
@@ -75,19 +97,28 @@ class WebSocketHandler implements IWebSocketHandler {
       }
     }
 
-    await _socket?.ready;
-
-    // Check if the request was successful (status code 200)
-    // try {} catch (e) {
-    //   throw ReownCoreError(
-    //     code: 400,
-    //     message: 'WebSocket connection failed, missing or invalid project id.',
-    //   );
-    // }
+    try {
+      await _socket?.ready;
+    } catch (e) {
+      throw ReownCoreError(
+        code: -1,
+        message: 'WebSocket connection failed: ${e.toString()}',
+      );
+    }
   }
 
   @override
   Future<void> close() async {
+    // Cancel subscriptions first to prevent writes to closed sinks
+    try {
+      await _inputSubscription?.cancel();
+    } catch (_) {}
+    try {
+      await _outputSubscription?.cancel();
+    } catch (_) {}
+    _inputSubscription = null;
+    _outputSubscription = null;
+
     try {
       await _socket?.sink.close();
     } catch (_) {}

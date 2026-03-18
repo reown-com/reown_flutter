@@ -1655,12 +1655,12 @@ class ReownAppKitModal
     } catch (e) {
       if (_isUserRejectedError(e)) {
         onModalError.broadcast(UserRejectedRequest());
-      } else {
-        if (e is CoinbaseServiceException) {
-          // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
-          // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
-          throw ReownAppKitModalException('Coinbase Wallet Error');
-        }
+      } else if (e is CoinbaseServiceException) {
+        // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
+        // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
+        throw ReownAppKitModalException('Coinbase Wallet Error');
+      } else if (e is ReownSignError) {
+        onModalError.broadcast(ModalError(e.message));
       }
       rethrow;
     }

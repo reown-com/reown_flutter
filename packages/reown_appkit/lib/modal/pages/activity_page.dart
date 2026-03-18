@@ -114,16 +114,20 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
       widget.appKitModal.onModalError.broadcast(
         ModalError('Error fetching activity'),
       );
-      final namespace = NamespaceUtils.getNamespaceFromChain(
-        widget.appKitModal.selectedChain?.chainId ?? '',
-      );
-      GetIt.I<IAnalyticsService>().sendEvent(
-        ErrorFetchTransactionsEvent(
-          address: widget.appKitModal.session!.getAddress(namespace),
-          projectId: widget.appKitModal.appKit!.core.projectId,
-          cursor: _currentCursor,
-        ),
-      );
+      final session = widget.appKitModal.session;
+      final appKit = widget.appKitModal.appKit;
+      if (session != null && appKit != null) {
+        final namespace = NamespaceUtils.getNamespaceFromChain(
+          widget.appKitModal.selectedChain?.chainId ?? '',
+        );
+        GetIt.I<IAnalyticsService>().sendEvent(
+          ErrorFetchTransactionsEvent(
+            address: session.getAddress(namespace),
+            projectId: appKit.core.projectId,
+            cursor: _currentCursor,
+          ),
+        );
+      }
     }
     setState(() {});
   }
@@ -131,15 +135,19 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   Future<void> _loadMoreActivities() async {
     if (_isLoadingActivities || !_hasMoreActivities) return;
 
-    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    GetIt.I<IAnalyticsService>().sendEvent(
-      LoadMoreTransactionsEvent(
-        address: widget.appKitModal.session!.getAddress(namespace),
-        projectId: widget.appKitModal.appKit!.core.projectId,
-        cursor: _currentCursor,
-      ),
-    );
+    final session = widget.appKitModal.session;
+    final appKit = widget.appKitModal.appKit;
+    if (session != null && appKit != null) {
+      final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      GetIt.I<IAnalyticsService>().sendEvent(
+        LoadMoreTransactionsEvent(
+          address: session.getAddress(namespace),
+          projectId: appKit.core.projectId,
+          cursor: _currentCursor,
+        ),
+      );
+    }
     await _fetchActivities();
   }
 

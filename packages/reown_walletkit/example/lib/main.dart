@@ -148,11 +148,13 @@ class _MyHomePageState extends State<MyHomePage> {
         return keyService;
       });
       GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
-      await GetIt.I.allReady(timeout: Duration(seconds: 1));
+      await GetIt.I.allReady(timeout: Duration(seconds: 5));
 
       final walletKitService = GetIt.I<IWalletKitService>();
       await walletKitService.create();
+      await Future<void>.delayed(Duration.zero); // Yield to prevent UI hang
       await walletKitService.setUpAccounts();
+      await Future<void>.delayed(Duration.zero); // Yield to prevent UI hang
       await walletKitService.init();
 
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
