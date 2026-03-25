@@ -10,12 +10,14 @@ class ExpandableSection extends StatefulWidget {
     required this.headerRight,
     required this.expandedContent,
     this.initiallyExpanded = false,
+    this.headerHeight,
   });
 
   final Widget headerLeft;
   final Widget headerRight;
   final Widget expandedContent;
   final bool initiallyExpanded;
+  final double? headerHeight;
 
   @override
   State<ExpandableSection> createState() => _ExpandableSectionState();
@@ -51,7 +53,8 @@ class _ExpandableSectionState extends State<ExpandableSection> {
           GestureDetector(
             onTap: _toggle,
             behavior: HitTestBehavior.opaque,
-            child: Padding(
+            child: Container(
+              height: widget.headerHeight,
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.s4,
                 vertical: 14.0,

@@ -58,6 +58,16 @@ class ChainsDataList {
     ),
     const ChainMetadata(
       type: ChainType.eip155,
+      chainId: 'eip155:143',
+      name: 'Monad',
+      currency: 'MON',
+      logo:
+          'https://pbs.twimg.com/profile_images/1945153889881243648/CehOdEnT_400x400.jpg',
+      color: Colors.deepPurple,
+      rpc: ['https://rpc.monad.xyz'],
+    ),
+    const ChainMetadata(
+      type: ChainType.eip155,
       chainId: 'eip155:100',
       name: 'Gnosis',
       currency: 'XDAI',
