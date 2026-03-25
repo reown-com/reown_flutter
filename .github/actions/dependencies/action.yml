@@ -49,6 +49,12 @@ runs:
           # dart run polkadart_cli:generate -v
           # dart format --output=none --set-exit-if-changed .
     
+    # Clear stale CocoaPods CDN cache (iOS only)
+    - name: Clear CocoaPods CDN cache
+      if: inputs.platform == 'ios'
+      shell: bash
+      run: rm -rf ~/.cocoapods/repos/trunk
+
     # Get package dependencies for wallet and generate files
     - name: Get package dependencies for wallet and generate files
       shell: bash
