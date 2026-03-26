@@ -1607,18 +1607,18 @@ class ReownAppKitModal
     if (_currentSession == null) {
       throw ReownAppKitModalException('Session is null');
     }
-    if (!NamespaceUtils.isValidChainId(chainId)) {
-      throw Errors.getSdkError(
-        Errors.UNSUPPORTED_CHAINS,
-        context: 'chainId should conform to "CAIP-2" format',
-      ).toSignError();
-    }
     //
     _appKit.core.logger.d(
       '[$runtimeType] request, chainId: $chainId, '
       '${jsonEncode(request.toJson())}',
     );
     try {
+      if (!NamespaceUtils.isValidChainId(chainId)) {
+        throw Errors.getSdkError(
+          Errors.UNSUPPORTED_CHAINS,
+          context: 'chainId should conform to "CAIP-2" format',
+        ).toSignError();
+      }
       if (_currentSession!.sessionService.isMagic) {
         return await _magicService.request(chainId: chainId, request: request);
       }
@@ -1656,11 +1656,12 @@ class ReownAppKitModal
       if (_isUserRejectedError(e)) {
         onModalError.broadcast(UserRejectedRequest());
       } else if (e is CoinbaseServiceException) {
-        // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
+        // If the error is due to no session on Coinbase Wallet we disconnect the session on Modal.
         // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
         throw ReownAppKitModalException('Coinbase Wallet Error');
       } else if (e is ReownSignError) {
         onModalError.broadcast(ModalError(e.message));
+        return;
       }
       rethrow;
     }

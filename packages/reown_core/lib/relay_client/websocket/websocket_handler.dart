@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/relay_client/websocket/i_websocket_handler.dart';
 import 'package:stream_channel/stream_channel.dart';
@@ -58,12 +59,16 @@ class WebSocketHandler implements IWebSocketHandler {
       onError: (error) {
         try {
           _inputController?.addError(error);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[WebSocketHandler] inputController.addError failed: $e');
+        }
       },
       onDone: () {
         try {
           _inputController?.close();
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[WebSocketHandler] inputController.close failed: $e');
+        }
       },
     );
 
@@ -72,17 +77,23 @@ class WebSocketHandler implements IWebSocketHandler {
       (data) {
         try {
           _socket?.sink.add(data);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[WebSocketHandler] sink.add failed: $e');
+        }
       },
       onError: (error) {
         try {
           _socket?.sink.addError(error);
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[WebSocketHandler] sink.addError failed: $e');
+        }
       },
       onDone: () {
         try {
           _socket?.sink.close();
-        } catch (_) {}
+        } catch (e) {
+          debugPrint('[WebSocketHandler] sink.close failed: $e');
+        }
       },
     );
 
@@ -100,6 +111,7 @@ class WebSocketHandler implements IWebSocketHandler {
     try {
       await _socket?.ready;
     } catch (e) {
+      await close();
       throw ReownCoreError(
         code: -1,
         message: 'WebSocket connection failed: ${e.toString()}',
@@ -112,24 +124,34 @@ class WebSocketHandler implements IWebSocketHandler {
     // Cancel subscriptions first to prevent writes to closed sinks
     try {
       await _inputSubscription?.cancel();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] inputSubscription.cancel failed: $e');
+    }
     try {
       await _outputSubscription?.cancel();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] outputSubscription.cancel failed: $e');
+    }
     _inputSubscription = null;
     _outputSubscription = null;
 
     try {
       await _socket?.sink.close();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] socket.sink.close failed: $e');
+    }
 
     // Close the controllers to prevent further messages and race conditions
     try {
       await _inputController?.close();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] inputController.close failed: $e');
+    }
     try {
       await _outputController?.close();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] outputController.close failed: $e');
+    }
 
     _inputController = null;
     _outputController = null;
