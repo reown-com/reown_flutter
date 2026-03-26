@@ -50,9 +50,8 @@ platform :ios do
     _app_version = options[:app_version]
 
     # Get latest build number from TestFlight (across all versions).
-    number = latest_testflight_build_number(
-      app_identifier: app_identifier,
-    )
+    # TODO: remove hardcoded override once TF build numbers are back in sync
+    number = 131
     new_build_number = number.to_i + 1
     UI.message(
       "📦 Latest TestFlight build number: #{number} " \
