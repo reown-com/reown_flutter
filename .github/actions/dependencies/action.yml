@@ -49,6 +49,12 @@ runs:
           # dart run polkadart_cli:generate -v
           # dart format --output=none --set-exit-if-changed .
     
+    # Ensure CocoaPods specs are up-to-date (iOS only)
+    - name: Update CocoaPods specs
+      if: inputs.platform == 'ios'
+      shell: bash
+      run: pod repo update --silent
+
     # Get package dependencies for wallet and generate files
     - name: Get package dependencies for wallet and generate files
       shell: bash
