@@ -29,6 +29,7 @@ class VerifySection extends StatelessWidget {
     final origin = verifyContext!.origin;
 
     return ExpandableSection(
+      headerHeight: 68.0,
       headerLeft: Text(
         _cleanUrl(origin),
         style: TextStyle(

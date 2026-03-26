@@ -33,13 +33,13 @@ class NetworkSection extends StatelessWidget {
 
     if (isSingleChain) {
       return Container(
+        height: 68.0,
         decoration: BoxDecoration(
           color: colors.foregroundPrimary,
           borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.s4,
-          vertical: 14.0,
         ),
         child: Row(
           children: [

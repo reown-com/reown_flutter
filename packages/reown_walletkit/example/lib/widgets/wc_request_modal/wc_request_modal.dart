@@ -99,10 +99,6 @@ class WCRequestModal extends StatelessWidget {
                 VerifySection(verifyContext: verifyContext),
                 if (verifyContext != null)
                   const SizedBox(height: AppSpacing.s2),
-                if (chain != null) ...[
-                  _NetworkRow(chain: chain!),
-                  const SizedBox(height: AppSpacing.s2),
-                ],
                 ...summaryRows.map(
                   (row) => Padding(
                     padding: const EdgeInsets.only(bottom: AppSpacing.s2),
@@ -118,6 +114,10 @@ class WCRequestModal extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (chain != null) ...[
+                  _NetworkRow(chain: chain!),
+                  const SizedBox(height: AppSpacing.s2),
+                ],
               ],
             ),
           ),
@@ -224,13 +224,13 @@ class _NetworkRow extends StatelessWidget {
 
     return Container(
       width: double.infinity,
+      height: 68.0,
       decoration: BoxDecoration(
         color: colors.foregroundPrimary,
         borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.s5,
-        vertical: AppSpacing.s5,
       ),
       child: Row(
         children: [
@@ -246,24 +246,11 @@ class _NetworkRow extends StatelessWidget {
           ),
           const Spacer(),
           if (chain.logo.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.s2),
-              child: ChainIcon(
-                logoUrl: chain.logo,
-                size: 24.0,
-                showBorder: false,
-              ),
+            ChainIcon(
+              logoUrl: chain.logo,
+              size: 24.0,
+              showBorder: false,
             ),
-          Text(
-            chain.name,
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: -0.16,
-              height: 18.0 / 16.0,
-            ),
-          ),
         ],
       ),
     );
