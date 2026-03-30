@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/relay_client/websocket/i_websocket_handler.dart';
 import 'package:stream_channel/stream_channel.dart';
@@ -23,6 +24,8 @@ class WebSocketHandler implements IWebSocketHandler {
 
   StreamController<String>? _inputController;
   StreamController<String>? _outputController;
+  StreamSubscription<String>? _inputSubscription;
+  StreamSubscription<String>? _outputSubscription;
 
   @override
   Future<void> setup({required String url}) async {
@@ -51,17 +54,47 @@ class WebSocketHandler implements IWebSocketHandler {
     _outputController = StreamController<String>.broadcast(sync: true);
 
     // Split the incoming stream to support multiple listeners
-    _socket!.stream.cast<String>().listen(
+    _inputSubscription = _socket!.stream.cast<String>().listen(
       (data) => _inputController?.add(data),
-      onError: (error) => _inputController?.addError(error),
-      onDone: () => _inputController?.close(),
+      onError: (error) {
+        try {
+          _inputController?.addError(error);
+        } catch (e) {
+          debugPrint('[WebSocketHandler] inputController.addError failed: $e');
+        }
+      },
+      onDone: () {
+        try {
+          _inputController?.close();
+        } catch (e) {
+          debugPrint('[WebSocketHandler] inputController.close failed: $e');
+        }
+      },
     );
 
     // Route outgoing messages through the output controller
-    _outputController!.stream.listen(
-      (data) => _socket?.sink.add(data),
-      onError: (error) => _socket?.sink.addError(error),
-      onDone: () => _socket?.sink.close(),
+    _outputSubscription = _outputController!.stream.listen(
+      (data) {
+        try {
+          _socket?.sink.add(data);
+        } catch (e) {
+          debugPrint('[WebSocketHandler] sink.add failed: $e');
+        }
+      },
+      onError: (error) {
+        try {
+          _socket?.sink.addError(error);
+        } catch (e) {
+          debugPrint('[WebSocketHandler] sink.addError failed: $e');
+        }
+      },
+      onDone: () {
+        try {
+          _socket?.sink.close();
+        } catch (e) {
+          debugPrint('[WebSocketHandler] sink.close failed: $e');
+        }
+      },
     );
 
     _channel = StreamChannel(_inputController!.stream, _outputController!.sink);
@@ -75,30 +108,50 @@ class WebSocketHandler implements IWebSocketHandler {
       }
     }
 
-    await _socket?.ready;
-
-    // Check if the request was successful (status code 200)
-    // try {} catch (e) {
-    //   throw ReownCoreError(
-    //     code: 400,
-    //     message: 'WebSocket connection failed, missing or invalid project id.',
-    //   );
-    // }
+    try {
+      await _socket?.ready;
+    } catch (e) {
+      await close();
+      throw ReownCoreError(
+        code: -1,
+        message: 'WebSocket connection failed: ${e.toString()}',
+      );
+    }
   }
 
   @override
   Future<void> close() async {
+    // Cancel subscriptions first to prevent writes to closed sinks
+    try {
+      await _inputSubscription?.cancel();
+    } catch (e) {
+      debugPrint('[WebSocketHandler] inputSubscription.cancel failed: $e');
+    }
+    try {
+      await _outputSubscription?.cancel();
+    } catch (e) {
+      debugPrint('[WebSocketHandler] outputSubscription.cancel failed: $e');
+    }
+    _inputSubscription = null;
+    _outputSubscription = null;
+
     try {
       await _socket?.sink.close();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] socket.sink.close failed: $e');
+    }
 
     // Close the controllers to prevent further messages and race conditions
     try {
       await _inputController?.close();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] inputController.close failed: $e');
+    }
     try {
       await _outputController?.close();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[WebSocketHandler] outputController.close failed: $e');
+    }
 
     _inputController = null;
     _outputController = null;
