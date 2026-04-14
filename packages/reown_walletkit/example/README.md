@@ -62,7 +62,7 @@ maestro studio
 
 ### Test Mode
 
-When built with `ENABLE_TEST_MODE=true`, the scan modal shows a text input field instead of camera/paste options, allowing tests to paste WalletConnect Pay URLs directly.
+When built with `ENABLE_TEST_MODE=true`, the scan modal shows a text input field in addition to the camera/paste options, allowing tests to paste WalletConnect Pay URLs directly.
 
 ### CI
 

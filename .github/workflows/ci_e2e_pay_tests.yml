@@ -6,10 +6,6 @@ permissions:
 on:
   workflow_dispatch:
     inputs:
-      maestro_flows_ref:
-        description: 'Branch/tag of WalletConnect/actions for test flows'
-        required: false
-        default: 'f9522878950f7bd904a628b2c4d486b93034a4fe'
       platform:
         description: 'Platform(s) to run pay E2E tests'
         required: false

@@ -341,9 +341,9 @@ Most packages use code generation:
 
 WalletConnect Pay flows are tested with [Maestro](https://maestro.mobile.dev/) E2E tests. Test flows are **shared** across RN, Kotlin, and Flutter wallet samples and live in the [WalletConnect/actions](https://github.com/WalletConnect/actions) repo (not in this repo).
 
-**Test ID convention**: Flutter widgets use `Semantics(identifier: 'test-id', label: 'test-id')` which maps to Android `resource-id` for Maestro's `id:` selector. IDs are prefixed with `pay-` (e.g. `pay-button-pay`, `pay-option-0`, `pay-result-success-icon`).
+**Test ID convention**: Flutter widgets use `Semantics(identifier: 'test-id', label: 'test-id')` which maps to Android `resource-id` for Maestro's `id:` selector. Most Pay-specific IDs are prefixed with `pay-` (e.g. `pay-button-pay`, `pay-option-0`, `pay-result-success-icon`), while scan modal URL controls currently use `input-paste-url` and `button-submit-url`.
 
-**Test mode**: Build with `--dart-define="ENABLE_TEST_MODE=true"` to show a URL text input instead of camera scan. Build with `--dart-define="TEST_WALLET_PRIVATE_KEY=<hex>"` to use a funded wallet.
+**Test mode**: Build with `--dart-define="ENABLE_TEST_MODE=true"` to enable the URL paste flow used by Maestro tests. In current behavior, scan/paste options are still shown and the URL controls are exposed via `input-paste-url` and `button-submit-url`. Build with `--dart-define="TEST_WALLET_PRIVATE_KEY=<hex>"` to use a funded wallet.
 
 **Running locally**:
 1. `./scripts/setup-maestro-pay-tests.sh` — downloads test flows from WalletConnect/actions
@@ -351,7 +351,7 @@ WalletConnect Pay flows are tested with [Maestro](https://maestro.mobile.dev/) E
 3. Build APK with test mode + funded wallet private key
 4. `APP_ID=com.walletconnect.flutterwallet.internal ./scripts/run-maestro-pay-tests.sh`
 
-**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs on `ubuntu-16core` with Android emulator. Uses `WalletConnect/actions/maestro/pay-tests` composite action. Never uploads APK/IPA — only debug output.
+**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs Android (`ubuntu-16core`, emulator) and iOS (`macos-26-xlarge`, simulator) lanes. It uses shared pay test flows and never uploads APK/IPA — only debug output.
 
 ### Platform-Specific Code
 

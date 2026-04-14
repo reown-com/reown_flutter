@@ -16,7 +16,7 @@ class WCPPaymentResult extends StatefulWidget {
     this.info,
     this.errorType,
     this.errorMessage,
-  });
+  }) : assert(status != PaymentStatus.succeeded || info != null);
 
   // enum PaymentStatus { requires_action, processing, succeeded, failed, expired }
   final PaymentStatus status;

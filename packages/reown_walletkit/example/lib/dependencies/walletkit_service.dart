@@ -302,7 +302,7 @@ class WalletKitService implements IWalletKitService {
       _currentPaymentOptions = optionsResponse;
 
       if (_currentPaymentOptions!.options.isEmpty) {
-        final emptyResult = await _bottomSheetHandler.queueBottomSheet(
+        await _bottomSheetHandler.queueBottomSheet(
           widget: WCPPaymentResult(
             status: PaymentStatus.failed,
             info: _currentPaymentOptions!.info!,
@@ -310,9 +310,6 @@ class WalletKitService implements IWalletKitService {
           ),
         );
         _currentPaymentOptions = null;
-        if (emptyResult == 'scan_qr') {
-          _openScanModal();
-        }
         return;
       }
 
@@ -327,7 +324,12 @@ class WalletKitService implements IWalletKitService {
       if (e == 'cancelled' || e == 'close') {
         return;
       }
-      rethrow;
+      await _bottomSheetHandler.queueBottomSheet(
+        widget: WCPPaymentResult(
+          status: PaymentStatus.failed,
+          errorType: 'generic',
+        ),
+      );
     }
   }
 
