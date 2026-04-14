@@ -92,7 +92,7 @@ MAESTRO_ARGS=(
 )
 
 if [ $# -eq 0 ]; then
-  set -- --include-tags pay,pay-browser "$MAESTRO_DIR"
+  set -- --include-tags pay "$MAESTRO_DIR"
 fi
 
 RESOLVED_ARGS=()

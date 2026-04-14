@@ -66,8 +66,13 @@ When built with `ENABLE_TEST_MODE=true`, the scan modal shows a text input field
 
 ### CI
 
-The CI workflow (`.github/workflows/ci_e2e_pay_tests.yml`) runs on `ubuntu-16core` with an Android emulator. It:
-1. Builds the APK with test mode + funded wallet
-2. Downloads Maestro flows via `WalletConnect/actions/maestro/pay-tests`
-3. Runs all pay-tagged tests
-4. Uploads only debug/logcat output (never APK/IPA)
+The CI workflow (`.github/workflows/ci_e2e_pay_tests.yml`) runs Pay E2E on:
+1. Android (`ubuntu-16core`) using an emulator
+2. iOS (`macos-26-xlarge`) using a simulator
+
+For each platform lane it:
+1. Builds a test-mode wallet binary with a funded test wallet
+2. Downloads shared Maestro Pay flows via
+   `WalletConnect/actions/maestro/pay-tests`
+3. Runs pay-tagged Maestro tests on emulator/simulator
+4. Uploads only debug output (never APK/IPA)
