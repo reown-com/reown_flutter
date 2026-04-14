@@ -49,6 +49,18 @@ class DeepLinkHandler {
   //     Uri.parse(_walletKit.metadata.redirect?.universal ?? '');
   // static String get host => universalUri.host;
 
+  static const _payHosts = [
+    'pay.walletconnect.com',
+    'staging.pay.walletconnect.com',
+    'dev.pay.walletconnect.com',
+  ];
+
+  static bool _isPayLink(String link) {
+    final uri = Uri.tryParse(link);
+    if (uri == null) return false;
+    return _payHosts.contains(uri.host);
+  }
+
   static void _onLink(dynamic link) async {
     debugPrint('[WalletKit] [DeepLinkHandler] _onLink $link');
 
@@ -61,6 +73,12 @@ class DeepLinkHandler {
       }
     }
 
+    // Route pay.walletconnect.com links through the payment flow.
+    if (_isPayLink('$link')) {
+      _handlePayLink('$link');
+      return;
+    }
+
     try {
       final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
       if (serviceRegistered) {
@@ -69,6 +87,22 @@ class DeepLinkHandler {
       }
     } catch (e) {
       _relayConnetionUri(link);
+    }
+  }
+
+  static void _handlePayLink(String link) async {
+    try {
+      final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
+      if (!serviceRegistered) return;
+
+      waiting.value = true;
+      final walletKitService = GetIt.I<IWalletKitService>();
+      await walletKitService.pair(link);
+    } catch (e) {
+      debugPrint('[WalletKit] [DeepLinkHandler] pay link error: $e');
+      _errorStream.sink.add(e.toString());
+    } finally {
+      waiting.value = false;
     }
   }
 

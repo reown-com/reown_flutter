@@ -51,7 +51,12 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
           const SizedBox(height: AppSpacing.s11),
           const Center(child: WalletConnectLoading(size: 120.0)),
           const SizedBox(height: AppSpacing.s6),
-          WCModalTitle(text: 'Confirming your payment...'),
+          Semantics(
+            container: true,
+            identifier: 'pay-loading-message',
+            label: 'pay-loading-message',
+            child: WCModalTitle(text: 'Confirming your payment...'),
+          ),
           const SizedBox(height: AppSpacing.s6),
         ],
       ),

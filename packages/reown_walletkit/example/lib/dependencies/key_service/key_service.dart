@@ -82,7 +82,10 @@ class KeyService extends IKeyService {
       final isUpdated = await _isUpdated();
       if (isUpdated.$1) {
         // regenerate the wallet after an update
-        await restoreWallet(mnemonicOrPrivate: getMnemonic());
+        final mnemonic = getMnemonic();
+        if (mnemonic.isNotEmpty) {
+          await restoreWallet(mnemonicOrPrivate: mnemonic);
+        }
         await _prefs.setString('rwkt_build_number', isUpdated.$2.toString());
       }
       final savedKeys = _prefs.getStringList('rwkt_chain_keys')!;

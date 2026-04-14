@@ -31,15 +31,17 @@ class WCPrimaryButton extends StatelessWidget {
     required this.onPressed,
     required this.text,
     this.enabled = true,
+    this.testId,
   });
 
   final VoidCallback onPressed;
   final String text;
   final bool enabled;
+  final String? testId;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    Widget button = SizedBox(
       width: double.infinity,
       height: 48.0,
       child: InkWell(
@@ -69,6 +71,15 @@ class WCPrimaryButton extends StatelessWidget {
         }),
       ),
     );
+    if (testId != null) {
+      button = Semantics(
+        container: true,
+        identifier: testId,
+        label: testId,
+        child: button,
+      );
+    }
+    return button;
   }
 }
 
@@ -234,28 +245,33 @@ class WCPMerchantHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: _logoSize,
-        height: _logoSize,
-        decoration: BoxDecoration(
-          color: context.colors.backgroundInvert,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Center(
-          child: merchant.iconUrl != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                  child: Image.network(
-                    merchant.iconUrl!,
-                    width: _logoSize,
-                    height: _logoSize,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) =>
-                        _DefaultLogo(text: merchant.name.characters.first),
-                  ),
-                )
-              : _DefaultLogo(text: merchant.name.characters.first),
+    return Semantics(
+      container: true,
+      identifier: 'pay-merchant-info',
+      label: 'pay-merchant-info',
+      child: Center(
+        child: Container(
+          width: _logoSize,
+          height: _logoSize,
+          decoration: BoxDecoration(
+            color: context.colors.backgroundInvert,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Center(
+            child: merchant.iconUrl != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                    child: Image.network(
+                      merchant.iconUrl!,
+                      width: _logoSize,
+                      height: _logoSize,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          _DefaultLogo(text: merchant.name.characters.first),
+                    ),
+                  )
+                : _DefaultLogo(text: merchant.name.characters.first),
+          ),
         ),
       ),
     );
@@ -325,23 +341,28 @@ class WCPInfoButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 38.0,
-        height: 38.0,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          border: Border.all(color: colors.foregroundTertiary, width: 1),
-          borderRadius: BorderRadius.circular(AppSpacing.s3),
-        ),
-        child: SvgPicture.asset(
-          'assets/QuestionMark.svg',
-          width: 20.0,
-          height: 20.0,
-          colorFilter: ColorFilter.mode(
-            colors.textPrimary,
-            BlendMode.srcIn,
+    return Semantics(
+      container: true,
+      identifier: 'pay-button-info',
+      label: 'pay-button-info',
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: 38.0,
+          height: 38.0,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border.all(color: colors.foregroundTertiary, width: 1),
+            borderRadius: BorderRadius.circular(AppSpacing.s3),
+          ),
+          child: SvgPicture.asset(
+            'assets/QuestionMark.svg',
+            width: 20.0,
+            height: 20.0,
+            colorFilter: ColorFilter.mode(
+              colors.textPrimary,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),

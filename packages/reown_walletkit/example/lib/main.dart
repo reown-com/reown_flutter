@@ -294,23 +294,28 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           // Scan button
-          GestureDetector(
-            onTap: _onScanPressed,
-            child: Container(
-              width: 38.0,
-              height: 38.0,
-              decoration: BoxDecoration(
-                color: colors.backgroundInvert,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              alignment: Alignment.center,
-              child: SvgPicture.asset(
-                'assets/Barcode.svg',
-                width: 18.0,
-                height: 18.0,
-                colorFilter: ColorFilter.mode(
-                  colors.onBackgroundInvert,
-                  BlendMode.srcIn,
+          Semantics(
+            container: true,
+            identifier: 'button-scan',
+            label: 'button-scan',
+            child: GestureDetector(
+              onTap: _onScanPressed,
+              child: Container(
+                width: 38.0,
+                height: 38.0,
+                decoration: BoxDecoration(
+                  color: colors.backgroundInvert,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                alignment: Alignment.center,
+                child: SvgPicture.asset(
+                  'assets/Barcode.svg',
+                  width: 18.0,
+                  height: 18.0,
+                  colorFilter: ColorFilter.mode(
+                    colors.onBackgroundInvert,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),

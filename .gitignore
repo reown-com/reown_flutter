@@ -56,3 +56,7 @@ app.*.map.json
 # Run scripts
 # run_tests_all.sh
 *.env.secret*
+
+# Maestro test flows (downloaded from WalletConnect/actions, not checked in)
+.maestro/
+.env.maestro

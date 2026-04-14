@@ -1,0 +1,178 @@
+name: E2E Pay Tests
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      maestro_flows_ref:
+        description: 'Branch/tag of WalletConnect/actions for test flows'
+        required: false
+        default: 'f9522878950f7bd904a628b2c4d486b93034a4fe'
+  pull_request:
+    paths:
+      - 'packages/reown_walletkit/example/**'
+      - 'packages/walletconnect_pay/**'
+      - '.github/workflows/ci_e2e_pay_tests.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  pay-tests:
+    runs-on: ubuntu-16core
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          architecture: x86_64
+          cache: 'gradle'
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.3"
+
+      - name: Get wallet dependencies
+        working-directory: packages/reown_walletkit/example
+        run: flutter pub get
+
+      - name: Add Secrets file
+        working-directory: packages/reown_walletkit/example/android
+        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+
+      - name: Add Keystore file
+        working-directory: packages/reown_walletkit/example/android
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+
+      - name: Build APK with test mode
+        id: build
+        working-directory: packages/reown_walletkit/example
+        run: |
+          flutter build apk \
+            --flavor internal \
+            --dart-define="PROJECT_ID=${{ secrets.WALLET_PROJECT_ID }}" \
+            --dart-define="ENABLE_TEST_MODE=true" \
+            --dart-define="TEST_WALLET_PRIVATE_KEY=${{ secrets.TEST_WALLET_PRIVATE_KEY }}" \
+            --release \
+            --target-platform android-x64 \
+            --split-per-abi
+
+      - name: Copy Maestro Pay test flows
+        uses: WalletConnect/actions/maestro/pay-tests@f9522878950f7bd904a628b2c4d486b93034a4fe
+
+      - name: Install Maestro CLI
+        uses: WalletConnect/actions/maestro/setup@f9522878950f7bd904a628b2c4d486b93034a4fe
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Run emulator and tests
+        id: maestro
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          ram-size: 4096M
+          emulator-boot-timeout: 600
+          script: |
+            # Install APK
+            adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
+
+            # Run Maestro Pay tests
+            maestro test --include-tags pay,pay-browser \
+              --env APP_ID=com.walletconnect.flutterwallet.internal \
+              --env WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }} \
+              --env WPAY_MERCHANT_ID_SINGLE_NOKYC=${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }} \
+              --env WPAY_CUSTOMER_KEY_MULTI_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }} \
+              --env WPAY_MERCHANT_ID_MULTI_NOKYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }} \
+              --env WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }} \
+              --env WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }} \
+              --test-output-dir /tmp/maestro-output \
+              --debug-output /tmp/maestro-debug \
+              .maestro/
+
+      # Clean up APK before uploading artifacts — never upload APK/IPA
+      - name: Clean up build artifacts
+        if: always()
+        run: rm -rf packages/reown_walletkit/example/build/
+
+      - name: Capture logcat
+        if: always()
+        run: adb logcat -d > /tmp/logcat.txt 2>/dev/null || true
+
+      - name: Upload debug artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pay-tests-debug
+          path: |
+            /tmp/logcat.txt
+            /tmp/maestro-output/
+            /tmp/maestro-debug/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Send Slack notification
+        if: failure()
+        uses: slackapi/slack-github-action@b0fa283ad8fea605de13dc3f449259339835fc52 # v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "E2E Test Report - Android - WalletKit Flutter",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🧪 E2E Test Report - Android (pay)" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Project:*\n`WalletKit Flutter`" },
+                    { "type": "mrkdwn", "text": "*Platform:*\n`Android`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" },
+                    { "type": "mrkdwn", "text": "*Trigger:*\n`${{ github.event_name }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build:*\n`${{ steps.build.outcome == 'success' && '✅ Success' || '❌ Failed' }}`" },
+                    { "type": "mrkdwn", "text": "*Maestro Tests:*\n`${{ steps.maestro.outcome == 'success' && '✅ Passed' || '❌ Failed' }}`" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n`${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}`" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    },
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "Download Artifacts" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts"
+                    }
+                  ]
+                }
+              ]
+            }

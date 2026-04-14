@@ -29,6 +29,7 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_get_paym
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_details.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_result.dart';
+import 'package:reown_walletkit_wallet/widgets/scan_modal.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connect_modal.dart';
 import 'package:reown_walletkit_wallet/main.dart' show navigatorKey;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -186,7 +187,18 @@ class WalletKitService implements IWalletKitService {
     final List<String> accounts = [];
     List<ChainKey> chainKeys = await GetIt.I<IKeyService>().loadKeys();
     if (chainKeys.isEmpty) {
-      await GetIt.I<IKeyService>().createRandomWallet();
+      if (DartDefines.enableTestMode &&
+          DartDefines.testWalletPrivateKey.isNotEmpty) {
+        var privateKey = DartDefines.testWalletPrivateKey;
+        if (privateKey.startsWith('0x') || privateKey.startsWith('0X')) {
+          privateKey = privateKey.substring(2);
+        }
+        await GetIt.I<IKeyService>().restoreWallet(
+          mnemonicOrPrivate: privateKey,
+        );
+      } else {
+        await GetIt.I<IKeyService>().createRandomWallet();
+      }
       chainKeys = await GetIt.I<IKeyService>().loadKeys();
     }
     for (final chainKey in chainKeys) {
@@ -265,14 +277,43 @@ class WalletKitService implements IWalletKitService {
       );
 
       if (optionsResponse is! PaymentOptionsResponse) {
+        // GetPaymentOptionsError (e.g. expired link) — show result modal
+        if (optionsResponse is GetPaymentOptionsError) {
+          final errorType = _detectErrorType(optionsResponse);
+          String? errorMsg;
+          if (errorType == 'generic') {
+            errorMsg = optionsResponse.message;
+          }
+          final errorResult = await _bottomSheetHandler.queueBottomSheet(
+            widget: WCPPaymentResult(
+              status: PaymentStatus.failed,
+              errorType: errorType,
+              errorMessage: errorMsg,
+            ),
+          );
+          if (errorResult == 'scan_qr') {
+            _openScanModal();
+          }
+          return;
+        }
         throw optionsResponse;
       }
 
       _currentPaymentOptions = optionsResponse;
 
       if (_currentPaymentOptions!.options.isEmpty) {
+        final emptyResult = await _bottomSheetHandler.queueBottomSheet(
+          widget: WCPPaymentResult(
+            status: PaymentStatus.failed,
+            info: _currentPaymentOptions!.info!,
+            errorType: 'insufficient_funds',
+          ),
+        );
         _currentPaymentOptions = null;
-        throw 'No payment options available.\n\nThis wallet does not have any compatible tokens to complete this payment.';
+        if (emptyResult == 'scan_qr') {
+          _openScanModal();
+        }
+        return;
       }
 
       _pendingPaymentRequest = ConfirmPaymentRequest(
@@ -759,42 +800,68 @@ class WalletKitService implements IWalletKitService {
     final hasCollectData = response.options.any(
       (o) => o.collectData?.url != null && o.collectData!.url!.isNotEmpty,
     );
+    final hasMultipleOptions = response.options.length > 1;
     final infoButtonNotifier =
         hasCollectData ? ValueNotifier<bool>(true) : null;
     final showInfoPage = ValueNotifier<bool>(false);
+    final showReview = ValueNotifier<bool>(false);
     final result = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPPaymentDetailsWidget(
         paymentOptionsResponse: response,
         paymentRequest: _pendingPaymentRequest!,
         infoButtonNotifier: infoButtonNotifier,
         showInfoPageNotifier: showInfoPage,
+        showReviewNotifier: hasMultipleOptions ? showReview : null,
       ),
       leadingWidget: ValueListenableBuilder<bool>(
         valueListenable: showInfoPage,
         builder: (_, isShowingInfo, __) {
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 250),
-            child: isShowingInfo
-                ? WCPSheetIconButton(
-                    key: const ValueKey('back_button'),
-                    icon: Icons.arrow_back,
-                    showBorder: false,
-                    onPressed: () => showInfoPage.value = false,
-                  )
-                : infoButtonNotifier != null
-                    ? ValueListenableBuilder<bool>(
-                        key: const ValueKey('info_button'),
-                        valueListenable: infoButtonNotifier,
-                        builder: (_, visible, __) => visible
-                            ? WCPInfoButton(
-                                onTap: () => showInfoPage.value = true,
-                              )
-                            : const SizedBox(width: 38),
+          if (isShowingInfo) {
+            return Semantics(
+              container: true,
+              identifier: 'pay-button-back',
+              label: 'pay-button-back',
+              child: WCPSheetIconButton(
+                key: const ValueKey('back_button'),
+                icon: Icons.arrow_back,
+                showBorder: false,
+                onPressed: () => showInfoPage.value = false,
+              ),
+            );
+          }
+          return ValueListenableBuilder<bool>(
+            valueListenable: showReview,
+            builder: (_, isReviewing, __) {
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: isReviewing
+                    ? Semantics(
+                        container: true,
+                        identifier: 'pay-button-back',
+                        label: 'pay-button-back',
+                        child: WCPSheetIconButton(
+                          key: const ValueKey('review_back_button'),
+                          icon: Icons.arrow_back,
+                          showBorder: false,
+                          onPressed: () => showReview.value = false,
+                        ),
                       )
-                    : const SizedBox(
-                        key: ValueKey('spacer'),
-                        width: 38,
-                      ),
+                    : infoButtonNotifier != null
+                        ? ValueListenableBuilder<bool>(
+                            key: const ValueKey('info_button'),
+                            valueListenable: infoButtonNotifier,
+                            builder: (_, visible, __) => visible
+                                ? WCPInfoButton(
+                                    onTap: () => showInfoPage.value = true,
+                                  )
+                                : const SizedBox(width: 38),
+                          )
+                        : const SizedBox(
+                            key: ValueKey('spacer'),
+                            width: 38,
+                          ),
+              );
+            },
           );
         },
       ),
@@ -802,14 +869,18 @@ class WalletKitService implements IWalletKitService {
 
     // Payment expired/failed during collectData — skip confirming, show result.
     if (result is PaymentStatus) {
-      await _bottomSheetHandler.queueBottomSheet(
+      final earlyResult = await _bottomSheetHandler.queueBottomSheet(
         widget: WCPPaymentResult(
           status: result,
           info: _currentPaymentOptions!.info!,
+          errorType: _paymentErrorType(result),
         ),
       );
       _pendingPaymentRequest = null;
       _currentPaymentOptions = null;
+      if (earlyResult == 'scan_qr') {
+        _openScanModal();
+      }
       return;
     }
 
@@ -824,23 +895,115 @@ class WalletKitService implements IWalletKitService {
       widget: WCPConfirmingPayment(paymentRequest: result),
     );
     if (paymentStatusResult is! PaymentStatus) {
+      // confirmPayment threw an error — detect the error type and show result
+      final errorType = _detectErrorType(paymentStatusResult);
+      String? errorMsg;
+      if (errorType == 'generic') {
+        if (paymentStatusResult is PayError) {
+          errorMsg = paymentStatusResult.message;
+        } else {
+          errorMsg = paymentStatusResult.toString();
+        }
+      }
+      final errorResult = await _bottomSheetHandler.queueBottomSheet(
+        widget: WCPPaymentResult(
+          status: PaymentStatus.failed,
+          info: _currentPaymentOptions!.info!,
+          errorType: errorType,
+          errorMessage: errorMsg,
+        ),
+      );
       _pendingPaymentRequest = null;
       _currentPaymentOptions = null;
-      throw paymentStatusResult;
+      if (errorResult == 'scan_qr') {
+        _openScanModal();
+      }
+      return;
     }
 
     // Step 3: Payment Result
+    String? errorType;
+    errorType = _paymentErrorType(paymentStatusResult);
     final resultStatus = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPPaymentResult(
         status: paymentStatusResult,
         info: _currentPaymentOptions!.info!,
+        errorType: errorType,
       ),
     );
     _pendingPaymentRequest = null;
     _currentPaymentOptions = null;
 
-    if (resultStatus != WCBottomSheetResult.next.name) {
+    if (resultStatus == 'scan_qr') {
+      _openScanModal();
+      return;
+    }
+
+    if (resultStatus != WCBottomSheetResult.next.name &&
+        resultStatus != WCBottomSheetResult.close.name &&
+        resultStatus != null) {
       throw resultStatus;
+    }
+  }
+
+  String _detectErrorType(dynamic error) {
+    // Check typed SDK errors first
+    if (error is ConfirmPaymentError || error is GetPaymentOptionsError) {
+      final message = (error as PayError).message?.toLowerCase() ?? '';
+      if (message.contains('insufficient') || message.contains('balance')) {
+        return 'insufficient_funds';
+      }
+      if (message.contains('expired')) {
+        return 'expired';
+      }
+      if (message.contains('cancel')) {
+        return 'cancelled';
+      }
+      if (message.contains('not found') || message.contains('404')) {
+        return 'not_found';
+      }
+    }
+
+    // Fallback: string matching on toString()
+    final msg = error.toString().toLowerCase();
+    if (msg.contains('insufficient') || msg.contains('balance')) {
+      return 'insufficient_funds';
+    }
+    if (msg.contains('expired')) {
+      return 'expired';
+    }
+    if (msg.contains('cancel')) {
+      return 'cancelled';
+    }
+    if (msg.contains('not found') || msg.contains('404')) {
+      return 'not_found';
+    }
+
+    return 'generic';
+  }
+
+  String? _paymentErrorType(PaymentStatus status) {
+    if (status == PaymentStatus.failed) {
+      return 'generic';
+    }
+    if (status == PaymentStatus.expired) {
+      return 'expired';
+    }
+    if (status == PaymentStatus.cancelled) {
+      return 'cancelled';
+    }
+    return null;
+  }
+
+  void _openScanModal() {
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (_) => const ScanModal(),
+      );
     }
   }
 }

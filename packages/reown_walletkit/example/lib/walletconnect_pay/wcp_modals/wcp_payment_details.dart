@@ -10,7 +10,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_browser.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_webview.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_why_we_need_info.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
@@ -22,12 +22,14 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
     required this.paymentRequest,
     this.infoButtonNotifier,
     this.showInfoPageNotifier,
+    this.showReviewNotifier,
   });
 
   final PaymentOptionsResponse paymentOptionsResponse;
   final ConfirmPaymentRequest paymentRequest;
   final ValueNotifier<bool>? infoButtonNotifier;
   final ValueNotifier<bool>? showInfoPageNotifier;
+  final ValueNotifier<bool>? showReviewNotifier;
 
   @override
   State<WCPPaymentDetailsWidget> createState() =>
@@ -41,6 +43,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
   final Set<String> _collectDataCompletedIds = {};
   bool _isProcessing = false;
   bool _isForward = true;
+  bool _showReview = false;
 
   @override
   void initState() {
@@ -48,11 +51,13 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     paymentOptionsResponse = widget.paymentOptionsResponse;
     confirmRequest = widget.paymentRequest;
     widget.showInfoPageNotifier?.addListener(_onInfoPageToggled);
+    widget.showReviewNotifier?.addListener(_onReviewToggled);
   }
 
   @override
   void dispose() {
     widget.showInfoPageNotifier?.removeListener(_onInfoPageToggled);
+    widget.showReviewNotifier?.removeListener(_onReviewToggled);
     super.dispose();
   }
 
@@ -61,6 +66,14 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       _isForward = widget.showInfoPageNotifier!.value;
     });
   }
+
+  void _onReviewToggled() {
+    if (!widget.showReviewNotifier!.value && _showReview) {
+      setState(() => _showReview = false);
+    }
+  }
+
+  bool get _hasMultipleOptions => paymentOptionsResponse.options.length > 1;
 
   PaymentOption get _selectedOption {
     return paymentOptionsResponse.options.firstWhere(
@@ -118,13 +131,20 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     if (_needsCollectData(_selectedOption)) {
       setState(() => _isProcessing = true);
       try {
-        final result = await WCPCollectDataBrowser.show(
+        final result = await WCPCollectDataWebView.show(
           _selectedOption.collectData!.url!,
+          schema: _selectedOption.collectData?.schema,
         );
         if (result == WCBottomSheetResult.next.name) {
           setState(() {
             _collectDataCompletedIds.add(_selectedOption.id);
+            if (_hasMultipleOptions) {
+              _showReview = true;
+            }
           });
+          if (_hasMultipleOptions) {
+            widget.showReviewNotifier?.value = true;
+          }
           widget.infoButtonNotifier?.value = false;
         } else if (result is PaymentStatus) {
           // Payment expired or failed during data collection — let the
@@ -134,6 +154,9 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       } finally {
         if (mounted) setState(() => _isProcessing = false);
       }
+    } else if (_hasMultipleOptions && !_showReview) {
+      setState(() => _showReview = true);
+      widget.showReviewNotifier?.value = true;
     } else {
       await _signAndPay();
     }
@@ -142,7 +165,9 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
   Widget _buildDetailsView(BuildContext context) {
     final paymentInfo = paymentOptionsResponse.info!;
     final selectedNeedsCollectData = _needsCollectData(_selectedOption);
-    final buttonText = selectedNeedsCollectData
+    final showContinue =
+        selectedNeedsCollectData || (_hasMultipleOptions && !_showReview);
+    final buttonText = showContinue
         ? 'Continue'
         : 'Pay ${formatPayAmount(paymentInfo.amount)}';
 
@@ -155,21 +180,25 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         const SizedBox(height: AppSpacing.s4),
         WCPPaymentDetails(paymentInfo: paymentInfo),
         const SizedBox(height: AppSpacing.s3),
-        WCPPaymentOptionList(
-          options: paymentOptionsResponse.options,
-          selectedOption: _selectedOption,
-          collectDataCompletedIds: _collectDataCompletedIds,
-          onOptionSelected: (option) {
-            setState(() {
-              confirmRequest = confirmRequest.copyWith(optionId: option.id);
-            });
-          },
-        ),
+        if (_showReview)
+          _ConfirmedPaymentOption(option: _selectedOption)
+        else
+          WCPPaymentOptionList(
+            options: paymentOptionsResponse.options,
+            selectedOption: _selectedOption,
+            collectDataCompletedIds: _collectDataCompletedIds,
+            onOptionSelected: (option) {
+              setState(() {
+                confirmRequest = confirmRequest.copyWith(optionId: option.id);
+              });
+            },
+          ),
         const SizedBox(height: AppSpacing.s5),
         WCPrimaryButton(
           onPressed: _handleConfirmOrNext,
           enabled: !_isProcessing,
           text: buttonText,
+          testId: showContinue ? 'pay-button-continue' : 'pay-button-pay',
         ),
       ],
     );
@@ -344,10 +373,13 @@ class WCPPaymentOptionList extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: AppSpacing.s4),
-                ...options.map((option) {
+                ...options.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final option = entry.value;
                   final isSelected = option.id == selectedOption.id;
                   final hasCollectData = _optionNeedsCollectData(option);
                   return _PaymentOptionItem(
+                    index: index,
                     option: option,
                     isSelected: isSelected,
                     hasCollectData: hasCollectData,
@@ -370,6 +402,7 @@ class WCPPaymentOptionList extends StatelessWidget {
 
 class _PaymentOptionItem extends StatelessWidget {
   const _PaymentOptionItem({
+    required this.index,
     required this.option,
     required this.isSelected,
     required this.hasCollectData,
@@ -379,6 +412,7 @@ class _PaymentOptionItem extends StatelessWidget {
   static const _selectionDuration = Duration(milliseconds: 220);
   static const _selectionCurve = Curves.easeOutCubic;
 
+  final int index;
   final PaymentOption option;
   final bool isSelected;
   final bool hasCollectData;
@@ -388,107 +422,128 @@ class _PaymentOptionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final display = option.amount.display;
     final colors = context.colors;
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: _selectionDuration,
-        curve: _selectionCurve,
-        decoration: BoxDecoration(
-          color: colors.foregroundPrimary,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? colors.accent : Colors.transparent,
-            width: 1,
+    final networkName = display.networkName?.toLowerCase() ?? 'unknown';
+    final testId =
+        isSelected ? 'pay-option-$index-selected' : 'pay-option-$index';
+    return Semantics(
+      key: ValueKey(testId),
+      container: true,
+      identifier: testId,
+      label: networkName,
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: _selectionDuration,
+          curve: _selectionCurve,
+          decoration: BoxDecoration(
+            color: colors.foregroundPrimary,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? colors.accent : Colors.transparent,
+              width: 1,
+            ),
           ),
-        ),
-        margin: const EdgeInsets.only(bottom: 6.0),
-        height: 68.0,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned.fill(
-                child: IgnorePointer(
-                  child: AnimatedOpacity(
-                    duration: _selectionDuration,
-                    curve: _selectionCurve,
-                    opacity: isSelected ? 1.0 : 0.0,
-                    child: Container(color: colors.foregroundAccentPrimary010),
+          margin: const EdgeInsets.only(bottom: 6.0),
+          height: 68.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: AnimatedOpacity(
+                      duration: _selectionDuration,
+                      curve: _selectionCurve,
+                      opacity: isSelected ? 1.0 : 0.0,
+                      child:
+                          Container(color: colors.foregroundAccentPrimary010),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
-                child: Row(
-                  children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        CircleAvatar(
-                          radius: 16.0,
-                          backgroundImage: NetworkImage(display.iconUrl ?? ''),
-                        ),
-                        if ((display.networkIconUrl ?? '').isNotEmpty)
-                          Positioned(
-                            bottom: -2,
-                            right: -2,
-                            child: Container(
-                              padding: const EdgeInsets.all(1.5),
-                              decoration: BoxDecoration(
-                                color: colors.backgroundSecondary,
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              child: CircleAvatar(
-                                radius: 8.0,
-                                backgroundImage:
-                                    NetworkImage(display.networkIconUrl ?? ''),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
+                  child: Row(
+                    children: [
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          CircleAvatar(
+                            radius: 16.0,
+                            backgroundImage:
+                                NetworkImage(display.iconUrl ?? ''),
+                          ),
+                          if ((display.networkIconUrl ?? '').isNotEmpty)
+                            Positioned(
+                              bottom: -2,
+                              right: -2,
+                              child: Container(
+                                padding: const EdgeInsets.all(1.5),
+                                decoration: BoxDecoration(
+                                  color: colors.backgroundSecondary,
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: CircleAvatar(
+                                  radius: 8.0,
+                                  backgroundImage: NetworkImage(
+                                      display.networkIconUrl ?? ''),
+                                ),
                               ),
                             ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(width: AppSpacing.s2),
-                    Text(
-                      formatPayAmount(option.amount),
-                      style: TextStyle(
-                        color: colors.textPrimary,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w400,
+                        ],
                       ),
-                    ),
-                    const Spacer(),
-                    if (hasCollectData)
-                      AnimatedContainer(
-                        duration: _selectionDuration,
-                        curve: _selectionCurve,
-                        height: 28.0,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.s2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? colors.accent.withValues(alpha: 0.9)
-                              : colors.foregroundTertiary,
-                          borderRadius: BorderRadius.circular(AppSpacing.s2),
-                        ),
-                        alignment: Alignment.center,
-                        child: AnimatedDefaultTextStyle(
-                          duration: _selectionDuration,
-                          curve: _selectionCurve,
+                      const SizedBox(width: AppSpacing.s2),
+                      ExcludeSemantics(
+                        child: Text(
+                          formatPayAmount(option.amount),
                           style: TextStyle(
-                            color:
-                                isSelected ? Colors.white : colors.textPrimary,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
+                            color: colors.textPrimary,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w400,
                           ),
-                          child: const Text('Info required'),
                         ),
                       ),
-                  ],
+                      const Spacer(),
+                      if (hasCollectData)
+                        Semantics(
+                          container: true,
+                          identifier: 'pay-info-required-badge',
+                          label: 'pay-info-required-badge',
+                          child: AnimatedContainer(
+                            duration: _selectionDuration,
+                            curve: _selectionCurve,
+                            height: 28.0,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.s2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? colors.accent.withValues(alpha: 0.9)
+                                  : colors.foregroundTertiary,
+                              borderRadius:
+                                  BorderRadius.circular(AppSpacing.s2),
+                            ),
+                            alignment: Alignment.center,
+                            child: AnimatedDefaultTextStyle(
+                              duration: _selectionDuration,
+                              curve: _selectionCurve,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? Colors.white
+                                    : colors.textPrimary,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              child: const Text('Info required'),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -504,64 +559,70 @@ class _ConfirmedPaymentOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final display = option.amount.display;
+    final networkName = display.networkName?.toLowerCase() ?? 'unknown';
     final colors = context.colors;
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.foregroundPrimary,
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      height: 68.0,
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
-      alignment: Alignment.center,
-      child: Row(
-        children: [
-          Text(
-            'Pay with',
-            style: TextStyle(
-              color: colors.textTertiary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              fontFamily: 'KH Teka',
-            ),
-          ),
-          const Spacer(),
-          Text(
-            formatPayAmount(option.amount),
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontSize: 16.0,
-              fontWeight: FontWeight.w400,
-              fontFamily: 'KH Teka',
-            ),
-          ),
-          const SizedBox(width: AppSpacing.s2),
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              CircleAvatar(
-                radius: 16.0,
-                backgroundImage: NetworkImage(display.iconUrl ?? ''),
+    return Semantics(
+      container: true,
+      identifier: 'pay-review-token-$networkName',
+      label: 'pay-review-token-$networkName',
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.foregroundPrimary,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        height: 68.0,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
+        alignment: Alignment.center,
+        child: Row(
+          children: [
+            Text(
+              'Pay with',
+              style: TextStyle(
+                color: colors.textTertiary,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'KH Teka',
               ),
-              if ((display.networkIconUrl ?? '').isNotEmpty)
-                Positioned(
-                  bottom: -2,
-                  right: -2,
-                  child: Container(
-                    padding: const EdgeInsets.all(2.0),
-                    decoration: BoxDecoration(
-                      color: colors.foregroundPrimary,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: CircleAvatar(
-                      radius: 8.0,
-                      backgroundImage:
-                          NetworkImage(display.networkIconUrl ?? ''),
+            ),
+            const Spacer(),
+            Text(
+              formatPayAmount(option.amount),
+              style: TextStyle(
+                color: colors.textPrimary,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'KH Teka',
+              ),
+            ),
+            const SizedBox(width: AppSpacing.s2),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                CircleAvatar(
+                  radius: 16.0,
+                  backgroundImage: NetworkImage(display.iconUrl ?? ''),
+                ),
+                if ((display.networkIconUrl ?? '').isNotEmpty)
+                  Positioned(
+                    bottom: -2,
+                    right: -2,
+                    child: Container(
+                      padding: const EdgeInsets.all(2.0),
+                      decoration: BoxDecoration(
+                        color: colors.foregroundPrimary,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: CircleAvatar(
+                        radius: 8.0,
+                        backgroundImage:
+                            NetworkImage(display.networkIconUrl ?? ''),
+                      ),
                     ),
                   ),
-                ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

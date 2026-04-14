@@ -337,6 +337,22 @@ Most packages use code generation:
 - **Integration Tests**: End-to-end flows (using Maestro)
 - **Mocking**: Use `mockito` for dependencies
 
+### Maestro E2E Pay Tests
+
+WalletConnect Pay flows are tested with [Maestro](https://maestro.mobile.dev/) E2E tests. Test flows are **shared** across RN, Kotlin, and Flutter wallet samples and live in the [WalletConnect/actions](https://github.com/WalletConnect/actions) repo (not in this repo).
+
+**Test ID convention**: Flutter widgets use `Semantics(identifier: 'test-id', label: 'test-id')` which maps to Android `resource-id` for Maestro's `id:` selector. IDs are prefixed with `pay-` (e.g. `pay-button-pay`, `pay-option-0`, `pay-result-success-icon`).
+
+**Test mode**: Build with `--dart-define="ENABLE_TEST_MODE=true"` to show a URL text input instead of camera scan. Build with `--dart-define="TEST_WALLET_PRIVATE_KEY=<hex>"` to use a funded wallet.
+
+**Running locally**:
+1. `./scripts/setup-maestro-pay-tests.sh` — downloads test flows from WalletConnect/actions
+2. Copy `.env.maestro.example` to `.env.maestro` with merchant secrets
+3. Build APK with test mode + funded wallet private key
+4. `APP_ID=com.walletconnect.flutterwallet.internal ./scripts/run-maestro-pay-tests.sh`
+
+**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs on `ubuntu-16core` with Android emulator. Uses `WalletConnect/actions/maestro/pay-tests` composite action. Never uploads APK/IPA — only debug output.
+
 ### Platform-Specific Code
 
 - **Android**: Native code in `android/` directories

@@ -77,15 +77,20 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       (item.showBackButton)
-                          ? WCPSheetIconButton(
-                              icon: Icons.arrow_back,
-                              showBorder: false,
-                              onPressed: () {
-                                if (Navigator.canPop(context)) {
-                                  Navigator.of(context)
-                                      .pop(WCBottomSheetResult.back.name);
-                                }
-                              },
+                          ? Semantics(
+                              container: true,
+                              identifier: 'pay-button-back',
+                              label: 'pay-button-back',
+                              child: WCPSheetIconButton(
+                                icon: Icons.arrow_back,
+                                showBorder: false,
+                                onPressed: () {
+                                  if (Navigator.canPop(context)) {
+                                    Navigator.of(context)
+                                        .pop(WCBottomSheetResult.back.name);
+                                  }
+                                },
+                              ),
                             )
                           : item.leadingWidget ??
                               const SizedBox(width: 38.0),
@@ -95,14 +100,19 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                               totalSteps: item.stepper.$2,
                             )
                           : const SizedBox(width: 38.0),
-                      WCPSheetIconButton(
-                        icon: Icons.close,
-                        onPressed: () {
-                          if (Navigator.canPop(context)) {
-                            Navigator.of(context)
-                                .pop(WCBottomSheetResult.close.name);
-                          }
-                        },
+                      Semantics(
+                        container: true,
+                        identifier: 'pay-button-close',
+                        label: 'pay-button-close',
+                        child: WCPSheetIconButton(
+                          icon: Icons.close,
+                          onPressed: () {
+                            if (Navigator.canPop(context)) {
+                              Navigator.of(context)
+                                  .pop(WCBottomSheetResult.close.name);
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),
