@@ -303,7 +303,7 @@ class _WCPCollectDataWebViewPageState
             return NavigationDecision.navigate;
           },
           onWebResourceError: (error) {
-            if (!mounted || !error.isForMainFrame) return;
+            if (!mounted || error.isForMainFrame != true) return;
             _complete(
               WCPCollectDataWebView.mapWebViewMessage(
                 error.description.isNotEmpty
