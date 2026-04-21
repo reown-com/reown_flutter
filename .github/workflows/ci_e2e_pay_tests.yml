@@ -111,7 +111,6 @@ jobs:
               "--env" "WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}"
               "--env" "WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}"
               "--test-output-dir" "/tmp/maestro-output"
-              "--debug-output" "/tmp/maestro-debug"
               ".maestro/"
             )
             maestro test "${MAESTRO_ARGS[@]}"
@@ -133,7 +132,6 @@ jobs:
           path: |
             /tmp/logcat.txt
             /tmp/maestro-output/
-            /tmp/maestro-debug/
           retention-days: 14
           if-no-files-found: ignore
 
@@ -275,7 +273,6 @@ jobs:
             "--env" "WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}"
             "--env" "WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}"
             "--test-output-dir" "/tmp/maestro-output"
-            "--debug-output" "/tmp/maestro-debug"
             ".maestro/"
           )
           maestro test "${MAESTRO_ARGS[@]}"
@@ -292,7 +289,6 @@ jobs:
           name: pay-tests-debug-ios
           path: |
             /tmp/maestro-output/
-            /tmp/maestro-debug/
           retention-days: 14
           if-no-files-found: ignore
 
