@@ -97,10 +97,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@f9522878950f7bd904a628b2c4d486b93034a4fe
+        uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@f9522878950f7bd904a628b2c4d486b93034a4fe
+        uses: WalletConnect/actions/maestro/setup@0c9875ae33fe85fa6a4110dc46c82876d91a551d
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -129,11 +129,11 @@ jobs:
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-load
           script: |
-            mkdir -p /tmp/maestro-output /tmp/maestro-debug
+            mkdir -p /tmp/maestro-output
             adb logcat -c
             adb logcat > /tmp/logcat.txt 2>&1 &
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
-            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output --debug-output /tmp/maestro-debug .maestro/
+            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -147,8 +147,13 @@ jobs:
           name: pay-tests-debug-android
           path: |
             /tmp/logcat.txt
-            /tmp/maestro-output/
-            /tmp/maestro-debug/
+            /tmp/maestro-output/**/*.png
+            /tmp/maestro-output/**/*.jpg
+            /tmp/maestro-output/**/*.jpeg
+            /tmp/maestro-output/**/*.mp4
+            /tmp/maestro-output/**/*.mov
+            /tmp/maestro-output/**/*.webm
+            /tmp/maestro-output/**/*.gif
           retention-days: 14
           if-no-files-found: ignore
 
@@ -271,10 +276,10 @@ jobs:
             packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@f9522878950f7bd904a628b2c4d486b93034a4fe
+        uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@f9522878950f7bd904a628b2c4d486b93034a4fe
+        uses: WalletConnect/actions/maestro/setup@0c9875ae33fe85fa6a4110dc46c82876d91a551d
 
       - name: Run Maestro iOS tests
         id: maestro_ios
@@ -290,7 +295,6 @@ jobs:
             "--env" "WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}"
             "--env" "WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}"
             "--test-output-dir" "/tmp/maestro-output"
-            "--debug-output" "/tmp/maestro-debug"
             ".maestro/"
           )
           maestro test "${MAESTRO_ARGS[@]}"
@@ -306,8 +310,13 @@ jobs:
         with:
           name: pay-tests-debug-ios
           path: |
-            /tmp/maestro-output/
-            /tmp/maestro-debug/
+            /tmp/maestro-output/**/*.png
+            /tmp/maestro-output/**/*.jpg
+            /tmp/maestro-output/**/*.jpeg
+            /tmp/maestro-output/**/*.mp4
+            /tmp/maestro-output/**/*.mov
+            /tmp/maestro-output/**/*.webm
+            /tmp/maestro-output/**/*.gif
           retention-days: 14
           if-no-files-found: ignore
 
