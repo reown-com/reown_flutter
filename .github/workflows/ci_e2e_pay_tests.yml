@@ -91,29 +91,22 @@ jobs:
       - name: Run emulator and tests
         id: maestro
         uses: reactivecircus/android-emulator-runner@v2
+        env:
+          APP_ID: com.walletconnect.flutterwallet.internal
+          WPAY_CUSTOMER_KEY_SINGLE_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }}
+          WPAY_MERCHANT_ID_SINGLE_NOKYC: ${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }}
+          WPAY_CUSTOMER_KEY_MULTI_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }}
+          WPAY_MERCHANT_ID_MULTI_NOKYC: ${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }}
+          WPAY_CUSTOMER_KEY_MULTI_KYC: ${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}
+          WPAY_MERCHANT_ID_MULTI_KYC: ${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}
         with:
           api-level: 34
           arch: x86_64
           ram-size: 4096M
           emulator-boot-timeout: 600
           script: |
-            # Install APK
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
-
-            # Run Maestro Pay tests
-            MAESTRO_ARGS=(
-              "--include-tags" "pay"
-              "--env" "APP_ID=com.walletconnect.flutterwallet.internal"
-              "--env" "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }}"
-              "--env" "WPAY_MERCHANT_ID_SINGLE_NOKYC=${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }}"
-              "--env" "WPAY_CUSTOMER_KEY_MULTI_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }}"
-              "--env" "WPAY_MERCHANT_ID_MULTI_NOKYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }}"
-              "--env" "WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}"
-              "--env" "WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}"
-              "--test-output-dir" "/tmp/maestro-output"
-              ".maestro/"
-            )
-            maestro test "${MAESTRO_ARGS[@]}"
+            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output --debug-output /tmp/maestro-debug .maestro/
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -132,6 +125,7 @@ jobs:
           path: |
             /tmp/logcat.txt
             /tmp/maestro-output/
+            /tmp/maestro-debug/
           retention-days: 14
           if-no-files-found: ignore
 
@@ -273,6 +267,7 @@ jobs:
             "--env" "WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}"
             "--env" "WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}"
             "--test-output-dir" "/tmp/maestro-output"
+            "--debug-output" "/tmp/maestro-debug"
             ".maestro/"
           )
           maestro test "${MAESTRO_ARGS[@]}"
@@ -289,6 +284,7 @@ jobs:
           name: pay-tests-debug-ios
           path: |
             /tmp/maestro-output/
+            /tmp/maestro-debug/
           retention-days: 14
           if-no-files-found: ignore
 
