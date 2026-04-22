@@ -47,12 +47,29 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
           architecture: x86_64
-          cache: 'gradle'
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.38.3"
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('packages/reown_walletkit/example/android/**/*.gradle*', 'packages/reown_walletkit/example/android/**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache Pub
+        uses: actions/cache@v4
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('packages/reown_walletkit/example/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
 
       - name: Get wallet dependencies
         working-directory: packages/reown_walletkit/example
@@ -102,20 +119,33 @@ jobs:
         with:
           api-level: 34
           arch: x86_64
+          target: default
           ram-size: 4096M
-          emulator-boot-timeout: 600
+          disk-size: 4096M
+          heap-size: 576M
+          avd-name: test_device
+          force-avd-creation: false
+          disable-animations: true
+          emulator-boot-timeout: 900
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-load
           script: |
+            mkdir -p /tmp/maestro-output /tmp/maestro-debug
+            adb logcat -c
+            adb logcat > /tmp/logcat.txt 2>&1 &
+            LOGCAT_PID=$!
+
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
-            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output --debug-output /tmp/maestro-debug .maestro/
+
+            MAESTRO_EXIT=0
+            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output --debug-output /tmp/maestro-debug .maestro/ || MAESTRO_EXIT=$?
+
+            kill $LOGCAT_PID 2>/dev/null || true
+            exit $MAESTRO_EXIT
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
         if: always()
         run: rm -rf packages/reown_walletkit/example/build/
-
-      - name: Capture logcat
-        if: always()
-        run: adb logcat -d > /tmp/logcat.txt 2>/dev/null || true
 
       - name: Upload debug artifacts
         if: always()
