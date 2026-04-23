@@ -167,7 +167,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _setPages();
 
-      DeepLinkHandler.checkInitialLink();
+      // Defer so BottomSheetListener mounts and subscribes before any
+      // cold-start pay link tries to queue a sheet.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        DeepLinkHandler.checkInitialLink();
+      });
     } catch (e, s) {
       debugPrint('[$runtimeType] ❌ crash during initialize, $e, $s');
       await Sentry.captureException(e, stackTrace: s);
