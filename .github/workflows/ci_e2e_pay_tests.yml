@@ -278,11 +278,17 @@ jobs:
       # signature but does honor the embedded entitlements.
       - name: Embed entitlements in simulator app
         run: |
+          APP=packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
+          # First deep-sign everything so nested frameworks stay
+          # consistent with the re-signed main binary (simulator refuses
+          # to launch if they mismatch).
+          codesign --force --deep --sign - "$APP"
+          # Then overwrite the main bundle signature with the
+          # associated-domains entitlement.
           codesign --force --sign - \
             --entitlements packages/reown_walletkit/example/ios/Runner/RunnerInternal.entitlements \
-            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
-          codesign --display --entitlements - \
-            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
+            "$APP"
+          codesign --display --entitlements - "$APP"
 
       - name: Install built app on simulator
         run: |
