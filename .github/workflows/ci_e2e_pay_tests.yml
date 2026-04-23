@@ -271,6 +271,11 @@ jobs:
 
           echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
 
+      - name: Dump built app entitlements
+        run: |
+          codesign --display --entitlements - \
+            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app || true
+
       - name: Install built app on simulator
         run: |
           xcrun simctl install "$DEVICE_ID" \
@@ -282,6 +287,16 @@ jobs:
       - name: Enable associated-domains developer mode
         run: |
           xcrun simctl spawn "$DEVICE_ID" defaults write com.apple.swc.dev-mode -int 1 || true
+
+      # Cold-start Universal Links often fall back to Safari on the first
+      # openurl because swcd hasn't fetched the AASA yet. Prime the domain
+      # with a throwaway openurl, then close anything that came up.
+      - name: Prime pay.walletconnect.com AASA
+        run: |
+          xcrun simctl openurl "$DEVICE_ID" "https://pay.walletconnect.com/"
+          sleep 10
+          xcrun simctl terminate "$DEVICE_ID" com.apple.mobilesafari || true
+          xcrun simctl terminate "$DEVICE_ID" com.walletconnect.flutterwallet.internal || true
 
       - name: Copy Maestro Pay test flows
         uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
