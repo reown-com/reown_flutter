@@ -276,6 +276,13 @@ jobs:
           xcrun simctl install "$DEVICE_ID" \
             packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
 
+      # Enable Associated Domains Development Mode on the simulator so
+      # `?mode=developer` in the internal entitlements is honored and
+      # Universal Links route to the wallet instead of Safari on cold-start.
+      - name: Enable associated-domains developer mode
+        run: |
+          xcrun simctl spawn "$DEVICE_ID" defaults write com.apple.swc.dev-mode -int 1 || true
+
       - name: Copy Maestro Pay test flows
         uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
 
