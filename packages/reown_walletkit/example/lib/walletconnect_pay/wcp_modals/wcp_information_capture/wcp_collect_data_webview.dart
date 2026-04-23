@@ -37,7 +37,7 @@ const _preloadViewportAndBridgeJs = '''
         style = document.createElement('style');
         style.id = 'flutter-webview-fit-style';
         style.textContent =
-          'html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; overflow: hidden !important; overscroll-behavior: none !important; }';
+          'html, body { margin: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; overscroll-behavior: none !important; }';
         head.appendChild(style);
       }
     }
