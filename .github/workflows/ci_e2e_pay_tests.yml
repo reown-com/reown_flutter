@@ -271,10 +271,18 @@ jobs:
 
           echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
 
-      - name: Dump built app entitlements
+      # flutter build ios --simulator --debug ships Runner.app with an
+      # empty entitlements dict, so associated-domains never reaches iOS
+      # and Universal Links fall back to Safari. Re-sign adhoc with the
+      # internal entitlements file — simulator doesn't validate the
+      # signature but does honor the embedded entitlements.
+      - name: Embed entitlements in simulator app
         run: |
+          codesign --force --sign - \
+            --entitlements packages/reown_walletkit/example/ios/Runner/RunnerInternal.entitlements \
+            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
           codesign --display --entitlements - \
-            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app || true
+            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
 
       - name: Install built app on simulator
         run: |
