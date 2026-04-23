@@ -87,16 +87,12 @@ class WCPCollectDataWebView {
       return WCBottomSheetResult.close.name;
     }
 
-    final prefill = DartDefines.enableTestMode
-        ? _buildPrefillParam(schema)
-        : null;
     final result =
         await Navigator.of(context, rootNavigator: true).push<Object>(
       MaterialPageRoute(
         fullscreenDialog: true,
         builder: (_) => _WCPCollectDataWebViewPage(
-          initialUrl: _buildCollectDataUrl(collectDataUrl),
-          prefill: prefill,
+          initialUrl: _buildCollectDataUrl(collectDataUrl, schema: schema),
         ),
       ),
     );
@@ -104,7 +100,10 @@ class WCPCollectDataWebView {
     return result ?? WCBottomSheetResult.close.name;
   }
 
-  static String _buildCollectDataUrl(String collectDataUrl) {
+  static String _buildCollectDataUrl(
+    String collectDataUrl, {
+    String? schema,
+  }) {
     var url = collectDataUrl;
 
     final themeProvider =
@@ -114,6 +113,13 @@ class WCPCollectDataWebView {
             Brightness.dark;
     final theme = isDark ? 'dark' : 'light';
     url = _appendOrReplaceQueryParam(url, 'theme', theme);
+
+    if (DartDefines.enableTestMode) {
+      final prefill = _buildPrefillParam(schema);
+      if (prefill != null) {
+        url = _appendOrReplaceQueryParam(url, 'prefill', prefill);
+      }
+    }
 
     return url;
   }
@@ -224,13 +230,9 @@ class WCPCollectDataWebView {
 }
 
 class _WCPCollectDataWebViewPage extends StatefulWidget {
-  const _WCPCollectDataWebViewPage({
-    required this.initialUrl,
-    this.prefill,
-  });
+  const _WCPCollectDataWebViewPage({required this.initialUrl});
 
   final String initialUrl;
-  final String? prefill;
 
   @override
   State<_WCPCollectDataWebViewPage> createState() =>
@@ -266,15 +268,6 @@ class _WCPCollectDataWebViewPageState
           onPageFinished: (_) async {
             try {
               await _controller.runJavaScript(_preloadViewportAndBridgeJs);
-              if (widget.prefill != null) {
-                final payload = jsonEncode({
-                  'type': 'PREFILL',
-                  'data': widget.prefill,
-                });
-                await _controller.runJavaScript(
-                  'window.postMessage(${jsonEncode(payload)}, "*");',
-                );
-              }
             } catch (e) {
               debugPrint(
                 '[WCPCollectDataWebView] bridge injection failed: $e',
