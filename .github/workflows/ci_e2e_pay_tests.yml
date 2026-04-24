@@ -275,7 +275,7 @@ jobs:
               CODE_SIGN_IDENTITY="-" \
               build
           codesign --display --entitlements - \
-            "../build/ios-ddcache/Build/Products/Debug-iphonesimulator/Runner.app"
+            "../build/ios-ddcache/Build/Products/Debug-internal-iphonesimulator/Runner.app"
 
       - name: Create and boot simulator
         id: simulator
@@ -303,10 +303,10 @@ jobs:
 
       - name: Install built app on simulator
         run: |
-          APP_PATH="packages/reown_walletkit/example/build/ios-ddcache/Build/Products/Debug-iphonesimulator/Runner.app"
+          APP_PATH="packages/reown_walletkit/example/build/ios-ddcache/Build/Products/Debug-internal-iphonesimulator/Runner.app"
           if [ ! -d "$APP_PATH" ]; then
             echo "ERROR: Runner.app not found at $APP_PATH"
-            find packages/reown_walletkit/example/build -name "Runner.app" -path "*/Debug-iphonesimulator/*" || true
+            find packages/reown_walletkit/example/build -name "Runner.app" || true
             exit 1
           fi
           xcrun simctl install "$DEVICE_ID" "$APP_PATH"
