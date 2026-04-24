@@ -235,17 +235,47 @@ jobs:
       - name: Refresh CocoaPods specs
         run: pod repo update --silent
 
-      - name: Build iOS simulator app with test mode
-        id: build_ios
+      # Two-step iOS simulator build: let Flutter emit Dart kernel +
+      # Generated.xcconfig, then drive xcodebuild ourselves. `flutter
+      # build ios --simulator` passes CODE_SIGNING_ALLOWED=NO, which
+      # strips entitlements and breaks Universal Links on the CI
+      # simulator (deep-link flow falls back to Safari). Running
+      # xcodebuild directly with CODE_SIGNING_ALLOWED=YES + an adhoc
+      # identity signs the app during build and embeds the
+      # associated-domains entitlement. Matches reown-swift's pipeline.
+      - name: Prepare Flutter iOS artifacts
         working-directory: packages/reown_walletkit/example
         run: |
           flutter build ios \
+            --config-only \
             --flavor internal \
             --simulator \
             --debug \
             --dart-define="PROJECT_ID=${{ secrets.WALLET_PROJECT_ID }}" \
             --dart-define="ENABLE_TEST_MODE=true" \
             --dart-define="TEST_WALLET_PRIVATE_KEY=${{ secrets.TEST_WALLET_PRIVATE_KEY }}"
+
+      - name: Install Pods
+        working-directory: packages/reown_walletkit/example/ios
+        run: pod install
+
+      - name: Build Runner.app via xcodebuild (signed adhoc)
+        id: build_ios
+        working-directory: packages/reown_walletkit/example/ios
+        run: |
+          set -o pipefail && env NSUnbufferedIO=YES \
+            xcodebuild \
+              -workspace Runner.xcworkspace \
+              -scheme internal \
+              -configuration Debug-internal \
+              -sdk iphonesimulator \
+              -destination "generic/platform=iOS Simulator" \
+              -derivedDataPath ../build/ios-ddcache \
+              CODE_SIGNING_ALLOWED=YES \
+              CODE_SIGN_IDENTITY="-" \
+              build
+          codesign --display --entitlements - \
+            "../build/ios-ddcache/Build/Products/Debug-iphonesimulator/Runner.app"
 
       - name: Create and boot simulator
         id: simulator
@@ -273,17 +303,16 @@ jobs:
 
       - name: Install built app on simulator
         run: |
-          xcrun simctl install "$DEVICE_ID" \
-            packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
+          APP_PATH="packages/reown_walletkit/example/build/ios-ddcache/Build/Products/Debug-iphonesimulator/Runner.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "ERROR: Runner.app not found at $APP_PATH"
+            find packages/reown_walletkit/example/build -name "Runner.app" -path "*/Debug-iphonesimulator/*" || true
+            exit 1
+          fi
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
 
       - name: Copy Maestro Pay test flows
         uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
-
-      # Universal Links don't route reliably on an unsigned Flutter
-      # simulator build — the flow opens Safari instead of the wallet.
-      # Skip until the iOS lane moves to a signed build (fastlane+Match).
-      - name: Skip iOS-broken flows
-        run: rm -f .maestro/pay_single_option_nokyc_deeplink.yaml
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0c9875ae33fe85fa6a4110dc46c82876d91a551d
