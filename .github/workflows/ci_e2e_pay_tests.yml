@@ -209,19 +209,17 @@ jobs:
 
   pay-tests-ios:
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
-    runs-on: macos-26-xlarge
+    runs-on: macos-latest-xlarge
     timeout-minutes: 60
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Use simulator build/install for Maestro E2E; do not reuse release/TestFlight signing flow.
-      - name: Select Xcode 26.2
-        run: |
-          test -d /Applications/Xcode_26.2.app/Contents/Developer
-          sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
-          xcodebuild -version
+      - name: Select Xcode 26 (iOS 26 SDK)
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26'
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -277,54 +275,22 @@ jobs:
           codesign --display --entitlements - \
             "../build/ios-ddcache/Build/Products/Debug-internal-iphonesimulator/Runner.app"
 
-      - name: Create and boot simulator
-        id: simulator
+      - name: Boot iOS simulator
         run: |
-          RUNTIME_ID="$(xcrun simctl list runtimes iOS -j | /usr/bin/python3 -c 'import json,sys; r=[x for x in json.load(sys.stdin)["runtimes"] if x.get("isAvailable")]; print(r[-1]["identifier"] if r else "")')"
-          if [ -z "$RUNTIME_ID" ]; then
-            echo "Unable to find available iOS runtime"
-            exit 1
-          fi
+          xcrun simctl boot "iPhone 16" 2>/dev/null || true
+          xcrun simctl bootstatus "iPhone 16"
 
-          DEVICE_ID=""
-          DEVICE_ID="$(xcrun simctl create "Pay-E2E-iPhone" "iPhone 16" "$RUNTIME_ID" 2>/dev/null || true)"
-          if [ -z "$DEVICE_ID" ]; then
-            DEVICE_ID="$(xcrun simctl list devices "$RUNTIME_ID" -j | /usr/bin/python3 -c 'import json,sys; d=json.load(sys.stdin).get("devices",{}); devices=d.get(sys.argv[1],[]); print(next((x["udid"] for x in devices if x.get("isAvailable") and x.get("name")=="iPhone 16"), ""))' "$RUNTIME_ID")"
-          fi
-          if [ -z "$DEVICE_ID" ]; then
-            echo "Unable to create/find iPhone 16 simulator"
-            exit 1
-          fi
-
-          xcrun simctl boot "$DEVICE_ID" || true
-          xcrun simctl bootstatus "$DEVICE_ID" -b
-
-          echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
-
-      - name: Install built app on simulator
+      - name: Install app on simulator
         run: |
-          APP_PATH="packages/reown_walletkit/example/build/ios-ddcache/Build/Products/Debug-internal-iphonesimulator/Runner.app"
-          if [ ! -d "$APP_PATH" ]; then
-            echo "ERROR: Runner.app not found at $APP_PATH"
+          APP_PATH=$(find packages/reown_walletkit/example/build/ios-ddcache \
+            -name "Runner.app" -path "*/Debug-internal-iphonesimulator/*" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "ERROR: Runner.app not found in DerivedData"
             find packages/reown_walletkit/example/build -name "Runner.app" || true
             exit 1
           fi
-          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
-
-      # Warm up Associated Domains verification: launch the app once
-      # (forcing swcd to fetch + verify the AASA for pay.walletconnect.com
-      # associated with this bundle), then probe the Universal Link so
-      # simctl caches the route. Without this, the first cold-start
-      # openurl from Maestro falls back to Safari because AASA hasn't
-      # been resolved yet.
-      - name: Warm up Associated Domains / AASA
-        run: |
-          xcrun simctl launch "$DEVICE_ID" com.walletconnect.flutterwallet.internal || true
-          sleep 8
-          xcrun simctl openurl "$DEVICE_ID" "https://pay.walletconnect.com/"
-          sleep 8
-          xcrun simctl terminate "$DEVICE_ID" com.walletconnect.flutterwallet.internal || true
-          xcrun simctl terminate "$DEVICE_ID" com.apple.mobilesafari || true
+          echo "Installing: $APP_PATH"
+          xcrun simctl install booted "$APP_PATH"
 
       - name: Copy Maestro Pay test flows
         uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
@@ -335,20 +301,17 @@ jobs:
       - name: Run Maestro iOS tests
         id: maestro_ios
         run: |
-          MAESTRO_ARGS=(
-            "--include-tags" "pay"
-            "--device" "$DEVICE_ID"
-            "--env" "APP_ID=com.walletconnect.flutterwallet.internal"
-            "--env" "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }}"
-            "--env" "WPAY_MERCHANT_ID_SINGLE_NOKYC=${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }}"
-            "--env" "WPAY_CUSTOMER_KEY_MULTI_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }}"
-            "--env" "WPAY_MERCHANT_ID_MULTI_NOKYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }}"
-            "--env" "WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}"
-            "--env" "WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}"
-            "--test-output-dir" "/tmp/maestro-output"
-            ".maestro/"
-          )
-          maestro test "${MAESTRO_ARGS[@]}"
+          maestro test \
+            --env APP_ID=com.walletconnect.flutterwallet.internal \
+            --env WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }} \
+            --env WPAY_MERCHANT_ID_SINGLE_NOKYC=${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }} \
+            --env WPAY_CUSTOMER_KEY_MULTI_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }} \
+            --env WPAY_MERCHANT_ID_MULTI_NOKYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }} \
+            --env WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }} \
+            --env WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }} \
+            --include-tags pay \
+            --test-output-dir /tmp/maestro-output \
+            .maestro/
 
       # Clean up app build before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
