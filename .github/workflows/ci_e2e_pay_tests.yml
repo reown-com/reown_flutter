@@ -277,20 +277,28 @@ jobs:
           codesign --display --entitlements - \
             "../build/ios-ddcache/Build/Products/Debug-internal-iphonesimulator/Runner.app"
 
-      # Boot the pre-existing default iPhone 16 simulator (same approach
-      # as reown-swift). A freshly-created simulator hasn't had time to
-      # warm up swcd / verify AASA, which makes Universal Links fall
-      # back to Safari on the first cold-start openurl.
-      - name: Boot iOS simulator
+      - name: Create and boot simulator
+        id: simulator
         run: |
-          xcrun simctl boot "iPhone 16" 2>/dev/null || true
-          xcrun simctl bootstatus "iPhone 16"
-          DEVICE_ID=$(xcrun simctl list devices booted -j | \
-            /usr/bin/python3 -c 'import json,sys; d=json.load(sys.stdin).get("devices",{}); print(next((v["udid"] for vs in d.values() for v in vs if v.get("state")=="Booted" and v.get("name")=="iPhone 16"), ""))')
-          if [ -z "$DEVICE_ID" ]; then
-            echo "Unable to find booted iPhone 16"
+          RUNTIME_ID="$(xcrun simctl list runtimes iOS -j | /usr/bin/python3 -c 'import json,sys; r=[x for x in json.load(sys.stdin)["runtimes"] if x.get("isAvailable")]; print(r[-1]["identifier"] if r else "")')"
+          if [ -z "$RUNTIME_ID" ]; then
+            echo "Unable to find available iOS runtime"
             exit 1
           fi
+
+          DEVICE_ID=""
+          DEVICE_ID="$(xcrun simctl create "Pay-E2E-iPhone" "iPhone 16" "$RUNTIME_ID" 2>/dev/null || true)"
+          if [ -z "$DEVICE_ID" ]; then
+            DEVICE_ID="$(xcrun simctl list devices "$RUNTIME_ID" -j | /usr/bin/python3 -c 'import json,sys; d=json.load(sys.stdin).get("devices",{}); devices=d.get(sys.argv[1],[]); print(next((x["udid"] for x in devices if x.get("isAvailable") and x.get("name")=="iPhone 16"), ""))' "$RUNTIME_ID")"
+          fi
+          if [ -z "$DEVICE_ID" ]; then
+            echo "Unable to create/find iPhone 16 simulator"
+            exit 1
+          fi
+
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+
           echo "DEVICE_ID=$DEVICE_ID" >> "$GITHUB_ENV"
 
       - name: Install built app on simulator
@@ -301,7 +309,22 @@ jobs:
             find packages/reown_walletkit/example/build -name "Runner.app" || true
             exit 1
           fi
-          xcrun simctl install booted "$APP_PATH"
+          xcrun simctl install "$DEVICE_ID" "$APP_PATH"
+
+      # Warm up Associated Domains verification: launch the app once
+      # (forcing swcd to fetch + verify the AASA for pay.walletconnect.com
+      # associated with this bundle), then probe the Universal Link so
+      # simctl caches the route. Without this, the first cold-start
+      # openurl from Maestro falls back to Safari because AASA hasn't
+      # been resolved yet.
+      - name: Warm up Associated Domains / AASA
+        run: |
+          xcrun simctl launch "$DEVICE_ID" com.walletconnect.flutterwallet.internal || true
+          sleep 8
+          xcrun simctl openurl "$DEVICE_ID" "https://pay.walletconnect.com/"
+          sleep 8
+          xcrun simctl terminate "$DEVICE_ID" com.walletconnect.flutterwallet.internal || true
+          xcrun simctl terminate "$DEVICE_ID" com.apple.mobilesafari || true
 
       - name: Copy Maestro Pay test flows
         uses: WalletConnect/actions/maestro/pay-tests@0c9875ae33fe85fa6a4110dc46c82876d91a551d
