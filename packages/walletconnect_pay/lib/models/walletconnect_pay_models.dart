@@ -253,4 +253,11 @@ sealed class ConfirmPaymentResponse with _$ConfirmPaymentResponse {
 }
 
 @JsonEnum(fieldRename: FieldRename.none)
-enum PaymentStatus { requires_action, processing, succeeded, failed, expired }
+enum PaymentStatus {
+  requires_action,
+  processing,
+  succeeded,
+  failed,
+  expired,
+  cancelled,
+}

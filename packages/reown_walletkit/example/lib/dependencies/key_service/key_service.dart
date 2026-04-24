@@ -82,7 +82,10 @@ class KeyService extends IKeyService {
       final isUpdated = await _isUpdated();
       if (isUpdated.$1) {
         // regenerate the wallet after an update
-        await restoreWallet(mnemonicOrPrivate: getMnemonic());
+        final mnemonic = getMnemonic();
+        if (mnemonic.isNotEmpty) {
+          await restoreWallet(mnemonicOrPrivate: mnemonic);
+        }
         await _prefs.setString('rwkt_build_number', isUpdated.$2.toString());
       }
       final savedKeys = _prefs.getStringList('rwkt_chain_keys')!;
@@ -135,7 +138,6 @@ class KeyService extends IKeyService {
   @override
   String getMnemonic() {
     final mnemonic = _prefs.getString('rwkt_mnemonic') ?? '';
-    debugPrint('[$runtimeType] getMnemonic $mnemonic');
     return mnemonic;
   }
 
@@ -190,7 +192,7 @@ class KeyService extends IKeyService {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     await _prefs.remove('rwkt_chain_keys');
     await _prefs.remove('rwkt_mnemonic');
-    debugPrint('[$runtimeType] _restoreWalletFromPrivateKey $privateKey');
+    debugPrint('[$runtimeType] _restoreWalletFromPrivateKey (key set)');
 
     final ecDomain = ECCurve_secp256k1();
     final bigIntPrivateKey = BigInt.parse(privateKey, radix: 16);
@@ -210,7 +212,6 @@ class KeyService extends IKeyService {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     await _prefs.remove('rwkt_chain_keys');
     await _prefs.setString('rwkt_mnemonic', mnemonic);
-    debugPrint('[$runtimeType] _restoreFromMnemonic $mnemonic');
 
     final eip155ChainKey = _evmChainKey(mnemonic);
     final solanaChainKey = await _solanaChainKey(mnemonic);

@@ -98,6 +98,7 @@ const _$PaymentStatusEnumMap = {
   PaymentStatus.succeeded: 'succeeded',
   PaymentStatus.failed: 'failed',
   PaymentStatus.expired: 'expired',
+  PaymentStatus.cancelled: 'cancelled',
 };
 
 _MerchantInfo _$MerchantInfoFromJson(Map<String, dynamic> json) =>

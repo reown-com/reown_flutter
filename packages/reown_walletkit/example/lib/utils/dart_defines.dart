@@ -5,4 +5,8 @@ class DartDefines {
 
   static const tonSK = String.fromEnvironment('TON_SK');
   static const tonPK = String.fromEnvironment('TON_PK');
+
+  static const enableTestMode = bool.fromEnvironment('ENABLE_TEST_MODE');
+  static const testWalletPrivateKey =
+      String.fromEnvironment('TEST_WALLET_PRIVATE_KEY');
 }
