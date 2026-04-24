@@ -279,21 +279,32 @@ jobs:
       - name: Embed entitlements in simulator app
         run: |
           APP=packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
-          # First deep-sign everything so nested frameworks stay
-          # consistent with the re-signed main binary (simulator refuses
-          # to launch if they mismatch).
+          # Strip anything Flutter left, then deep-sign nested code so
+          # the tree is consistent, then stamp the main bundle with the
+          # associated-domains entitlement. Order matters: entitlements
+          # aren't propagated through --deep.
+          codesign --remove-signature "$APP" || true
+          find "$APP" -type d -name '*.framework' -print0 | \
+            xargs -0 -I{} codesign --remove-signature "{}" || true
           codesign --force --deep --sign - "$APP"
-          # Then overwrite the main bundle signature with the
-          # associated-domains entitlement.
           codesign --force --sign - \
             --entitlements packages/reown_walletkit/example/ios/Runner/RunnerInternal.entitlements \
             "$APP"
+          codesign --verify --verbose=4 "$APP"
           codesign --display --entitlements - "$APP"
 
       - name: Install built app on simulator
         run: |
           xcrun simctl install "$DEVICE_ID" \
             packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
+
+      - name: Verify app launches after resign
+        run: |
+          xcrun simctl launch "$DEVICE_ID" com.walletconnect.flutterwallet.internal || \
+            (echo "=== simctl launch failed, dumping console ===" && \
+             xcrun simctl spawn "$DEVICE_ID" log show --last 30s --predicate 'process == "SpringBoard" OR process == "runningboardd"' --info 2>&1 | tail -100)
+          sleep 3
+          xcrun simctl terminate "$DEVICE_ID" com.walletconnect.flutterwallet.internal || true
 
       # Enable Associated Domains Development Mode on the simulator so
       # `?mode=developer` in the internal entitlements is honored and
