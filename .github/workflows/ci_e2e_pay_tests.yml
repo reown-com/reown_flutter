@@ -234,13 +234,15 @@ jobs:
         run: pod repo update --silent
 
       # Two-step iOS simulator build: let Flutter emit Dart kernel +
-      # Generated.xcconfig, then drive xcodebuild ourselves. `flutter
-      # build ios --simulator` passes CODE_SIGNING_ALLOWED=NO, which
-      # strips entitlements and breaks Universal Links on the CI
-      # simulator (deep-link flow falls back to Safari). Running
-      # xcodebuild directly with CODE_SIGNING_ALLOWED=YES + an adhoc
-      # identity signs the app during build and embeds the
-      # associated-domains entitlement. Matches reown-swift's pipeline.
+      # Generated.xcconfig, then drive xcodebuild ourselves.
+      # `flutter build ios --simulator` passes CODE_SIGNING_ALLOWED=NO,
+      # which strips entitlements and breaks Universal Links on the CI
+      # simulator (deep-link flow falls back to Safari). We also
+      # override DEVELOPMENT_TEAM + CODE_SIGN_STYLE: the project only
+      # sets DEVELOPMENT_TEAM for sdk=iphoneos*, so a plain simulator
+      # build would sign with an empty team prefix, and iOS rejects
+      # the app as an AASA handler because W5R8AG9K22.<bundle> from
+      # the AASA no longer matches the app's application-identifier.
       - name: Prepare Flutter iOS artifacts
         working-directory: packages/reown_walletkit/example
         run: |
@@ -257,7 +259,7 @@ jobs:
         working-directory: packages/reown_walletkit/example/ios
         run: pod install
 
-      - name: Build Runner.app via xcodebuild (signed adhoc)
+      - name: Build Runner.app via xcodebuild (automatic signing)
         id: build_ios
         working-directory: packages/reown_walletkit/example/ios
         run: |
@@ -270,7 +272,9 @@ jobs:
               -destination "generic/platform=iOS Simulator" \
               -derivedDataPath ../build/ios-ddcache \
               CODE_SIGNING_ALLOWED=YES \
-              CODE_SIGN_IDENTITY="-" \
+              CODE_SIGN_STYLE=Automatic \
+              DEVELOPMENT_TEAM=W5R8AG9K22 \
+              PROVISIONING_PROFILE_SPECIFIER= \
               build
           codesign --display --entitlements - \
             "../build/ios-ddcache/Build/Products/Debug-internal-iphonesimulator/Runner.app"
