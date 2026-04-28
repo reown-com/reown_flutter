@@ -15,6 +15,20 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_why_we_n
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 
+/// Per-option payment preparation state: the resolved required actions and
+/// (when an approve tx is part of the flow) an estimated fee row.
+class _OptionState {
+  _OptionState({this.actions, this.approvalFeeWei, this.feeSymbol});
+
+  List<Action>? actions;
+  BigInt? approvalFeeWei;
+  String? feeSymbol;
+
+  bool get isReady => actions != null;
+  bool get hasApprovalAction =>
+      actions?.any((a) => a.walletRpc.method == 'eth_sendTransaction') ?? false;
+}
+
 class WCPPaymentDetailsWidget extends StatefulWidget {
   const WCPPaymentDetailsWidget({
     super.key,
@@ -37,10 +51,15 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
 }
 
 class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
+  static const _payExpiry = Duration(seconds: 10);
+
   final _walletKitService = GetIt.I<IWalletKitService>();
   late final PaymentOptionsResponse paymentOptionsResponse;
   late ConfirmPaymentRequest confirmRequest;
   final Set<String> _collectDataCompletedIds = {};
+  final Map<String, _OptionState> _prep = {};
+  int _prepSeq = 0;
+
   bool _isProcessing = false;
   bool _isForward = true;
   bool _showReview = false;
@@ -52,6 +71,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     confirmRequest = widget.paymentRequest;
     widget.showInfoPageNotifier?.addListener(_onInfoPageToggled);
     widget.showReviewNotifier?.addListener(_onReviewToggled);
+    _preloadFor(_selectedOption);
   }
 
   @override
@@ -81,6 +101,9 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     );
   }
 
+  _OptionState get _selectedPrep =>
+      _prep.putIfAbsent(_selectedOption.id, _OptionState.new);
+
   bool _needsCollectData(PaymentOption option) {
     final url = option.collectData?.url;
     return url != null &&
@@ -88,42 +111,74 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         !_collectDataCompletedIds.contains(option.id);
   }
 
-  String _sign(Action action) {
-    final method = action.walletRpc.method;
-    final chainId = action.walletRpc.chainId;
-    final params = action.walletRpc.params;
-    final service = _walletKitService.getChainService<EVMService>(
-      chainId: chainId,
+  /// Fetch the required actions for [option] (if not already present on the
+  /// option) and estimate the approval fee when present. Uses a monotonic
+  /// [_prepSeq] so that responses from a previously-selected option cannot
+  /// overwrite the current one.
+  Future<void> _preloadFor(PaymentOption option) async {
+    final state = _prep.putIfAbsent(option.id, _OptionState.new);
+    if (state.isReady) return;
+
+    final seq = ++_prepSeq;
+
+    List<Action> actions;
+    if (option.actions.isNotEmpty) {
+      actions = option.actions;
+    } else {
+      try {
+        actions = await _walletKitService.getRequiredPaymentActions(
+          option.id,
+          confirmRequest.paymentId,
+        );
+      } catch (e) {
+        debugPrint('[SampleWallet] preload actions failed for ${option.id}: $e');
+        return;
+      }
+    }
+    if (!mounted || seq != _prepSeq) return;
+    setState(() => state.actions = actions);
+
+    final approveTx = actions.firstWhere(
+      (a) => a.walletRpc.method == 'eth_sendTransaction',
+      orElse: () => actions.first,
     );
-    switch (method) {
-      case 'eth_signTypedData_v4':
-        final decodedParams = jsonDecode(params) as List<dynamic>;
-        final typedData = decodedParams.last;
-        return service.ethSignTypedDataV4(typedData);
-      case 'personal_sign':
-        throw UnimplementedError('personal_sign not yet implemented');
-      default:
-        throw UnimplementedError('Unsupported signing method: $method');
+    if (approveTx.walletRpc.method != 'eth_sendTransaction') return;
+
+    try {
+      final service = _walletKitService.getChainService<EVMService>(
+        chainId: approveTx.walletRpc.chainId,
+      );
+      final decoded =
+          (jsonDecode(approveTx.walletRpc.params) as List).first as Map;
+      final fee = await service.estimatePayApprovalFee(
+        Map<String, dynamic>.from(decoded),
+      );
+      if (!mounted || seq != _prepSeq) return;
+      setState(() {
+        state.approvalFeeWei = fee;
+        state.feeSymbol = service.chainSupported.currency;
+      });
+    } catch (e) {
+      debugPrint('[SampleWallet] estimatePayApprovalFee error: $e');
     }
   }
 
   Future<void> _signAndPay() async {
-    try {
-      final actions = List<Action>.from(_selectedOption.actions);
-      if (actions.isEmpty) {
-        final requiredActions =
-            await _walletKitService.getRequiredPaymentActions(
-          _selectedOption.id,
-          confirmRequest.paymentId,
-        );
-        actions.addAll(requiredActions);
+    final started = DateTime.now();
+    _OptionState state = _selectedPrep;
+    while (!state.isReady) {
+      if (DateTime.now().difference(started) > _payExpiry) {
+        if (!mounted) return;
+        Navigator.of(context).pop(PaymentStatus.expired);
+        return;
       }
-      final signatures = actions.map((action) => _sign(action)).toList();
-      confirmRequest = confirmRequest.copyWith(signatures: signatures);
-      Navigator.of(context).pop(confirmRequest);
-    } catch (e) {
-      Navigator.of(context).pop(e);
+      await Future.delayed(const Duration(milliseconds: 120));
+      if (!mounted) return;
+      state = _selectedPrep;
     }
+
+    if (!mounted) return;
+    Navigator.of(context).pop((confirmRequest, state.actions!));
   }
 
   Future<void> _handleConfirmOrNext() async {
@@ -171,6 +226,12 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         ? 'Continue'
         : 'Pay ${formatPayAmount(paymentInfo.amount)}';
 
+    final prep = _selectedPrep;
+    final showApprovalRow = _showReview ||
+        !_hasMultipleOptions && !selectedNeedsCollectData;
+    final payEnabled =
+        !_isProcessing && (showContinue || prep.isReady);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,12 +252,17 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
               setState(() {
                 confirmRequest = confirmRequest.copyWith(optionId: option.id);
               });
+              _preloadFor(option);
             },
           ),
+        if (showApprovalRow && prep.hasApprovalAction) ...[
+          const SizedBox(height: AppSpacing.s3),
+          _ApprovalFeeRow(feeWei: prep.approvalFeeWei, symbol: prep.feeSymbol),
+        ],
         const SizedBox(height: AppSpacing.s5),
         WCPrimaryButton(
           onPressed: _handleConfirmOrNext,
-          enabled: !_isProcessing,
+          enabled: payEnabled,
           text: buttonText,
           testId: showContinue ? 'pay-button-continue' : 'pay-button-pay',
         ),
@@ -297,6 +363,70 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       padding: EdgeInsets.zero,
       child: _buildDetailsView(context),
     );
+  }
+}
+
+class _ApprovalFeeRow extends StatelessWidget {
+  const _ApprovalFeeRow({required this.feeWei, required this.symbol});
+
+  final BigInt? feeWei;
+  final String? symbol;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    final String valueText;
+    if (feeWei == null || symbol == null) {
+      valueText = '…';
+    } else {
+      valueText = _format(feeWei!, symbol!);
+    }
+    return Semantics(
+      container: true,
+      identifier: 'pay-review-approval-fee',
+      label: 'pay-review-approval-fee',
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.foregroundPrimary,
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        height: 68.0,
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
+        alignment: Alignment.center,
+        child: Row(
+          children: [
+            Text(
+              'One-time approval fee',
+              style: TextStyle(
+                color: colors.textTertiary,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'KH Teka',
+              ),
+            ),
+            const Spacer(),
+            Text(
+              valueText,
+              style: TextStyle(
+                color: colors.textPrimary,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'KH Teka',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static String _format(BigInt wei, String symbol) {
+    // 1 ether = 1e18 wei. Show four significant decimals.
+    final ether = wei / BigInt.from(10).pow(18);
+    if (ether == 0 && wei > BigInt.zero) {
+      return '< 0.0001 $symbol';
+    }
+    return '${ether.toStringAsFixed(4)} $symbol';
   }
 }
 
