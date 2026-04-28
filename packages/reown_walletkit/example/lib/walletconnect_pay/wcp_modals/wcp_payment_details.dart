@@ -138,6 +138,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     if (!mounted || seq != _prepSeq) return;
     setState(() => state.actions = actions);
 
+    if (actions.isEmpty) return;
     final approveTx = actions.firstWhere(
       (a) => a.walletRpc.method == 'eth_sendTransaction',
       orElse: () => actions.first,
@@ -213,6 +214,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       setState(() => _showReview = true);
       widget.showReviewNotifier?.value = true;
     } else {
+      setState(() => _isProcessing = true);
       await _signAndPay();
     }
   }
@@ -422,8 +424,8 @@ class _ApprovalFeeRow extends StatelessWidget {
 
   static String _format(BigInt wei, String symbol) {
     // 1 ether = 1e18 wei. Show four significant decimals.
-    final ether = wei / BigInt.from(10).pow(18);
-    if (ether == 0 && wei > BigInt.zero) {
+    final ether = wei.toDouble() / 1e18;
+    if (ether > 0 && ether < 0.0001) {
       return '< 0.0001 $symbol';
     }
     return '${ether.toStringAsFixed(4)} $symbol';
