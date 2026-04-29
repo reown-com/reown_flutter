@@ -886,15 +886,23 @@ class WalletKitService implements IWalletKitService {
       return;
     }
 
-    if (result is! ConfirmPaymentRequest) {
+    if (result is! (ConfirmPaymentRequest, List<Action>)) {
       _pendingPaymentRequest = null;
       _currentPaymentOptions = null;
       throw result;
     }
 
+    final (signedRequest, resolvedActions) = result;
+    final selectedOption = response.options.firstWhere(
+      (o) => o.id == signedRequest.optionId,
+    );
     // Step 2: Confirming Payment
     final paymentStatusResult = await _bottomSheetHandler.queueBottomSheet(
-      widget: WCPConfirmingPayment(paymentRequest: result),
+      widget: WCPConfirmingPayment(
+        paymentRequest: signedRequest,
+        actions: resolvedActions,
+        tokenSymbol: selectedOption.amount.display.assetSymbol,
+      ),
     );
     if (paymentStatusResult is! PaymentStatus) {
       // confirmPayment threw an error — detect the error type and show result

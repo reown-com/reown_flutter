@@ -285,6 +285,113 @@ class EVMService {
     return signature;
   }
 
+  // --- WalletConnect Pay helpers (Permit2 two-action flow) ---
+  //
+  // These are used by the sample's Pay flow to submit an ERC-20 `approve`
+  // transaction to Permit2 without showing the generic dapp-request approval
+  // sheet — the user already consented by tapping "Pay".
+
+  static final BigInt _polygonPriorityFloorWei = BigInt.from(30000000000); // 30 gwei
+  static final BigInt _defaultPriorityFloorWei = BigInt.from(1500000000); // 1.5 gwei
+
+  Future<({EtherAmount maxFeePerGas, EtherAmount maxPriorityFeePerGas})>
+      _getPayFees() async {
+    EtherAmount priority;
+    try {
+      final hex = await ethClient.makeRPCCall<String>(
+        'eth_maxPriorityFeePerGas',
+      );
+      priority = EtherAmount.fromBigInt(
+        EtherUnit.wei,
+        BigInt.parse(hex.replaceFirst('0x', ''), radix: 16),
+      );
+    } catch (_) {
+      priority = EtherAmount.zero();
+    }
+
+    final floor = chainSupported.chainId == 'eip155:137'
+        ? _polygonPriorityFloorWei
+        : _defaultPriorityFloorWei;
+    if (priority.getInWei < floor) {
+      priority = EtherAmount.fromBigInt(EtherUnit.wei, floor);
+    }
+
+    final block = await ethClient.getBlockInformation();
+    final baseFee = block.baseFeePerGas;
+    final maxFee = baseFee != null
+        ? EtherAmount.fromBigInt(
+            EtherUnit.wei,
+            baseFee.getInWei * BigInt.two + priority.getInWei,
+          )
+        : await ethClient.getGasPrice();
+    return (maxFeePerGas: maxFee, maxPriorityFeePerGas: priority);
+  }
+
+  Future<BigInt> _estimatePayGas(Transaction tx) async {
+    final gas = await ethClient.estimateGas(
+      sender: tx.from,
+      to: tx.to,
+      value: tx.value,
+      data: tx.data,
+    );
+    return gas * BigInt.from(6) ~/ BigInt.from(5);
+  }
+
+  /// Estimates the wei cost of the given Pay approval transaction, so the
+  /// review UI can display a "one-time approval fee" line. Returns null on
+  /// failure — callers should hide the row rather than block Pay.
+  Future<BigInt?> estimatePayApprovalFee(Map<String, dynamic> txParams) async {
+    try {
+      final tx = txParams.toTransaction();
+      final fees = await _getPayFees();
+      final gasLimit = await _estimatePayGas(tx);
+      return gasLimit * fees.maxFeePerGas.getInWei;
+    } catch (e) {
+      debugPrint('[SampleWallet] estimatePayApprovalFee failed: $e');
+      return null;
+    }
+  }
+
+  /// Sends the given Pay approval transaction and waits for the receipt.
+  /// Returns the transaction hash on success. Throws [PayApprovalFailed] when
+  /// the receipt reports a failed status, or [PayApprovalTimeout] when no
+  /// receipt is seen within 120s.
+  Future<String> sendPayTransaction(Map<String, dynamic> txParams) async {
+    final base = txParams.toTransaction();
+    final fees = await _getPayFees();
+    final gasLimit = await _estimatePayGas(base);
+    final tx = base.copyWith(
+      maxFeePerGas: fees.maxFeePerGas,
+      maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
+      maxGas: gasLimit.toInt(),
+    );
+
+    final chainIdInt = int.parse(chainSupported.chainId.split(':').last);
+    final hash = await ethClient.sendTransaction(
+      _credentials,
+      tx,
+      chainId: chainIdInt,
+    );
+
+    const interval = Duration(seconds: 2);
+    const timeout = Duration(seconds: 120);
+    final deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      await Future.delayed(interval);
+      try {
+        final receipt = await ethClient.getTransactionReceipt(hash);
+        if (receipt == null) continue;
+        if (receipt.status == true) return hash;
+        throw PayApprovalFailed(hash);
+      } on PayApprovalFailed {
+        rethrow;
+      } catch (e) {
+        debugPrint('[SampleWallet] sendPayTransaction poll error: $e');
+      }
+    }
+    throw PayApprovalTimeout(hash);
+  }
+
   Future<void> ethSignTypedDataV4Handler(
     String topic,
     dynamic parameters,
@@ -799,4 +906,19 @@ class EVMService {
     updatedNamespaces[namespace] = newNamespaces;
     return updatedNamespaces;
   }
+}
+
+class PayApprovalFailed implements Exception {
+  PayApprovalFailed(this.hash);
+  final String hash;
+  @override
+  String toString() => 'Approval transaction failed ($hash)';
+}
+
+class PayApprovalTimeout implements Exception {
+  PayApprovalTimeout(this.hash);
+  final String hash;
+  @override
+  String toString() =>
+      'Approval transaction timed out waiting for confirmation ($hash)';
 }
