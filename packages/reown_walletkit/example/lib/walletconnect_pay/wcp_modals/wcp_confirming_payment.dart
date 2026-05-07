@@ -9,10 +9,8 @@ import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
-@visibleForTesting
 typedef WCPActionExecutor = Future<String> Function(Action action);
 
-@visibleForTesting
 Future<List<String>> collectWCPActionSignatures({
   required List<Action> actions,
   required WCPActionExecutor executeAction,

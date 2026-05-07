@@ -45,4 +45,22 @@ void main() {
       expect(signatures, ['0xapprovaltxhash', '0xtypeddatasignature']);
     },
   );
+
+  test('collectWCPActionSignatures propagates executeAction errors', () async {
+    expect(
+      () => collectWCPActionSignatures(
+        actions: [
+          const Action(
+            walletRpc: WalletRpcAction(
+              chainId: 'eip155:8453',
+              method: 'eth_sendTransaction',
+              params: '[]',
+            ),
+          ),
+        ],
+        executeAction: (_) async => throw Exception('user rejected'),
+      ),
+      throwsA(isA<Exception>()),
+    );
+  });
 }
