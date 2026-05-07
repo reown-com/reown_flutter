@@ -9,6 +9,23 @@ import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
+@visibleForTesting
+typedef WCPActionExecutor = Future<String> Function(Action action);
+
+@visibleForTesting
+Future<List<String>> collectWCPActionSignatures({
+  required List<Action> actions,
+  required WCPActionExecutor executeAction,
+  void Function(Action action)? onActionStarted,
+}) async {
+  final signatures = <String>[];
+  for (final action in actions) {
+    onActionStarted?.call(action);
+    signatures.add(await executeAction(action));
+  }
+  return signatures;
+}
+
 class WCPConfirmingPayment extends StatefulWidget {
   const WCPConfirmingPayment({
     super.key,
@@ -50,17 +67,11 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
 
   Future<void> _run() async {
     try {
-      final signatures = <String>[];
-      for (final action in widget.actions) {
-        final method = action.walletRpc.method;
-        if (method == 'eth_sendTransaction') {
-          _stepLabel.value = _settingUpLabel;
-        } else {
-          _stepLabel.value =
-              _isMultiStep ? _finalizingLabel : _processingLabel;
-        }
-        signatures.add(await _executeAction(action));
-      }
+      final signatures = await collectWCPActionSignatures(
+        actions: widget.actions,
+        executeAction: _executeAction,
+        onActionStarted: _updateStepLabel,
+      );
       _stepLabel.value = _isMultiStep ? _finalizingLabel : _processingLabel;
       final request = widget.paymentRequest.copyWith(signatures: signatures);
       final response = await _walletKitService.confirmPayment(request);
@@ -69,6 +80,15 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
     } catch (e) {
       if (!mounted) return;
       Navigator.of(context).pop(e);
+    }
+  }
+
+  void _updateStepLabel(Action action) {
+    final method = action.walletRpc.method;
+    if (method == 'eth_sendTransaction') {
+      _stepLabel.value = _settingUpLabel;
+    } else {
+      _stepLabel.value = _isMultiStep ? _finalizingLabel : _processingLabel;
     }
   }
 
@@ -147,14 +167,9 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
               builder: (context, label, _) {
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),
-                  transitionBuilder: (child, animation) => FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  ),
-                  child: WCModalTitle(
-                    key: ValueKey(label),
-                    text: label,
-                  ),
+                  transitionBuilder: (child, animation) =>
+                      FadeTransition(opacity: animation, child: child),
+                  child: WCModalTitle(key: ValueKey(label), text: label),
                 );
               },
             ),
