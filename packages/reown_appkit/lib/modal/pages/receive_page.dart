@@ -34,7 +34,18 @@ class ReceivePage extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
-    final chainId = appKitModal.selectedChain!.chainId;
+    final selectedChain = appKitModal.selectedChain;
+    if (selectedChain == null) {
+      // Session disconnected mid-render; show an empty navbar shell rather
+      // than crashing on `selectedChain!`. The disconnect flow closes this
+      // modal asynchronously.
+      return const ModalNavbar(
+        title: 'Receive',
+        divider: false,
+        body: SizedBox.shrink(),
+      );
+    }
+    final chainId = selectedChain.chainId;
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final isDarkMode =
         ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;

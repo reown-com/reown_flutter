@@ -1403,11 +1403,19 @@ class ReownAppKitModal
     _disconnectOnClose = disconnectSession;
     // If we aren't open, then we can't and shouldn't close
     _close();
-    if (_context != null) {
-      final canPop = Navigator.of(_context!, rootNavigator: true).canPop();
-      if (canPop) {
-        Navigator.of(_context!, rootNavigator: true).pop();
-      }
+    final context = _context;
+    if (context != null) {
+      try {
+        // `_context` may reference a BuildContext whose element has been
+        // deactivated/disposed after a WC disconnect — using `Navigator.of`
+        // there throws "Null check operator used on a null value" inside
+        // StatefulElement.state. `maybeOf` plus a try/catch makes the close
+        // path a no-op when the navigator tree is no longer reachable.
+        final navigator = Navigator.maybeOf(context, rootNavigator: true);
+        if (navigator != null && navigator.canPop()) {
+          navigator.pop();
+        }
+      } catch (_) {}
     }
     _notify();
   }
