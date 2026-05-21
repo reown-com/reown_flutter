@@ -53,10 +53,9 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
   final ValueNotifier<bool>? showReviewNotifier;
   final ValueNotifier<bool>? showGasFeeNotifier;
 
-  /// Flips to true the moment the user taps PAY (and we are about to call
-  /// `getRequiredPaymentActions`). Watched by the leading widget so the back
-  /// arrow can be hidden — the WCPay wallet contract has no go-back path
-  /// after this point.
+  /// Flips to true the moment the user taps PAY. Watched by the leading
+  /// widget so the back arrow can be hidden — the WCPay wallet contract
+  /// has no go-back path after this point.
   final ValueNotifier<bool>? committedNotifier;
 
   @override
@@ -163,11 +162,9 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         !_collectDataCompletedIds.contains(option.id);
   }
 
-  /// Estimates the approval fee for [option] when the backend has already
-  /// inlined its [Action] list on the response. The WCPay wallet contract
-  /// forbids calling `getRequiredPaymentActions` during option preview — that
-  /// RPC is committal and only fires on PAY tap. When inline actions are
-  /// absent we leave [state] empty; the row renders without a fee.
+  /// Estimates the approval fee for [option] using the [Action] list the
+  /// backend inlined on the `getPaymentOptions` response. When inline actions
+  /// are absent we leave [state] empty; the row renders without a fee.
   Future<void> _preloadFor(PaymentOption option) async {
     final state = _prepFor(option);
     if (state.isPreloaded) return;
@@ -225,9 +222,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     }
   }
 
-  /// Committal step: resolves the action list for the selected option (using
-  /// inline actions when present, otherwise the one-shot
-  /// `getRequiredPaymentActions` RPC) and hands them off to the orchestrator,
+  /// Committal step: hands the inline action list off to the orchestrator,
   /// which executes them in order and posts `confirmPayment`. There is no
   /// go-back path after this — [_committed] is set so the leading widget and
   /// row affordances disable themselves.
@@ -237,24 +232,8 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     setState(() => _committed = true);
     widget.committedNotifier?.value = true;
 
-    List<Action> actions;
-    if (selected.actions.isNotEmpty) {
-      actions = selected.actions;
-    } else {
-      try {
-        actions = await _walletKitService.getRequiredPaymentActions(
-          selected.id,
-          confirmRequest.paymentId,
-        );
-      } catch (e) {
-        if (!mounted) return;
-        Navigator.of(context).pop(e);
-        return;
-      }
-    }
-
     if (!mounted) return;
-    Navigator.of(context).pop((confirmRequest, actions));
+    Navigator.of(context).pop((confirmRequest, selected.actions));
   }
 
   /// Primary action on the review screen. The select screen no longer has a
