@@ -258,7 +258,7 @@ class _ActionSlot extends StatelessWidget {
       case WCPOptionRowAction.infoRequired:
         return _IconButton(
           assetPath: 'assets/Info.svg',
-          testId: 'pay-option-info-button',
+          testId: 'pay-option-info-required',
           onTap: onTap,
         );
     }
