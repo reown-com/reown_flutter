@@ -8,12 +8,11 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_payment_util.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 
 /// Action button rendered on the right side of [WCPOptionRow].
-enum WCPOptionRowAction { none, info, edit, infoRequired }
+enum WCPOptionRowAction { none, edit, infoRequired }
 
 /// Shared row used by the select-token list and by the post-select review
-/// screen. The right-hand side is a small icon button — `info` on select,
-/// `edit` (pencil) on review — or an `Info required` badge when the option
-/// still needs data collection.
+/// screen. The right-hand side is a small icon button: `(i)` for options
+/// that still need data collection, `edit` (pencil) on the review screen.
 class WCPOptionRow extends StatelessWidget {
   const WCPOptionRow({
     super.key,
@@ -117,7 +116,6 @@ class WCPOptionRow extends StatelessWidget {
                       ),
                       _ActionSlot(
                         action: action,
-                        isSelected: isSelected,
                         onTap: onActionTap,
                       ),
                     ],
@@ -240,12 +238,10 @@ class _FeeSlot extends StatelessWidget {
 class _ActionSlot extends StatelessWidget {
   const _ActionSlot({
     required this.action,
-    required this.isSelected,
     required this.onTap,
   });
 
   final WCPOptionRowAction action;
-  final bool isSelected;
   final VoidCallback? onTap;
 
   @override
@@ -253,12 +249,6 @@ class _ActionSlot extends StatelessWidget {
     switch (action) {
       case WCPOptionRowAction.none:
         return const SizedBox.shrink();
-      case WCPOptionRowAction.info:
-        return _IconButton(
-          assetPath: 'assets/Info.svg',
-          testId: 'pay-option-info-button',
-          onTap: onTap,
-        );
       case WCPOptionRowAction.edit:
         return _IconButton(
           assetPath: 'assets/Pencil.svg',
@@ -266,17 +256,10 @@ class _ActionSlot extends StatelessWidget {
           onTap: onTap,
         );
       case WCPOptionRowAction.infoRequired:
-        return Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _InfoRequiredBadge(isSelected: isSelected),
-            const SizedBox(width: AppSpacing.s2),
-            _IconButton(
-              assetPath: 'assets/Info.svg',
-              testId: 'pay-option-info-button',
-              onTap: onTap,
-            ),
-          ],
+        return _IconButton(
+          assetPath: 'assets/Info.svg',
+          testId: 'pay-option-info-button',
+          onTap: onTap,
         );
     }
   }
@@ -326,40 +309,3 @@ class _IconButton extends StatelessWidget {
   }
 }
 
-class _InfoRequiredBadge extends StatelessWidget {
-  const _InfoRequiredBadge({required this.isSelected});
-  final bool isSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    return Semantics(
-      container: true,
-      identifier: 'pay-info-required-badge',
-      label: 'pay-info-required-badge',
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOutCubic,
-        height: 28.0,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s2),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? colors.accent.withValues(alpha: 0.9)
-              : colors.foregroundTertiary,
-          borderRadius: BorderRadius.circular(AppSpacing.s2),
-        ),
-        alignment: Alignment.center,
-        child: AnimatedDefaultTextStyle(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          style: TextStyle(
-            color: isSelected ? Colors.white : colors.textPrimary,
-            fontSize: 14.0,
-            fontWeight: FontWeight.w500,
-          ),
-          child: const Text('Info required'),
-        ),
-      ),
-    );
-  }
-}
