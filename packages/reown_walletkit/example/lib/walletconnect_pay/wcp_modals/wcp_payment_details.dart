@@ -372,15 +372,20 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         ),
         const SizedBox(height: AppSpacing.s4),
         Center(
-          child: Text(
-            'Select a token to pay with',
-            style: TextStyle(
-              color: context.colors.textPrimary,
-              fontSize: 20.0,
-              fontWeight: FontWeight.w400,
-              letterSpacing: -0.6,
+          child: Semantics(
+            container: true,
+            identifier: 'pay-select-option-header',
+            label: 'pay-select-option-header',
+            child: Text(
+              'Select a token to pay with',
+              style: TextStyle(
+                color: context.colors.textPrimary,
+                fontSize: 20.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.6,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: AppSpacing.s5),
