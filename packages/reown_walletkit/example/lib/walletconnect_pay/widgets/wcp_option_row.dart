@@ -139,14 +139,29 @@ class _OptionIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
+    final iconUrl = display.iconUrl;
+    final networkIconUrl = display.networkIconUrl;
+    final hasIcon = iconUrl != null && iconUrl.isNotEmpty;
+    final hasNetworkIcon = networkIconUrl != null && networkIconUrl.isNotEmpty;
     return Stack(
       clipBehavior: Clip.none,
       children: [
         CircleAvatar(
           radius: 16.0,
-          backgroundImage: NetworkImage(display.iconUrl ?? ''),
+          backgroundColor: colors.foregroundPrimary,
+          backgroundImage: hasIcon ? NetworkImage(iconUrl) : null,
+          child: hasIcon
+              ? null
+              : Text(
+                  display.assetSymbol.characters.first,
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
         ),
-        if ((display.networkIconUrl ?? '').isNotEmpty)
+        if (hasNetworkIcon)
           Positioned(
             bottom: -2,
             right: -2,
@@ -158,7 +173,7 @@ class _OptionIcon extends StatelessWidget {
               ),
               child: CircleAvatar(
                 radius: 8.0,
-                backgroundImage: NetworkImage(display.networkIconUrl ?? ''),
+                backgroundImage: NetworkImage(networkIconUrl),
               ),
             ),
           ),

@@ -117,7 +117,7 @@ void main() {
     });
 
     test('USD puts the symbol before the value', () {
-      expect(formatFiatGas(1.5, 'USD'), r'$1.5');
+      expect(formatFiatGas(1.5, 'USD'), r'$1.50');
     });
 
     test('zero or negative renders as currency zero', () {
@@ -125,12 +125,18 @@ void main() {
     });
 
     test('unsupported code falls back to ISO suffix', () {
-      expect(formatFiatGas(1.5, 'JPY'), '1.5 JPY');
+      expect(formatFiatGas(1.5, 'JPY'), '1.50 JPY');
     });
 
-    test('values >= 1 use 2 decimal scale', () {
-      expect(formatFiatGas(2.5, 'EUR'), '2.5€');
+    test('values >= 1 keep min 2 decimals', () {
+      expect(formatFiatGas(2.5, 'EUR'), '2.50€');
       expect(formatFiatGas(2.55, 'EUR'), '2.55€');
+    });
+
+    test('sub-1 keeps extra precision but trims to min 2 decimals', () {
+      expect(formatFiatGas(0.5, 'EUR'), '0.50€');
+      expect(formatFiatGas(0.01, 'EUR'), '0.01€');
+      expect(formatFiatGas(0.012, 'EUR'), '0.012€');
     });
   });
 

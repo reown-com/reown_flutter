@@ -79,9 +79,13 @@ String formatFiatGas(double fiatValue, String currency) {
   final symbol = _fiatSymbol(currency);
   final scale = fiatValue >= 1 ? 2 : 3;
   var str = fiatValue.toStringAsFixed(scale);
-  // Strip trailing zeros so `0.010` → `0.01` but keep `0.50`.
+  // Strip trailing zeros but keep at least 2 decimals so `0.50` stays `0.50`
+  // while `0.010` collapses to `0.01`.
   if (str.contains('.')) {
-    str = str.replaceFirst(RegExp(r'0+$'), '').replaceFirst(RegExp(r'\.$'), '');
+    final dot = str.indexOf('.');
+    while (str.endsWith('0') && str.length - dot - 1 > 2) {
+      str = str.substring(0, str.length - 1);
+    }
   }
   // EUR convention in the Figma puts the symbol after the value (`0.012€`).
   // USD puts it before (`$0.012`). Anything else: ISO code after, separator.

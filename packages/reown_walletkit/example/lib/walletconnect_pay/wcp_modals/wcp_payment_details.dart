@@ -191,11 +191,14 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       final service = _walletKitService.getChainService<EVMService>(
         chainId: approveTx.walletRpc.chainId,
       );
-      final decoded =
-          (jsonDecode(approveTx.walletRpc.params) as List).first as Map;
-      final feeWei = await service.estimatePayApprovalFee(
-        Map<String, dynamic>.from(decoded),
-      );
+      final paramsList = jsonDecode(approveTx.walletRpc.params) as List;
+      if (paramsList.isEmpty || paramsList.first is! Map) {
+        if (!mounted || seq != state.seq) return;
+        setState(() => state.isFeeLoading = false);
+        return;
+      }
+      final decoded = Map<String, dynamic>.from(paramsList.first as Map);
+      final feeWei = await service.estimatePayApprovalFee(decoded);
       if (!mounted || seq != state.seq) return;
       if (feeWei == null) {
         setState(() => state.isFeeLoading = false);
@@ -243,8 +246,12 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         confirmRequest.paymentId,
       );
     } catch (e) {
+      // Surface a typed PaymentStatus so the orchestrator can route the user
+      // to the contextual result screen (with merchant info) instead of
+      // crashing into the generic catch-all in `processPayment`.
+      debugPrint('[SampleWallet] getRequiredPaymentActions error: $e');
       if (!mounted) return;
-      Navigator.of(context).pop(e);
+      Navigator.of(context).pop(PaymentStatus.failed);
       return;
     }
 

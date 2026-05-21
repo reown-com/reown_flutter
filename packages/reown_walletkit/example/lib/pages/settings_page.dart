@@ -109,6 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (response == true) {
       await _keysService.clearAll();
+      await WCPLastTokenStore.instance.clear();
       await _keysService.createRandomWallet();
       await _keysService.loadKeys();
       await showDialog(
