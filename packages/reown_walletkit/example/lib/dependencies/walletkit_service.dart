@@ -348,6 +348,20 @@ class WalletKitService implements IWalletKitService {
   }
 
   @override
+  Future<List<Action>> getRequiredPaymentActions(
+    String optionId,
+    String paymentId,
+  ) async {
+    final response = await _walletKit!.getRequiredPaymentActions(
+      request: GetRequiredPaymentActionsRequest(
+        optionId: optionId,
+        paymentId: paymentId,
+      ),
+    );
+    return response;
+  }
+
+  @override
   Future<ConfirmPaymentResponse> confirmPayment(
     ConfirmPaymentRequest payment,
   ) async {
