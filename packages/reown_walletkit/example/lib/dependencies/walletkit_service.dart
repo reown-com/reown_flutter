@@ -24,6 +24,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_last_token_store.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_confirming_payment.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_get_payment_options.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_details.dart';
@@ -313,9 +314,13 @@ class WalletKitService implements IWalletKitService {
         return;
       }
 
+      final paymentOptions = _currentPaymentOptions!.options;
       _pendingPaymentRequest = ConfirmPaymentRequest(
         paymentId: _currentPaymentOptions!.paymentId,
-        optionId: _currentPaymentOptions!.options.first.id,
+        // Single-option flows: pre-select the only choice. Multi-option
+        // flows: leave empty so the user must tap a row on the select
+        // screen to make their choice — never pre-pick the first option.
+        optionId: paymentOptions.length == 1 ? paymentOptions.first.id : '',
         signatures: [],
       );
 
@@ -799,26 +804,46 @@ class WalletKitService implements IWalletKitService {
 
   /// Processes the payment flow: shows payment details, confirms payment, and displays the result.
   Future<dynamic> _processPayment(PaymentOptionsResponse response) async {
-    final hasCollectData = response.options.any(
-      (o) => o.collectData?.url != null && o.collectData!.url!.isNotEmpty,
-    );
     final hasMultipleOptions = response.options.length > 1;
-    final infoButtonNotifier =
-        hasCollectData ? ValueNotifier<bool>(true) : null;
     final showInfoPage = ValueNotifier<bool>(false);
     final showReview = ValueNotifier<bool>(false);
+    final showGasFee = ValueNotifier<bool>(false);
+    final committed = ValueNotifier<bool>(false);
+    final preferredUnit = await WCPLastTokenStore.instance.read();
     final result = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPPaymentDetailsWidget(
         paymentOptionsResponse: response,
         paymentRequest: _pendingPaymentRequest!,
-        infoButtonNotifier: infoButtonNotifier,
+        preferredUnit: preferredUnit,
         showInfoPageNotifier: showInfoPage,
         showReviewNotifier: hasMultipleOptions ? showReview : null,
+        showGasFeeNotifier: showGasFee,
+        committedNotifier: committed,
       ),
-      leadingWidget: ValueListenableBuilder<bool>(
-        valueListenable: showInfoPage,
-        builder: (_, isShowingInfo, __) {
-          if (isShowingInfo) {
+      leadingWidget: AnimatedBuilder(
+        animation:
+            Listenable.merge([showInfoPage, showReview, showGasFee, committed]),
+        builder: (_, __) {
+          // Once the user taps PAY we honor the WCPay one-call contract: the
+          // back arrow is removed so there's no way to navigate out of the
+          // committal step.
+          if (committed.value) {
+            return const SizedBox(key: ValueKey('committed_spacer'), width: 38);
+          }
+          if (showGasFee.value) {
+            return Semantics(
+              container: true,
+              identifier: 'pay-button-back',
+              label: 'pay-button-back',
+              child: WCPSheetIconButton(
+                key: const ValueKey('gas_fee_back_button'),
+                icon: Icons.arrow_back,
+                showBorder: false,
+                onPressed: () => showGasFee.value = false,
+              ),
+            );
+          }
+          if (showInfoPage.value) {
             return Semantics(
               container: true,
               identifier: 'pay-button-back',
@@ -831,40 +856,23 @@ class WalletKitService implements IWalletKitService {
               ),
             );
           }
-          return ValueListenableBuilder<bool>(
-            valueListenable: showReview,
-            builder: (_, isReviewing, __) {
-              return AnimatedSwitcher(
-                duration: const Duration(milliseconds: 250),
-                child: isReviewing
-                    ? Semantics(
-                        container: true,
-                        identifier: 'pay-button-back',
-                        label: 'pay-button-back',
-                        child: WCPSheetIconButton(
-                          key: const ValueKey('review_back_button'),
-                          icon: Icons.arrow_back,
-                          showBorder: false,
-                          onPressed: () => showReview.value = false,
-                        ),
-                      )
-                    : infoButtonNotifier != null
-                        ? ValueListenableBuilder<bool>(
-                            key: const ValueKey('info_button'),
-                            valueListenable: infoButtonNotifier,
-                            builder: (_, visible, __) => visible
-                                ? WCPInfoButton(
-                                    onTap: () => showInfoPage.value = true,
-                                  )
-                                : const SizedBox(width: 38),
-                          )
-                        : const SizedBox(
-                            key: ValueKey('spacer'),
-                            width: 38,
-                          ),
-              );
-            },
-          );
+          if (showReview.value) {
+            return Semantics(
+              container: true,
+              identifier: 'pay-button-back',
+              label: 'pay-button-back',
+              child: WCPSheetIconButton(
+                key: const ValueKey('review_back_button'),
+                icon: Icons.arrow_back,
+                showBorder: false,
+                onPressed: () => showReview.value = false,
+              ),
+            );
+          }
+          // The "Why we collect personal details" info button used to live
+          // in the leading slot; it now appears on the row that needs data
+          // collection, so the leading slot stays empty on the select page.
+          return const SizedBox(key: ValueKey('spacer'), width: 38);
         },
       ),
     );
@@ -932,6 +940,11 @@ class WalletKitService implements IWalletKitService {
     }
 
     // Step 3: Payment Result
+    if (paymentStatusResult == PaymentStatus.succeeded) {
+      // Persist the unit the user just paid with so the next merchant flow
+      // can pre-select the same token when available.
+      unawaited(WCPLastTokenStore.instance.write(selectedOption.amount.unit));
+    }
     String? errorType;
     errorType = _paymentErrorType(paymentStatusResult);
     final resultStatus = await _bottomSheetHandler.queueBottomSheet(

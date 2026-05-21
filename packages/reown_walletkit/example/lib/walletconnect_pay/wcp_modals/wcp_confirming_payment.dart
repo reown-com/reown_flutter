@@ -5,6 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
@@ -40,16 +41,27 @@ class WCPConfirmingPayment extends StatefulWidget {
   State<WCPConfirmingPayment> createState() => _WCPConfirmingPaymentState();
 }
 
+/// Loading-screen copy. [subtitle] is optional and renders smaller/secondary
+/// beneath [title]; used for the multi-line one-time-setup message.
+class _StepLabel {
+  const _StepLabel(this.title, [this.subtitle]);
+  final String title;
+  final String? subtitle;
+}
+
 class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
-  static const _processingLabel = 'Processing your payment...';
-  static const _finalizingLabel = 'Finalizing your payment...';
+  static const _processingLabel = _StepLabel('Processing your payment...');
+  static const _finalizingLabel = _StepLabel('Finalizing your payment...');
 
   final _walletKitService = GetIt.I<IWalletKitService>();
   late final bool _isMultiStep = widget.actions.length > 1;
-  late final _stepLabel = ValueNotifier<String>(_processingLabel);
+  late final _stepLabel = ValueNotifier<_StepLabel>(_processingLabel);
 
-  String get _settingUpLabel =>
-      'Setting up ${widget.tokenSymbol} for the first time...';
+  _StepLabel get _settingUpLabel => _StepLabel(
+        'Setting up ${widget.tokenSymbol}',
+        'This usually takes a few seconds. Future '
+            '${widget.tokenSymbol} payments will skip this step.',
+      );
 
   @override
   void initState() {
@@ -160,14 +172,37 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
             container: true,
             identifier: 'pay-loading-message',
             label: 'pay-loading-message',
-            child: ValueListenableBuilder<String>(
+            child: ValueListenableBuilder<_StepLabel>(
               valueListenable: _stepLabel,
               builder: (context, label, _) {
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),
                   transitionBuilder: (child, animation) =>
                       FadeTransition(opacity: animation, child: child),
-                  child: WCModalTitle(key: ValueKey(label), text: label),
+                  child: Column(
+                    key: ValueKey('${label.title}|${label.subtitle ?? ''}'),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      WCModalTitle(text: label.title),
+                      if (label.subtitle != null) ...[
+                        const SizedBox(height: 2.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.s5),
+                          child: Text(
+                            label.subtitle!,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: context.colors.textSecondary,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w400,
+                              height: 1.125,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 );
               },
             ),

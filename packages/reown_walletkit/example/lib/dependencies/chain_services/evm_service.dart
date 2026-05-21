@@ -360,10 +360,19 @@ class EVMService {
     final base = txParams.toTransaction();
     final fees = await _getPayFees();
     final gasLimit = await _estimatePayGas(base);
+    // The Permit2 approve tx is constructed server-side and can carry a
+    // nonce that's now stale (e.g. the user just sent another tx). Always
+    // override with the wallet's current pending nonce to avoid
+    // "nonce too low" / "nonce too high" RPC errors at broadcast time.
+    final pendingNonce = await ethClient.getTransactionCount(
+      _credentials.address,
+      atBlock: const BlockNum.pending(),
+    );
     final tx = base.copyWith(
       maxFeePerGas: fees.maxFeePerGas,
       maxPriorityFeePerGas: fees.maxPriorityFeePerGas,
       maxGas: gasLimit.toInt(),
+      nonce: pendingNonce,
     );
 
     final chainIdInt = int.parse(chainSupported.chainId.split(':').last);
