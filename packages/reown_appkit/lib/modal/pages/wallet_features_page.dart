@@ -141,10 +141,12 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
     // cached items
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
       final chainId = widget.appKitModal.selectedChain!.chainId;
       final cachedTokens = _blockchainService.tokensList ?? <TokenBalance>[];
       if (cachedTokens.isNotEmpty && cachedTokens.first.chainId == chainId) {
         _tokens = List<TokenBalance>.from(cachedTokens);
+        if (!mounted) return;
         setState(() {});
       } else {
         final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
@@ -160,9 +162,11 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
         address: address,
         caip2Chain: chainId,
       );
+      if (!mounted) return;
       setState(() {});
     } catch (e) {
       _tokens = [];
+      if (!mounted) return;
       setState(() {});
     }
   }
