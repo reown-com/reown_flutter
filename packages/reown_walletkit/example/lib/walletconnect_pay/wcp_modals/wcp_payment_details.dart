@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart' hide Action;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
@@ -10,40 +11,53 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_gas_fee_view.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_webview.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_why_we_need_info.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_native_price_service.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_payment_util.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/widgets/wcp_option_row.dart';
 
-/// Per-option payment preparation state: the resolved required actions and
-/// (when an approve tx is part of the flow) an estimated fee row.
-class _OptionState {
-  _OptionState({this.actions, this.approvalFeeWei, this.feeSymbol});
-
-  List<Action>? actions;
-  BigInt? approvalFeeWei;
-  String? feeSymbol;
-
-  bool get isReady => actions != null;
-  bool get hasApprovalAction =>
-      actions?.any((a) => a.walletRpc.method == 'eth_sendTransaction') ?? false;
+/// Per-option state aggregated as we preload fee estimates in parallel.
+/// [seq] is a monotonic counter scoped to this option, so a stale fetch for
+/// option A can never overwrite a fresher state on A (or on B).
+class _OptionPrep {
+  _OptionPrep();
+  WCPFeeEstimate? estimate;
+  bool isFeeLoading = false;
+  bool isPreloaded = false;
+  bool hasApproval = false;
+  int seq = 0;
 }
+
+enum _Page { select, review, info, gasFee }
 
 class WCPPaymentDetailsWidget extends StatefulWidget {
   const WCPPaymentDetailsWidget({
     super.key,
     required this.paymentOptionsResponse,
     required this.paymentRequest,
-    this.infoButtonNotifier,
+    this.preferredUnit,
     this.showInfoPageNotifier,
     this.showReviewNotifier,
+    this.showGasFeeNotifier,
+    this.committedNotifier,
   });
 
   final PaymentOptionsResponse paymentOptionsResponse;
   final ConfirmPaymentRequest paymentRequest;
-  final ValueNotifier<bool>? infoButtonNotifier;
+  final String? preferredUnit;
   final ValueNotifier<bool>? showInfoPageNotifier;
   final ValueNotifier<bool>? showReviewNotifier;
+  final ValueNotifier<bool>? showGasFeeNotifier;
+
+  /// Flips to true the moment the user taps PAY (and we are about to call
+  /// `getRequiredPaymentActions`). Watched by the leading widget so the back
+  /// arrow can be hidden — the WCPay wallet contract has no go-back path
+  /// after this point.
+  final ValueNotifier<bool>? committedNotifier;
 
   @override
   State<WCPPaymentDetailsWidget> createState() =>
@@ -51,18 +65,22 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
 }
 
 class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
-  static const _payExpiry = Duration(seconds: 10);
-
   final _walletKitService = GetIt.I<IWalletKitService>();
   late final PaymentOptionsResponse paymentOptionsResponse;
   late ConfirmPaymentRequest confirmRequest;
   final Set<String> _collectDataCompletedIds = {};
-  final Map<String, _OptionState> _prep = {};
-  int _prepSeq = 0;
+  final Map<String, _OptionPrep> _prep = {};
 
   bool _isProcessing = false;
+  bool _committed = false;
   bool _isForward = true;
   bool _showReview = false;
+  bool _showGasFee = false;
+
+  /// The option the gas-fee explainer was opened for. Tracked separately
+  /// from [confirmRequest.optionId] so that tapping a per-row info button on
+  /// the select screen doesn't implicitly select the option.
+  PaymentOption? _gasFeeOption;
 
   @override
   void initState() {
@@ -71,13 +89,37 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     confirmRequest = widget.paymentRequest;
     widget.showInfoPageNotifier?.addListener(_onInfoPageToggled);
     widget.showReviewNotifier?.addListener(_onReviewToggled);
-    _preloadFor(_selectedOption);
+    widget.showGasFeeNotifier?.addListener(_onGasFeeToggled);
+
+    final preferred = findPreferredOption(
+      paymentOptionsResponse.options,
+      widget.preferredUnit,
+    );
+    if (preferred != null) {
+      confirmRequest = confirmRequest.copyWith(optionId: preferred.id);
+      if (paymentOptionsResponse.options.length > 1 &&
+          !_needsCollectData(preferred)) {
+        // Jump directly to review locally, but DON'T flip the external
+        // `showReviewNotifier` — the leading widget keys the back arrow off
+        // that notifier, and when the modal opens on review via a remembered
+        // token the user has nowhere to go back to. As soon as the user taps
+        // the pencil or any row, `_selectOption` / `_editSelection` will
+        // sync the notifier again so the back arrow returns.
+        _showReview = true;
+      }
+    }
+
+    // Preload every option in parallel so users can compare fees at a glance.
+    for (final option in paymentOptionsResponse.options) {
+      _preloadFor(option);
+    }
   }
 
   @override
   void dispose() {
     widget.showInfoPageNotifier?.removeListener(_onInfoPageToggled);
     widget.showReviewNotifier?.removeListener(_onReviewToggled);
+    widget.showGasFeeNotifier?.removeListener(_onGasFeeToggled);
     super.dispose();
   }
 
@@ -93,16 +135,26 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     }
   }
 
-  bool get _hasMultipleOptions => paymentOptionsResponse.options.length > 1;
-
-  PaymentOption get _selectedOption {
-    return paymentOptionsResponse.options.firstWhere(
-      (e) => e.id == confirmRequest.optionId,
-    );
+  void _onGasFeeToggled() {
+    final next = widget.showGasFeeNotifier!.value;
+    if (next == _showGasFee) return;
+    setState(() => _showGasFee = next);
   }
 
-  _OptionState get _selectedPrep =>
-      _prep.putIfAbsent(_selectedOption.id, _OptionState.new);
+  bool get _hasMultipleOptions => paymentOptionsResponse.options.length > 1;
+
+  /// Returns the option matching `confirmRequest.optionId`, or `null` when no
+  /// option is selected yet (multi-option flows open without a default — the
+  /// user must tap a row to pick).
+  PaymentOption? get _selectedOption {
+    for (final option in paymentOptionsResponse.options) {
+      if (option.id == confirmRequest.optionId) return option;
+    }
+    return null;
+  }
+
+  _OptionPrep _prepFor(PaymentOption option) =>
+      _prep.putIfAbsent(option.id, _OptionPrep.new);
 
   bool _needsCollectData(PaymentOption option) {
     final url = option.collectData?.url;
@@ -111,163 +163,332 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
         !_collectDataCompletedIds.contains(option.id);
   }
 
-  /// Fetch the required actions for [option] (if not already present on the
-  /// option) and estimate the approval fee when present. Uses a monotonic
-  /// [_prepSeq] so that responses from a previously-selected option cannot
-  /// overwrite the current one.
+  /// Estimates the approval fee for [option] using the inline [Action] list
+  /// from `getPaymentOptions`. Those inline actions are preview-only — the
+  /// committal `getRequiredPaymentActions` RPC fires once on PAY tap and is
+  /// the source of truth for execution. When inline actions are absent we
+  /// leave [state] empty and the row renders without a fee.
   Future<void> _preloadFor(PaymentOption option) async {
-    final state = _prep.putIfAbsent(option.id, _OptionState.new);
-    if (state.isReady) return;
+    final state = _prepFor(option);
+    if (state.isPreloaded) return;
+    if (option.actions.isEmpty) return;
 
-    final seq = ++_prepSeq;
+    final seq = ++state.seq;
+    final requiresApproval = wcpRequiresApproval(option.actions);
+    setState(() {
+      state.isPreloaded = true;
+      state.hasApproval = requiresApproval;
+      state.isFeeLoading = requiresApproval;
+    });
 
-    List<Action> actions;
-    if (option.actions.isNotEmpty) {
-      actions = option.actions;
-    } else {
-      try {
-        actions = await _walletKitService.getRequiredPaymentActions(
-          option.id,
-          confirmRequest.paymentId,
-        );
-      } catch (e) {
-        debugPrint('[SampleWallet] preload actions failed for ${option.id}: $e');
-        return;
-      }
-    }
-    if (!mounted || seq != _prepSeq) return;
-    setState(() => state.actions = actions);
+    if (!requiresApproval) return;
 
-    if (actions.isEmpty) return;
-    final approveTx = actions.firstWhere(
+    final approveTx = option.actions.firstWhere(
       (a) => a.walletRpc.method == 'eth_sendTransaction',
-      orElse: () => actions.first,
     );
-    if (approveTx.walletRpc.method != 'eth_sendTransaction') return;
 
     try {
       final service = _walletKitService.getChainService<EVMService>(
         chainId: approveTx.walletRpc.chainId,
       );
-      final decoded =
-          (jsonDecode(approveTx.walletRpc.params) as List).first as Map;
-      final fee = await service.estimatePayApprovalFee(
-        Map<String, dynamic>.from(decoded),
+      final paramsList = jsonDecode(approveTx.walletRpc.params) as List;
+      if (paramsList.isEmpty || paramsList.first is! Map) {
+        if (!mounted || seq != state.seq) return;
+        setState(() => state.isFeeLoading = false);
+        return;
+      }
+      final decoded = Map<String, dynamic>.from(paramsList.first as Map);
+      final feeWei = await service.estimatePayApprovalFee(decoded);
+      if (!mounted || seq != state.seq) return;
+      if (feeWei == null) {
+        setState(() => state.isFeeLoading = false);
+        return;
+      }
+
+      final nativeEstimate = WCPFeeEstimate(
+        feeWei: feeWei,
+        nativeSymbol: service.chainSupported.currency,
       );
-      if (!mounted || seq != _prepSeq) return;
+      // Show native immediately while the fiat price RPC is still in flight.
+      setState(() => state.estimate = nativeEstimate);
+
+      final price = await WCPNativePriceService.instance.fetchNativeTokenPrice(
+        chainId: approveTx.walletRpc.chainId,
+        currency: paymentOptionsResponse.info?.amount.unit,
+      );
+      if (!mounted || seq != state.seq) return;
       setState(() {
-        state.approvalFeeWei = fee;
-        state.feeSymbol = service.chainSupported.currency;
+        state.estimate = nativeEstimate.withFiat(price);
+        state.isFeeLoading = false;
       });
     } catch (e) {
       debugPrint('[SampleWallet] estimatePayApprovalFee error: $e');
+      if (!mounted || seq != state.seq) return;
+      setState(() => state.isFeeLoading = false);
     }
   }
 
+  /// Committal step: fires `getRequiredPaymentActions` exactly once to fetch
+  /// the action list for the selected option, then hands it off to the
+  /// orchestrator which executes them in order and posts `confirmPayment`.
+  /// There is no go-back path after this — [_committed] is set so the
+  /// leading widget and row affordances disable themselves.
   Future<void> _signAndPay() async {
-    final started = DateTime.now();
-    _OptionState state = _selectedPrep;
-    while (!state.isReady) {
-      if (DateTime.now().difference(started) > _payExpiry) {
-        if (!mounted) return;
-        Navigator.of(context).pop(PaymentStatus.expired);
-        return;
-      }
-      await Future.delayed(const Duration(milliseconds: 120));
+    final selected = _selectedOption;
+    if (selected == null) return;
+    setState(() => _committed = true);
+    widget.committedNotifier?.value = true;
+
+    List<Action> actions;
+    try {
+      actions = await _walletKitService.getRequiredPaymentActions(
+        selected.id,
+        confirmRequest.paymentId,
+      );
+    } catch (e) {
+      // Surface a typed PaymentStatus so the orchestrator can route the user
+      // to the contextual result screen (with merchant info) instead of
+      // crashing into the generic catch-all in `processPayment`.
+      debugPrint('[SampleWallet] getRequiredPaymentActions error: $e');
       if (!mounted) return;
-      state = _selectedPrep;
+      Navigator.of(context).pop(PaymentStatus.failed);
+      return;
     }
 
     if (!mounted) return;
-    Navigator.of(context).pop((confirmRequest, state.actions!));
+    Navigator.of(context).pop((confirmRequest, actions));
   }
 
+  /// Primary action on the review screen. The select screen no longer has a
+  /// CTA — tapping a row advances directly via [_selectOption].
   Future<void> _handleConfirmOrNext() async {
     if (_isProcessing) return;
-    if (_needsCollectData(_selectedOption)) {
-      setState(() => _isProcessing = true);
-      try {
-        final result = await WCPCollectDataWebView.show(
-          _selectedOption.collectData!.url!,
-          schema: _selectedOption.collectData?.schema,
-        );
-        if (result == WCBottomSheetResult.next.name) {
-          setState(() {
-            _collectDataCompletedIds.add(_selectedOption.id);
-            if (_hasMultipleOptions) {
-              _showReview = true;
-            }
-          });
-          if (_hasMultipleOptions) {
-            widget.showReviewNotifier?.value = true;
-          }
-          widget.infoButtonNotifier?.value = false;
-        } else if (result is PaymentStatus) {
-          // Payment expired or failed during data collection — let the
-          // orchestrator show the result modal.
-          if (mounted) Navigator.of(context).pop(result);
-        }
-      } finally {
-        if (mounted) setState(() => _isProcessing = false);
-      }
-    } else if (_hasMultipleOptions && !_showReview) {
+    final selected = _selectedOption;
+    if (selected == null) return;
+    if (_needsCollectData(selected)) {
+      // Single-option flow that opened straight to review can still need
+      // data collection. Run the webview, then stay on review.
+      await _runCollectData(selected);
+      return;
+    }
+    setState(() => _isProcessing = true);
+    await _signAndPay();
+  }
+
+  Future<void> _selectOption(PaymentOption option) async {
+    if (_committed || _isProcessing) return;
+    if (option.id != _selectedOption?.id) {
+      setState(() {
+        confirmRequest = confirmRequest.copyWith(optionId: option.id);
+      });
+      _preloadFor(option);
+    }
+    // Per Figma, the select screen no longer has a primary CTA — tapping a
+    // row advances directly. If the option needs data collection, run the
+    // webview first and only then move to review.
+    if (_needsCollectData(option)) {
+      await _runCollectData(option);
+    } else {
       setState(() => _showReview = true);
       widget.showReviewNotifier?.value = true;
-    } else {
-      setState(() => _isProcessing = true);
-      await _signAndPay();
     }
   }
 
-  Widget _buildDetailsView(BuildContext context) {
-    final paymentInfo = paymentOptionsResponse.info!;
-    final selectedNeedsCollectData = _needsCollectData(_selectedOption);
-    final showContinue =
-        selectedNeedsCollectData || (_hasMultipleOptions && !_showReview);
-    final buttonText = showContinue
-        ? 'Continue'
-        : 'Pay ${formatPayAmount(paymentInfo.amount)}';
+  Future<void> _runCollectData(PaymentOption option) async {
+    setState(() => _isProcessing = true);
+    try {
+      final result = await WCPCollectDataWebView.show(
+        option.collectData!.url!,
+        schema: option.collectData?.schema,
+      );
+      if (result == WCBottomSheetResult.next.name) {
+        setState(() {
+          _collectDataCompletedIds.add(option.id);
+          _showReview = true;
+        });
+        widget.showReviewNotifier?.value = true;
+      } else if (result is PaymentStatus) {
+        if (mounted) Navigator.of(context).pop(result);
+      }
+    } finally {
+      if (mounted) setState(() => _isProcessing = false);
+    }
+  }
 
-    final prep = _selectedPrep;
-    final showApprovalRow = _showReview ||
-        !_hasMultipleOptions && !selectedNeedsCollectData;
-    final payEnabled =
-        !_isProcessing && (showContinue || prep.isReady);
+  void _openGasFee(PaymentOption option) {
+    if (_committed) return;
+    setState(() {
+      _gasFeeOption = option;
+      _showGasFee = true;
+    });
+    widget.showGasFeeNotifier?.value = true;
+  }
+
+  void _openInfoPage() {
+    if (_committed) return;
+    widget.showInfoPageNotifier?.value = true;
+  }
+
+  void _closeGasFee() {
+    setState(() {
+      _showGasFee = false;
+      _gasFeeOption = null;
+    });
+    widget.showGasFeeNotifier?.value = false;
+  }
+
+  void _editSelection() {
+    if (_committed) return;
+    setState(() => _showReview = false);
+    widget.showReviewNotifier?.value = false;
+  }
+
+  _Page get _currentPage {
+    final infoVisible = widget.showInfoPageNotifier?.value ?? false;
+    if (infoVisible) return _Page.info;
+    if (_showGasFee) return _Page.gasFee;
+    // Review must have a resolved selection; otherwise fall back to select.
+    final hasSelection = _selectedOption != null;
+    if (hasSelection && (_showReview || !_hasMultipleOptions)) {
+      return _Page.review;
+    }
+    return _Page.select;
+  }
+
+  Widget _buildSelectView(BuildContext context) {
+    final paymentInfo = paymentOptionsResponse.info!;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox.square(dimension: 20.0),
+        const SizedBox(height: AppSpacing.s4),
+        Center(
+          child: SvgPicture.asset(
+            'assets/Subtract.svg',
+            width: 58.0,
+            height: 58.0,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.s4),
+        Center(
+          child: Semantics(
+            container: true,
+            identifier: 'pay-select-option-header',
+            label: 'pay-select-option-header',
+            child: Text(
+              'Select a token to pay with',
+              style: TextStyle(
+                color: context.colors.textPrimary,
+                fontSize: 20.0,
+                fontWeight: FontWeight.w400,
+                letterSpacing: -0.6,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.s5),
+        _OptionList(
+          options: paymentOptionsResponse.options,
+          collectDataCompletedIds: _collectDataCompletedIds,
+          preps: _prep,
+          onOptionSelected: _selectOption,
+          // Per-row (i) only appears on collectData rows now and opens the
+          // "Why do we collect personal details?" explainer.
+          onOptionInfoTap: (_) => _openInfoPage(),
+        ),
+        const SizedBox(height: AppSpacing.s5),
+        _MerchantFooter(
+          merchant: paymentInfo.merchant,
+          amount: paymentInfo.amount,
+        ),
+        const SizedBox(height: AppSpacing.s3),
+      ],
+    );
+  }
+
+  Widget _buildReviewView(BuildContext context) {
+    final paymentInfo = paymentOptionsResponse.info!;
+    final selected = _selectedOption;
+    if (selected == null) return _buildSelectView(context);
+    final prep = _prepFor(selected);
+    final hasApproval = prep.hasApproval;
+    final feeReady = prep.estimate != null && !prep.isFeeLoading;
+    final selectedNeedsCollectData = _needsCollectData(selected);
+
+    final buttonText = selectedNeedsCollectData
+        ? 'Continue'
+        : formatPayButtonLabel(
+            merchantAmount: paymentInfo.amount,
+            hasApprovalFee: hasApproval,
+          );
+
+    final showWhyLink = !selectedNeedsCollectData && hasApproval;
+    final payEnabled = !_isProcessing;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: AppSpacing.s5),
         WCPMerchantHeader(merchant: paymentInfo.merchant),
         const SizedBox(height: AppSpacing.s4),
         WCPPaymentDetails(paymentInfo: paymentInfo),
-        const SizedBox(height: AppSpacing.s3),
-        if (_showReview)
-          _ConfirmedPaymentOption(option: _selectedOption)
-        else
-          WCPPaymentOptionList(
-            options: paymentOptionsResponse.options,
-            selectedOption: _selectedOption,
-            collectDataCompletedIds: _collectDataCompletedIds,
-            onOptionSelected: (option) {
-              setState(() {
-                confirmRequest = confirmRequest.copyWith(optionId: option.id);
-              });
-              _preloadFor(option);
-            },
-          ),
-        if (showApprovalRow && prep.hasApprovalAction) ...[
-          const SizedBox(height: AppSpacing.s3),
-          _ApprovalFeeRow(feeWei: prep.approvalFeeWei, symbol: prep.feeSymbol),
-        ],
+        const SizedBox(height: AppSpacing.s4),
+        WCPOptionRow(
+          option: selected,
+          isSelected: true,
+          showSelectedTint: false,
+          testId:
+              'pay-review-token-${selected.amount.display.networkName?.toLowerCase() ?? 'unknown'}',
+          // Pencil edit only makes sense when there's somewhere else to go.
+          // With a single option there's nothing to switch to, so hide it.
+          action: selectedNeedsCollectData
+              ? WCPOptionRowAction.infoRequired
+              : _hasMultipleOptions
+                  ? WCPOptionRowAction.edit
+                  : WCPOptionRowAction.none,
+          onActionTap: selectedNeedsCollectData
+              ? null
+              : _hasMultipleOptions
+                  ? _editSelection
+                  : null,
+          feeEstimate: hasApproval ? prep.estimate : null,
+          isFeeLoading: hasApproval && !feeReady,
+        ),
         const SizedBox(height: AppSpacing.s5),
         WCPrimaryButton(
           onPressed: _handleConfirmOrNext,
           enabled: payEnabled,
           text: buttonText,
-          testId: showContinue ? 'pay-button-continue' : 'pay-button-pay',
+          testId: selectedNeedsCollectData
+              ? 'pay-button-continue'
+              : 'pay-button-pay',
         ),
+        if (showWhyLink) ...[
+          const SizedBox(height: AppSpacing.s3),
+          Center(
+            child: Semantics(
+              container: true,
+              identifier: 'pay-why-gas-fee-link',
+              label: 'pay-why-gas-fee-link',
+              child: GestureDetector(
+                onTap: () => _openGasFee(selected),
+                behavior: HitTestBehavior.opaque,
+                child: Text(
+                  'Why does ${selected.amount.display.assetSymbol} require a gas fee?',
+                  style: TextStyle(
+                    color: context.colors.textSecondary,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.w400,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -287,181 +508,127 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     );
   }
 
+  Widget _buildGasFeeView(BuildContext context) {
+    // Explainer targets the option whose row's info button was tapped, or
+    // (when reached from the review screen's "Why does X require…" link)
+    // the option currently being reviewed.
+    final option = _gasFeeOption ?? _selectedOption;
+    if (option == null) return const SizedBox.shrink();
+    final prep = _prepFor(option);
+    return WCPGasFeeView(
+      option: option,
+      estimate: prep.estimate,
+      onDismiss: _closeGasFee,
+    );
+  }
+
+  Widget _pageFor(_Page page) {
+    switch (page) {
+      case _Page.select:
+        return KeyedSubtree(
+          key: const ValueKey('select'),
+          child: _buildSelectView(context),
+        );
+      case _Page.review:
+        return KeyedSubtree(
+          key: const ValueKey('review'),
+          child: _buildReviewView(context),
+        );
+      case _Page.info:
+        return KeyedSubtree(
+          key: const ValueKey('info'),
+          child: _buildInfoView(context),
+        );
+      case _Page.gasFee:
+        return KeyedSubtree(
+          key: const ValueKey('gasFee'),
+          child: _buildGasFeeView(context),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final paymentInfo = paymentOptionsResponse.info;
-    if (paymentInfo == null) {
-      return const SizedBox.shrink();
-    }
+    if (paymentInfo == null) return const SizedBox.shrink();
 
-    final showInfoPageNotifier = widget.showInfoPageNotifier;
-    if (showInfoPageNotifier != null) {
-      return ClipRect(
-        child: ValueListenableBuilder<bool>(
-          valueListenable: showInfoPageNotifier,
-          builder: (context, showInfo, _) {
-            return AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
+    final page = _currentPage;
+
+    // Once PAY is committed the WCPay one-call contract forbids escape.
+    // Hiding the back arrow isn't enough — `showModalBottomSheet` defaults
+    // to `enableDrag: true`, so a swipe-down would still pop the route. The
+    // PopScope blocks that path (and any future system back-gesture).
+    return PopScope(
+      canPop: !_committed,
+      child: _buildAnimatedBody(page),
+    );
+  }
+
+  Widget _buildAnimatedBody(_Page page) {
+    return ClipRect(
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        alignment: Alignment.topCenter,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          layoutBuilder: (currentChild, previousChildren) {
+            return Stack(
               alignment: Alignment.topCenter,
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                switchInCurve: Curves.easeInOut,
-                switchOutCurve: Curves.easeInOut,
-                layoutBuilder: (currentChild, previousChildren) {
-                  return Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      ...previousChildren.map((child) => Positioned(
-                            left: 0,
-                            right: 0,
-                            top: 0,
-                            child: child,
-                          )),
-                      if (currentChild != null) currentChild,
-                    ],
-                  );
-                },
-                transitionBuilder: (child, animation) {
-                  final isInfoView = child.key == const ValueKey('info');
-                  final beginOffset = Offset(
-                    isInfoView
-                        ? (_isForward ? 0.3 : -0.3)
-                        : (_isForward ? -0.3 : 0.3),
-                    0.0,
-                  );
-                  return FadeTransition(
-                    opacity: animation,
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: beginOffset,
-                        end: Offset.zero,
-                      ).animate(animation),
+              children: [
+                ...previousChildren.map((child) => Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
                       child: child,
-                    ),
-                  );
-                },
-                child: showInfo
-                    ? KeyedSubtree(
-                        key: const ValueKey('info'),
-                        child: _buildInfoView(context),
-                      )
-                    : KeyedSubtree(
-                        key: const ValueKey('details'),
-                        child: _buildDetailsView(context),
-                      ),
+                    )),
+                if (currentChild != null) currentChild,
+              ],
+            );
+          },
+          transitionBuilder: (child, animation) {
+            final isInfoOrGas = child.key == const ValueKey('info') ||
+                child.key == const ValueKey('gasFee');
+            final beginOffset = Offset(
+              isInfoOrGas
+                  ? (_isForward ? 0.3 : -0.3)
+                  : (_isForward ? -0.3 : 0.3),
+              0.0,
+            );
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: beginOffset,
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
               ),
             );
           },
+          child: _pageFor(page),
         ),
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(AppRadius.xxl),
-      ),
-      padding: EdgeInsets.zero,
-      child: _buildDetailsView(context),
-    );
-  }
-}
-
-class _ApprovalFeeRow extends StatelessWidget {
-  const _ApprovalFeeRow({required this.feeWei, required this.symbol});
-
-  final BigInt? feeWei;
-  final String? symbol;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final String valueText;
-    if (feeWei == null || symbol == null) {
-      valueText = '…';
-    } else {
-      valueText = _format(feeWei!, symbol!);
-    }
-    return Semantics(
-      container: true,
-      identifier: 'pay-review-approval-fee',
-      label: 'pay-review-approval-fee',
-      child: Container(
-        decoration: BoxDecoration(
-          color: colors.foregroundPrimary,
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        height: 68.0,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
-        alignment: Alignment.center,
-        child: Row(
-          children: [
-            Text(
-              'One-time approval fee',
-              style: TextStyle(
-                color: colors.textTertiary,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'KH Teka',
-              ),
-            ),
-            const Spacer(),
-            Text(
-              valueText,
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'KH Teka',
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  static String _format(BigInt wei, String symbol) {
-    // 1 ether = 1e18 wei. Show four significant decimals.
-    final ether = wei.toDouble() / 1e18;
-    if (ether > 0 && ether < 0.0001) {
-      return '< 0.0001 $symbol';
-    }
-    return '${ether.toStringAsFixed(4)} $symbol';
-  }
-}
-
-class DefaultLogo extends StatelessWidget {
-  final String text;
-  const DefaultLogo({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        color: context.colors.onBackgroundInvert,
-        fontSize: 32,
-        fontWeight: FontWeight.bold,
       ),
     );
   }
 }
 
-class WCPPaymentOptionList extends StatelessWidget {
-  const WCPPaymentOptionList({
-    super.key,
-    required this.selectedOption,
+class _OptionList extends StatelessWidget {
+  const _OptionList({
     required this.options,
     required this.collectDataCompletedIds,
+    required this.preps,
     required this.onOptionSelected,
+    required this.onOptionInfoTap,
   });
 
-  final PaymentOption selectedOption;
   final List<PaymentOption> options;
   final Set<String> collectDataCompletedIds;
+  final Map<String, _OptionPrep> preps;
   final ValueChanged<PaymentOption> onOptionSelected;
+  final ValueChanged<PaymentOption> onOptionInfoTap;
 
   bool _optionNeedsCollectData(PaymentOption option) {
     final url = option.collectData?.url;
@@ -470,17 +637,18 @@ class WCPPaymentOptionList extends StatelessWidget {
         !collectDataCompletedIds.contains(option.id);
   }
 
+  WCPOptionRowAction _actionFor(PaymentOption option) {
+    // The per-row (i) is reserved for "Why do we collect personal details?" on
+    // options that gate behind a webview. Gas-fee explainers live on the
+    // review screen ("Why does X require a gas fee?" link), not per row.
+    if (_optionNeedsCollectData(option)) {
+      return WCPOptionRowAction.infoRequired;
+    }
+    return WCPOptionRowAction.none;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final selectedCompleted =
-        collectDataCompletedIds.contains(selectedOption.id);
-    final singleOptionReady =
-        options.length == 1 && !_optionNeedsCollectData(options.first);
-
-    if (selectedCompleted || singleOptionReady) {
-      return _ConfirmedPaymentOption(option: selectedOption);
-    }
-
     return ShaderMask(
       shaderCallback: (bounds) => const LinearGradient(
         begin: Alignment.topCenter,
@@ -497,32 +665,35 @@ class WCPPaymentOptionList extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 280),
         child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            scrollbars: false,
-          ),
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: AppSpacing.s4),
+                const SizedBox(height: AppSpacing.s2),
                 ...options.asMap().entries.map((entry) {
                   final index = entry.key;
                   final option = entry.value;
-                  final isSelected = option.id == selectedOption.id;
-                  final hasCollectData = _optionNeedsCollectData(option);
-                  return _PaymentOptionItem(
-                    index: index,
+                  final prep = preps.putIfAbsent(option.id, _OptionPrep.new);
+                  // Select-screen rows are uniform — no in-place selection
+                  // state since tapping advances directly. Test ids use a
+                  // plain `pay-option-$index` (Maestro's documented
+                  // convention) instead of carrying a `-selected` suffix
+                  // that the new flow can't honor before the user taps.
+                  return WCPOptionRow(
                     option: option,
-                    isSelected: isSelected,
-                    hasCollectData: hasCollectData,
-                    onTap: () {
-                      if (!isSelected) {
-                        onOptionSelected(option);
-                      }
-                    },
+                    isSelected: false,
+                    showSelectedTint: false,
+                    testId: 'pay-option-$index',
+                    action: _actionFor(option),
+                    onTap: () => onOptionSelected(option),
+                    onActionTap: () => onOptionInfoTap(option),
+                    feeEstimate: prep.hasApproval ? prep.estimate : null,
+                    isFeeLoading: prep.hasApproval &&
+                        (prep.estimate == null || prep.isFeeLoading),
                   );
                 }),
-                const SizedBox(height: AppSpacing.s4),
+                const SizedBox(height: AppSpacing.s2),
               ],
             ),
           ),
@@ -532,292 +703,40 @@ class WCPPaymentOptionList extends StatelessWidget {
   }
 }
 
-class _PaymentOptionItem extends StatelessWidget {
-  const _PaymentOptionItem({
-    required this.index,
-    required this.option,
-    required this.isSelected,
-    required this.hasCollectData,
-    required this.onTap,
-  });
-
-  static const _selectionDuration = Duration(milliseconds: 220);
-  static const _selectionCurve = Curves.easeOutCubic;
-
-  final int index;
-  final PaymentOption option;
-  final bool isSelected;
-  final bool hasCollectData;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final display = option.amount.display;
-    final colors = context.colors;
-    final networkName = display.networkName?.toLowerCase() ?? 'unknown';
-    final testId =
-        isSelected ? 'pay-option-$index-selected' : 'pay-option-$index';
-    return Semantics(
-      key: ValueKey(testId),
-      container: true,
-      identifier: testId,
-      label: networkName,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: _selectionDuration,
-          curve: _selectionCurve,
-          decoration: BoxDecoration(
-            color: colors.foregroundPrimary,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected ? colors.accent : Colors.transparent,
-              width: 1,
-            ),
-          ),
-          margin: const EdgeInsets.only(bottom: 6.0),
-          height: 68.0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: AnimatedOpacity(
-                      duration: _selectionDuration,
-                      curve: _selectionCurve,
-                      opacity: isSelected ? 1.0 : 0.0,
-                      child:
-                          Container(color: colors.foregroundAccentPrimary010),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
-                  child: Row(
-                    children: [
-                      Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          CircleAvatar(
-                            radius: 16.0,
-                            backgroundImage:
-                                NetworkImage(display.iconUrl ?? ''),
-                          ),
-                          if ((display.networkIconUrl ?? '').isNotEmpty)
-                            Positioned(
-                              bottom: -2,
-                              right: -2,
-                              child: Container(
-                                padding: const EdgeInsets.all(1.5),
-                                decoration: BoxDecoration(
-                                  color: colors.backgroundSecondary,
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                child: CircleAvatar(
-                                  radius: 8.0,
-                                  backgroundImage: NetworkImage(
-                                      display.networkIconUrl ?? ''),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(width: AppSpacing.s2),
-                      ExcludeSemantics(
-                        child: Text(
-                          formatPayAmount(option.amount),
-                          style: TextStyle(
-                            color: colors.textPrimary,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      if (hasCollectData)
-                        Semantics(
-                          container: true,
-                          identifier: 'pay-info-required-badge',
-                          label: 'pay-info-required-badge',
-                          child: AnimatedContainer(
-                            duration: _selectionDuration,
-                            curve: _selectionCurve,
-                            height: 28.0,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.s2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? colors.accent.withValues(alpha: 0.9)
-                                  : colors.foregroundTertiary,
-                              borderRadius:
-                                  BorderRadius.circular(AppSpacing.s2),
-                            ),
-                            alignment: Alignment.center,
-                            child: AnimatedDefaultTextStyle(
-                              duration: _selectionDuration,
-                              curve: _selectionCurve,
-                              style: TextStyle(
-                                color: isSelected
-                                    ? Colors.white
-                                    : colors.textPrimary,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              child: const Text('Info required'),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ConfirmedPaymentOption extends StatelessWidget {
-  const _ConfirmedPaymentOption({required this.option});
-
-  final PaymentOption option;
-
-  @override
-  Widget build(BuildContext context) {
-    final display = option.amount.display;
-    final networkName = display.networkName?.toLowerCase() ?? 'unknown';
-    final colors = context.colors;
-    return Semantics(
-      container: true,
-      identifier: 'pay-review-token-$networkName',
-      label: 'pay-review-token-$networkName',
-      child: Container(
-        decoration: BoxDecoration(
-          color: colors.foregroundPrimary,
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        height: 68.0,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
-        alignment: Alignment.center,
-        child: Row(
-          children: [
-            Text(
-              'Pay with',
-              style: TextStyle(
-                color: colors.textTertiary,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'KH Teka',
-              ),
-            ),
-            const Spacer(),
-            Text(
-              formatPayAmount(option.amount),
-              style: TextStyle(
-                color: colors.textPrimary,
-                fontSize: 16.0,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'KH Teka',
-              ),
-            ),
-            const SizedBox(width: AppSpacing.s2),
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                CircleAvatar(
-                  radius: 16.0,
-                  backgroundImage: NetworkImage(display.iconUrl ?? ''),
-                ),
-                if ((display.networkIconUrl ?? '').isNotEmpty)
-                  Positioned(
-                    bottom: -2,
-                    right: -2,
-                    child: Container(
-                      padding: const EdgeInsets.all(2.0),
-                      decoration: BoxDecoration(
-                        color: colors.foregroundPrimary,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: CircleAvatar(
-                        radius: 8.0,
-                        backgroundImage:
-                            NetworkImage(display.networkIconUrl ?? ''),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class PaymentDetailRow extends StatelessWidget {
-  const PaymentDetailRow({
-    super.key,
-    required this.label,
-    required this.value,
-    this.icon,
-    this.iconColor,
-    this.showChevron = false,
-    this.onTap,
-  });
-
-  final String label;
-  final String value;
-  final IconData? icon;
-  final Color? iconColor;
-  final bool showChevron;
-  final VoidCallback? onTap;
+class _MerchantFooter extends StatelessWidget {
+  const _MerchantFooter({required this.merchant, required this.amount});
+  final MerchantInfo merchant;
+  final PayAmount amount;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.colors;
-    final row = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final logo = merchant.iconUrl;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(label,
-            style: TextStyle(color: colors.textSecondary, fontSize: 16.0)),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (icon != null) ...[
-              Icon(icon, color: iconColor, size: 20),
-              const SizedBox(width: 6),
-            ],
-            Text(value,
-                style: TextStyle(
-                    color: colors.textPrimary,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500)),
-            if (showChevron) ...[
-              const SizedBox(width: 6),
-              Icon(Icons.chevron_right, color: colors.textTertiary, size: 20),
-            ],
-          ],
+        Text(
+          'Pay ${formatPayAmount(amount)} to ${merchant.name}',
+          style: TextStyle(
+            color: colors.textSecondary,
+            fontSize: 16.0,
+            fontWeight: FontWeight.w400,
+          ),
         ),
+        if (logo != null && logo.isNotEmpty) ...[
+          const SizedBox(width: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            child: Image.network(
+              logo,
+              width: 16,
+              height: 16,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+            ),
+          ),
+        ],
       ],
     );
-
-    if (onTap != null) {
-      return InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: row,
-        ),
-      );
-    }
-
-    return row;
   }
 }

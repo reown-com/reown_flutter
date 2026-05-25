@@ -15,6 +15,7 @@ import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/theme/theme_provider.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_last_token_store.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
 import 'package:toastification/toastification.dart';
@@ -32,6 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _onDeleteData() async {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     await walletKit.core.storage.deleteAll();
+    await WCPLastTokenStore.instance.clear();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Storage cleared'),
@@ -46,6 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (mnemonic is String) {
       await _keysService.clearAll();
+      await WCPLastTokenStore.instance.clear();
       await _keysService.restoreWallet(mnemonicOrPrivate: mnemonic);
       await _keysService.loadKeys();
       await showDialog(
@@ -66,6 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _onRegenerateSeed() async {
     await _keysService.regenerateStoredWallet();
+    await WCPLastTokenStore.instance.clear();
     await _keysService.loadKeys();
     await showDialog(
       context: context,
@@ -105,6 +109,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (response == true) {
       await _keysService.clearAll();
+      await WCPLastTokenStore.instance.clear();
       await _keysService.createRandomWallet();
       await _keysService.loadKeys();
       await showDialog(
