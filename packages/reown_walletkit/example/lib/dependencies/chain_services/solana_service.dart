@@ -223,11 +223,16 @@ class SolanaService {
     _handleResponseForTopic(topic, response);
   }
 
-  /// Returns the base58-encoded yttrium-compatible keypair (priv32 || pub32).
-  /// Storage format from `_solanaChainKey` is `privateBytes(32) || publicBytes(32)`
-  /// hex-encoded — yttrium's `SolanaKeypair` is the same 64-byte layout, just
-  /// base58. Pure encoding swap, no on-device migration.
-  Future<String> yttriumKeyPair() => _yttriumKeyPair();
+  /// Signs a Pay-flow `solana_signTransaction` action and returns the
+  /// base64-encoded signed transaction blob (what the Pay backend wants in
+  /// `confirmPayment.signatures` so it can broadcast).
+  Future<String> signPayTransaction(String base64Transaction) async {
+    final signed = await ReownYttriumUtils.solanaClient.signTransaction(
+      keyPair: await _yttriumKeyPair(),
+      transaction: base64Transaction,
+    );
+    return signed.transaction;
+  }
 
   Future<String> _yttriumKeyPair() async {
     final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);

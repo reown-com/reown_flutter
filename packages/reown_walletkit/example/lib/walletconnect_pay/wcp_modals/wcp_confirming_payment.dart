@@ -10,7 +10,6 @@ import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
-import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 
 typedef WCPActionExecutor = Future<String> Function(Action action);
 
@@ -127,14 +126,9 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
           chainId: chainId,
         );
         final txParams = _parseSolanaPayParams(params);
-        final base64Tx = txParams['transaction'] as String;
-        final signed = await ReownYttriumUtils.solanaClient.signTransaction(
-          keyPair: await solanaService.yttriumKeyPair(),
-          transaction: base64Tx,
+        return solanaService.signPayTransaction(
+          txParams['transaction'] as String,
         );
-        // Pay backend wants the base64-encoded signed transaction blob
-        // (not the bare signature) so it can broadcast.
-        return signed.transaction;
       default:
         throw UnimplementedError('Unsupported pay method: $method');
     }
