@@ -1,4 +1,5 @@
 import 'package:reown_yttrium_utils/channels/chain_abstraction_channel.dart';
+import 'package:reown_yttrium_utils/channels/solana_channel.dart';
 import 'package:reown_yttrium_utils/channels/stacks_channel.dart';
 import 'package:reown_yttrium_utils/channels/sui_channel.dart';
 import 'package:reown_yttrium_utils/channels/ton_channel.dart';
@@ -19,4 +20,7 @@ class MethodChannelReownYttriumUtils extends ReownYttriumUtilsPlatform {
 
   @override
   MethodChannelSui get suiChannel => MethodChannelSui();
+
+  @override
+  MethodChannelSolana get solanaChannel => MethodChannelSolana();
 }

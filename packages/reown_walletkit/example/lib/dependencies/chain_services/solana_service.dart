@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 
 import 'package:solana/solana.dart' as solana;
 import 'package:solana/encoder.dart' as solana_encoder;
@@ -45,17 +46,14 @@ class SolanaService {
       final params = parameters as Map<String, dynamic>;
       final message = params['message'].toString(); // base58 encoded message
 
-      final keyPair = await _getKeyPair();
+      final address = await _getAddress();
 
-      // it's being sent encoded from dapp
-      // final base58Decoded = base58.decode(message);
-      // final decodedMessage = utf8.decode(base58Decoded);
       final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: keyPair.address,
+        address: address,
         transportType: pRequest.transportType.name,
         requester: requester,
       )) {
@@ -81,10 +79,12 @@ class SolanaService {
   }
 
   Future<String> signMessage(String message) async {
-    final keyPair = await _getKeyPair();
-    final base58Decoded = base58.decode(message);
-    final signature = await keyPair.sign(base58Decoded.toList());
-    return signature.toBase58();
+    final keyPair = await _yttriumKeyPair();
+    final messageBytes = Uint8List.fromList(base58.decode(message).toList());
+    return await ReownYttriumUtils.solanaClient.signMessage(
+      keyPair: keyPair,
+      message: messageBytes,
+    );
   }
 
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {
@@ -98,34 +98,25 @@ class SolanaService {
       final params = parameters as Map<String, dynamic>;
       final beautifiedTrx = const JsonEncoder.withIndent('  ').convert(params);
 
-      final keyPair = await _getKeyPair();
+      final address = await _getAddress();
 
       final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: keyPair.address,
+        address: address,
         transportType: pRequest.transportType.name,
         requester: requester,
       )) {
-        // Sign the transaction.
-        // if params contains `transaction` key we should parse that one and disregard the rest
+        // Build a base64-encoded VersionedTransaction for yttrium. Branch 1
+        // (modern WC RPC) gets it directly. Branch 2 (legacy feePayer+
+        // instructions form) compiles a Message via the solana package, then
+        // wraps it in a SignedTx so yttrium can populate the signature.
+        final String base64Tx;
         if (params.containsKey('transaction')) {
-          final transaction = params['transaction'] as String;
-          final transactionBytes = base64.decode(transaction);
-          final signedTx = solana_encoder.SignedTx.fromBytes(transactionBytes);
-
-          // Sign the transaction.
-          final signature = await keyPair.sign(
-            signedTx.compiledMessage.toByteArray(),
-          );
-
-          response = response.copyWith(
-            result: {'signature': signature.toBase58()},
-          );
+          base64Tx = params['transaction'] as String;
         } else {
-          // else we parse the other key/values, see https://docs.walletconnect.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
           final feePayer = params['feePayer'].toString();
           final recentBlockHash = params['recentBlockhash'].toString();
           final instructionsList = params['instructions'] as List<dynamic>;
@@ -139,14 +130,27 @@ class SolanaService {
             recentBlockhash: recentBlockHash,
             feePayer: solana.Ed25519HDPublicKey.fromBase58(feePayer),
           );
-
-          // Sign the transaction.
-          final signature = await keyPair.sign(compiledMessage.toByteArray());
-
-          response = response.copyWith(
-            result: {'signature': signature.toBase58()},
+          // Empty/placeholder signature so the wire format is well-formed;
+          // yttrium will overwrite it at the correct signer slot.
+          final placeholder = solana_encoder.Signature(
+            List.filled(64, 0),
+            publicKey: solana.Ed25519HDPublicKey.fromBase58(feePayer),
           );
+          final unsignedTx = solana_encoder.SignedTx(
+            signatures: [placeholder],
+            compiledMessage: compiledMessage,
+          );
+          base64Tx = base64.encode(unsignedTx.toByteArray().toList());
         }
+
+        final signed = await ReownYttriumUtils.solanaClient.signTransaction(
+          keyPair: await _yttriumKeyPair(),
+          transaction: base64Tx,
+        );
+
+        response = response.copyWith(
+          result: {'signature': signed.signature},
+        );
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
@@ -178,36 +182,28 @@ class SolanaService {
       final params = parameters as Map<String, dynamic>;
       final beautifiedTrx = const JsonEncoder.withIndent('  ').convert(params);
 
-      final keyPair = await _getKeyPair();
+      final address = await _getAddress();
 
       final requester = _walletKit.sessions.get(pRequest.topic)?.peer;
       if (await MethodsUtils.requestApproval(
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: keyPair.address,
+        address: address,
         transportType: pRequest.transportType.name,
         requester: requester,
       )) {
         if (params.containsKey('transactions')) {
-          final transactions = params['transactions'] as List;
-
-          List<String> signedTransactions = [];
-          for (var transaction in transactions) {
-            final transactionBytes = base64.decode(transaction);
-            final unsignedTx = solana_encoder.SignedTx.fromBytes(
-              transactionBytes,
-            );
-            final signature = await keyPair.sign(
-              unsignedTx.compiledMessage.toByteArray(),
-            );
-            final signedTx = unsignedTx.copyWith(signatures: [signature]);
-            final reEncodedTx = signedTx.encode();
-            signedTransactions.add(reEncodedTx);
-          }
-
+          final transactions = (params['transactions'] as List).cast<String>();
+          final signed = await ReownYttriumUtils.solanaClient
+              .signAllTransactions(
+                keyPair: await _yttriumKeyPair(),
+                transactions: transactions,
+              );
           response = response.copyWith(
-            result: {'transactions': signedTransactions},
+            result: {
+              'transactions': signed.map((s) => s.transaction).toList(),
+            },
           );
         }
       } else {
@@ -227,12 +223,22 @@ class SolanaService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<solana.Ed25519HDKeyPair> _getKeyPair() async {
+  /// Returns the base58-encoded yttrium-compatible keypair (priv32 || pub32).
+  /// Storage format from `_solanaChainKey` is `privateBytes(32) || publicBytes(32)`
+  /// hex-encoded — yttrium's `SolanaKeypair` is the same 64-byte layout, just
+  /// base58. Pure encoding swap, no on-device migration.
+  Future<String> yttriumKeyPair() => _yttriumKeyPair();
+
+  Future<String> _yttriumKeyPair() async {
     final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
-    final secKeyBytes = keys[0].privateKey.parse32Bytes();
-    return await solana.Ed25519HDKeyPair.fromPrivateKeyBytes(
-      privateKey: secKeyBytes,
-    );
+    final stored = keys[0].privateKey;
+    final keyPairBytes = Uint8List.fromList(hex.decode(stored));
+    return base58.encode(keyPairBytes);
+  }
+
+  Future<String> _getAddress() async {
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
+    return keys[0].address;
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
@@ -303,41 +309,6 @@ class SolanaService {
       }
     } catch (e) {
       rethrow;
-    }
-  }
-}
-
-extension on String {
-  // SigningKey used by solana package requires a 32 bytes key
-  Uint8List parse32Bytes() {
-    // Try comma-separated integers first (legacy format)
-    if (contains(',')) {
-      try {
-        final List<int> secBytes = split(',').map((e) => int.parse(e)).toList();
-        return Uint8List.fromList(secBytes.sublist(0, 32));
-      } catch (_) {}
-    }
-
-    // Try hex decoding (stored format from _solanaChainKey is hex-encoded)
-    // Check if it looks like hex: even length, only hex characters
-    if (length % 2 == 0 && RegExp(r'^[0-9a-fA-F]+$').hasMatch(this)) {
-      try {
-        final secKeyBytes = hex.decode(this);
-        // Extract first 32 bytes (private key)
-        // Stored format from _solanaChainKey is privateBytes(32) + publicBytes(32) = 64 bytes = 128 hex chars
-        // But also handle case where only private key is stored = 32 bytes = 64 hex chars
-        return Uint8List.fromList(secKeyBytes.sublist(0, 32));
-      } catch (_) {}
-    }
-
-    // Fallback to base58 decoding
-    try {
-      final secKeyBytes = base58.decode(this);
-      return Uint8List.fromList(secKeyBytes.sublist(0, 32));
-    } catch (e) {
-      throw FormatException(
-        'Unable to parse private key. Expected comma-separated integers, hex string, or base58 string.',
-      );
     }
   }
 }

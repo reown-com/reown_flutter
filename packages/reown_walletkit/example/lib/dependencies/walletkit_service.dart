@@ -268,8 +268,15 @@ class WalletKitService implements IWalletKitService {
 
   Future<void> processPayment(String paymentLink) async {
     try {
-      // PaymentOptionsResponse
-      final accounts = await getWalletAccounts('eip155');
+      // PaymentOptionsResponse. Pay backend only accepts Solana mainnet
+      // (5eykt4...) — sending devnet/testnet chain ids trips its CAIP-10
+      // validator, so filter to mainnet only.
+      const solanaMainnet = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+      final accounts = [
+        ...await getWalletAccounts('eip155'),
+        ...(await getWalletAccounts('solana'))
+            .where((a) => a.startsWith('$solanaMainnet:')),
+      ];
       final optionsResponse = await _bottomSheetHandler.queueBottomSheet(
         widget: WCPGetPaymentOptions(
           paymentLink: paymentLink,

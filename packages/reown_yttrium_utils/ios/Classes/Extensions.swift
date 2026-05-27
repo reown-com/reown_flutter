@@ -33,8 +33,8 @@ extension Route {
         switch self {
         case .eip155(let txns):
             return (txns as [TxnDetails]).map { $0.toJson() } // list of TxnDetails
-//        case .solana(let txns):
-//            return (txns as [SolanaTxnDetails]).map { $0.toJson() } // list of SolanaTxnDetails
+        case .solana(let txns):
+            return (txns as [SolanaTxnDetails]).map { $0.toJson() } // list of SolanaTxnDetails
         }
     }
 }
@@ -59,8 +59,8 @@ extension Transactions {
         switch self {
         case .eip155(let txns):
             return (txns as [Transaction]).map { $0.toJson() } // list of Transaction
-//        case .solana(let txns):
-//            return (txns as [SolanaTransaction]).map { $0.toJson() } // list of SolanaTransaction
+        case .solana(let txns):
+            return (txns as [SolanaTransaction]).map { $0.toJson() } // list of SolanaTransaction
         }
     }
 }
@@ -87,6 +87,25 @@ extension Transaction {
             "input": input,
             "gasLimit": gasLimit,
             "nonce": nonce
+        ]
+    }
+}
+
+extension SolanaTransaction {
+    func toJson() -> [String: Any] {
+        return [
+            "chainId": chainId,
+            "from": from,
+            "transaction": transaction
+        ]
+    }
+}
+
+extension SolanaTxnDetails {
+    func toJson() -> [String: Any] {
+        return [
+            "transaction": transaction.toJson(),
+            "transactionHashToSign": transactionHashToSign
         ]
     }
 }

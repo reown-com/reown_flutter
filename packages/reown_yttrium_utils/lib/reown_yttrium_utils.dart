@@ -1,4 +1,5 @@
 import 'package:reown_yttrium_utils/clients/chain_abstraction_client.dart';
+import 'package:reown_yttrium_utils/clients/solana_client.dart';
 import 'package:reown_yttrium_utils/clients/stacks_client.dart';
 import 'package:reown_yttrium_utils/clients/sui_client.dart';
 import 'package:reown_yttrium_utils/clients/ton_client.dart';
@@ -15,4 +16,5 @@ class ReownYttriumUtils {
   static final tonClient = TonClient();
   static final stacksClient = StacksClient();
   static final suiClient = SuiClient();
+  static final solanaClient = SolanaClient();
 }
