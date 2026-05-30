@@ -901,12 +901,33 @@ class Pairing implements IPairing {
       await topicToReceiverPublicKey.delete(event.topic);
     }
 
-    // Decode the message
-    String? payloadString = await core.crypto.decode(
-      event.topic,
-      event.message,
-      options: DecodeOptions(receiverPublicKey: receiverPublicKey?.publicKey),
-    );
+    // Decode the message.
+    //
+    // mobile-news guard (Sentry MOBILE-NEWS "Ssa" / SecretBox wrong MAC,
+    // build 1.6.0+1661): _processEvent is an `async void` handler, so a throw
+    // here escapes to the zone's unhandled-error path (PlatformDispatcher.
+    // onError) and is reported as a *fatal*. Relay messages that can't be
+    // authenticated are EXPECTED in normal operation — duplicate/retransmitted
+    // deliveries (the one-time `receiverPublicKey` is consumed + deleted just
+    // above, so a second delivery has no key), stale envelopes from an expired
+    // pairing, or a topic-key rotation in flight. Dropping an undecryptable
+    // message is the correct behaviour; crashing the whole app is not. Catch
+    // decode failures, log, and ignore — same intent as the existing
+    // payloadString==null early-return below.
+    String? payloadString;
+    try {
+      payloadString = await core.crypto.decode(
+        event.topic,
+        event.message,
+        options: DecodeOptions(receiverPublicKey: receiverPublicKey?.publicKey),
+      );
+    } catch (e) {
+      core.logger.w(
+        '[$runtimeType] dropping undecryptable relay message on topic '
+        '${event.topic} (stale/duplicate/expired pairing): $e',
+      );
+      return;
+    }
 
     isLinkMode
         ? core.logger.d(
