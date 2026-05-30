@@ -18,6 +18,30 @@ import 'package:reown_core/utils/constants.dart';
 import 'package:reown_core/utils/errors.dart';
 import 'package:reown_core/version.dart';
 
+/// mobile-news guard (Sentry #7321077871 / #7494244898 / #7328895797 —
+/// "Bad state: Cannot add event after closing.").
+///
+/// During relay reconnect / teardown a relay Event can be broadcast after a
+/// subscriber's bridged stream controller has already been closed.
+/// package:event's `broadcast()` invokes the subscriber handler synchronously,
+/// so the resulting StateError escapes as an UNHANDLED async error (it surfaces
+/// via _RootZone.runUnaryGuarded → PlatformDispatcher.onError → fatal). These
+/// late emits are meaningless once teardown has begun. Swallow ONLY that
+/// specific add-after-close StateError; rethrow everything else so genuine
+/// handler bugs still surface.
+class _GuardedEvent<T extends EventArgs> extends Event<T> {
+  @override
+  bool broadcast([args]) {
+    try {
+      return super.broadcast(args);
+    } on StateError catch (e) {
+      final m = e.message.toLowerCase();
+      if (m.contains('add') && m.contains('clos')) return false;
+      rethrow;
+    }
+  }
+}
+
 class RelayClient implements IRelayClient {
   static const IRN_PUBLISH = 'publish';
   static const IRN_SUBSCRIPTION = 'subscription';
@@ -30,34 +54,34 @@ class RelayClient implements IRelayClient {
   /// Relay Client
 
   @override
-  final Event<EventArgs> onRelayClientConnect = Event();
+  final Event<EventArgs> onRelayClientConnect = _GuardedEvent();
 
   @override
-  final Event<EventArgs> onRelayClientDisconnect = Event();
+  final Event<EventArgs> onRelayClientDisconnect = _GuardedEvent();
 
   @override
-  final Event<ErrorEvent> onRelayClientError = Event<ErrorEvent>();
+  final Event<ErrorEvent> onRelayClientError = _GuardedEvent<ErrorEvent>();
 
   @override
-  final Event<MessageEvent> onRelayClientMessage = Event<MessageEvent>();
+  final Event<MessageEvent> onRelayClientMessage = _GuardedEvent<MessageEvent>();
 
   @override
-  final Event<MessageEvent> onLinkModeMessage = Event<MessageEvent>();
+  final Event<MessageEvent> onLinkModeMessage = _GuardedEvent<MessageEvent>();
 
   /// Subscriptions
   @override
   final Event<SubscriptionEvent> onSubscriptionCreated =
-      Event<SubscriptionEvent>();
+      _GuardedEvent<SubscriptionEvent>();
 
   @override
   final Event<SubscriptionDeletionEvent> onSubscriptionDeleted =
-      Event<SubscriptionDeletionEvent>();
+      _GuardedEvent<SubscriptionDeletionEvent>();
 
   @override
-  final Event<EventArgs> onSubscriptionResubscribed = Event();
+  final Event<EventArgs> onSubscriptionResubscribed = _GuardedEvent();
 
   @override
-  final Event<EventArgs> onSubscriptionSync = Event();
+  final Event<EventArgs> onSubscriptionSync = _GuardedEvent();
 
   @override
   bool get isConnected => jsonRPC != null && !jsonRPC!.isClosed;
