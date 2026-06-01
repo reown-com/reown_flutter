@@ -53,7 +53,7 @@ class _BalancesPageState extends State<BalancesPage> {
   /// namespace -> address, only for namespaces the wallet supports.
   Map<String, String> get _addresses => {
         for (final ns in _supportedNamespaces)
-          if (_addressFor(ns) != null) ns: _addressFor(ns)!,
+          if (_addressFor(ns) case final address?) ns: address,
       };
 
   /// A balance is native when it carries no token contract address.
@@ -314,14 +314,14 @@ class _BalancesPageState extends State<BalancesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final chainKeys = _keysService.getKeysForChain('eip155');
+    final hasAccounts = _addresses.isNotEmpty;
     final colors = context.colors;
 
     return Scaffold(
-      body: chainKeys.isEmpty
+      body: !hasAccounts
           ? Center(
               child: Text(
-                'No EVM accounts found',
+                'No accounts found',
                 style: TextStyle(color: colors.textPrimary),
               ),
             )
@@ -379,9 +379,10 @@ class _BalancesPageState extends State<BalancesPage> {
                     else
                       ..._filteredBalances.map((balance) {
                         final symbol = balance['symbol'] as String? ?? '';
-                        final quantity =
-                            double.tryParse(balance['quantity']['numeric']) ??
-                                0.0;
+                        final quantity = double.tryParse(
+                              balance['quantity']?['numeric']?.toString() ?? '',
+                            ) ??
+                            0.0;
                         final chainId = balance['chainId'] as String? ?? '';
                         final iconUrl = balance['iconUrl'] as String? ?? '';
                         final selectedChain =

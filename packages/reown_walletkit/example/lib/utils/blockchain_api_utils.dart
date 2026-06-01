@@ -43,8 +43,8 @@ class BlockchainApiUtils {
         }).toList();
         return balances
           ..sort((a, b) {
-            final bValue = b['value'] as double? ?? 0.0;
-            final aValue = a['value'] as double? ?? 0.0;
+            final bValue = (b['value'] as num?)?.toDouble() ?? 0.0;
+            final aValue = (a['value'] as num?)?.toDouble() ?? 0.0;
             return bValue.compareTo(aValue);
           });
       } catch (e) {
