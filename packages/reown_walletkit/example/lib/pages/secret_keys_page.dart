@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
@@ -15,6 +14,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/utils/blockchain_api_utils.dart';
 import 'package:toastification/toastification.dart';
 
 class SecretKeysPage extends StatelessWidget {
@@ -125,20 +125,41 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     if (!mounted) return;
     final chainKeys = _keysService.getKeysForChain('eip155');
     final chainKey = chainKeys[_currentPage];
-    final evmService = _walletKitService.getChainService<EVMService>(
-      chainId: _selectedChain.chainId,
-    );
-    evmService.getBalance(address: chainKey.address).then((balances) {
-      if (!mounted) return;
-      _balances
-        ..clear()
-        ..addAll(balances);
-      setState(() {});
-    }).onError((a, b) {
-      if (!mounted) return;
-      _balances.clear();
-      setState(() {});
-    });
+
+    // `/v1/account/{address}/balance` takes one address per call, so we
+    // fire one request per namespace and union the results.
+    final solanaKeys = _keysService.getKeysForChain('solana');
+    final futures = <Future<List<Map<String, dynamic>>>>[
+      BlockchainApiUtils.getBalance(
+        address: chainKey.address,
+        chainId: _selectedChain.chainId,
+      ),
+      if (solanaKeys.isNotEmpty)
+        // Fail-soft: a Solana balance error shouldn't wipe EVM balances.
+        BlockchainApiUtils.getBalance(
+          address: solanaKeys.first.address,
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        ).catchError((_) => <Map<String, dynamic>>[]),
+    ];
+
+    Future.wait(futures, eagerError: false)
+        .then((results) {
+          if (!mounted) return;
+          _balances
+            ..clear()
+            ..addAll(results.expand((r) => r));
+          _balances.sort((a, b) {
+            final bValue = b['value'] as double? ?? 0.0;
+            final aValue = a['value'] as double? ?? 0.0;
+            return bValue.compareTo(aValue);
+          });
+          setState(() {});
+        })
+        .onError((a, b) {
+          if (!mounted) return;
+          _balances.clear();
+          setState(() {});
+        });
     setState(() => {});
   }
 

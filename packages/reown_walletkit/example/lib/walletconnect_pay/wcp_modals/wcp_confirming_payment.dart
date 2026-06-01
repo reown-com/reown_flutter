@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
@@ -106,22 +107,42 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
     final method = action.walletRpc.method;
     final chainId = action.walletRpc.chainId;
     final params = action.walletRpc.params;
-    final service = _walletKitService.getChainService<EVMService>(
-      chainId: chainId,
-    );
 
     switch (method) {
       case 'eth_signTypedData_v4':
         final decoded = jsonDecode(params) as List<dynamic>;
         final typedData = _ensureEip712Domain(decoded.last);
-        return service.ethSignTypedDataV4(typedData);
+        return _walletKitService
+            .getChainService<EVMService>(chainId: chainId)
+            .ethSignTypedDataV4(typedData);
       case 'eth_sendTransaction':
         final decoded = jsonDecode(params) as List<dynamic>;
         final txParams = Map<String, dynamic>.from(decoded.first as Map);
-        return service.sendPayTransaction(txParams);
+        return _walletKitService
+            .getChainService<EVMService>(chainId: chainId)
+            .sendPayTransaction(txParams);
+      case 'solana_signTransaction':
+        final solanaService = _walletKitService.getChainService<SolanaService>(
+          chainId: chainId,
+        );
+        final txParams = _parseSolanaPayParams(params);
+        return solanaService.signPayTransaction(
+          txParams['transaction'] as String,
+        );
       default:
         throw UnimplementedError('Unsupported pay method: $method');
     }
+  }
+
+  // The Pay backend may serialize Solana params as either the bare WC object
+  // `{transaction}` or wrapped in a single-element array `[{transaction}]`.
+  // Unwrap the array form transparently.
+  Map<String, dynamic> _parseSolanaPayParams(String params) {
+    final decoded = jsonDecode(params);
+    if (decoded is List) {
+      return Map<String, dynamic>.from(decoded.first as Map);
+    }
+    return Map<String, dynamic>.from(decoded as Map);
   }
 
   // eth_sig_util_plus requires an EIP712Domain entry in `types`. The Permit2

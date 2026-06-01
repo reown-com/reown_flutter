@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/utils/blockchain_api_utils.dart';
 
 class BalancesPage extends StatefulWidget {
   const BalancesPage({super.key});
@@ -71,11 +71,28 @@ class _BalancesPageState extends State<BalancesPage> {
       final selectedChain = _walletKitService.currentSelectedChain.value ??
           ChainsDataList.eip155Chains.first;
       final chainKey = chainKeys.first;
-      final evmService = _walletKitService.getChainService<EVMService>(
-        chainId: selectedChain.chainId,
-      );
 
-      final balances = await evmService.getBalance(address: chainKey.address);
+      final solanaKeys = _keysService.getKeysForChain('solana');
+      final balanceFutures = <Future<List<Map<String, dynamic>>>>[
+        BlockchainApiUtils.getBalance(
+          address: chainKey.address,
+          chainId: selectedChain.chainId,
+        ),
+        if (solanaKeys.isNotEmpty)
+          // Fail-soft: a Solana balance error shouldn't wipe EVM balances.
+          BlockchainApiUtils.getBalance(
+            address: solanaKeys.first.address,
+            chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          ).catchError((_) => <Map<String, dynamic>>[]),
+      ];
+      final balances = (await Future.wait(balanceFutures, eagerError: false))
+          .expand((r) => r)
+          .toList()
+        ..sort((a, b) {
+          final bValue = b['value'] as double? ?? 0.0;
+          final aValue = a['value'] as double? ?? 0.0;
+          return bValue.compareTo(aValue);
+        });
 
       if (!mounted) return;
       setState(() {

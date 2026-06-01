@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
 import 'package:eth_sig_util_plus/eth_sig_util_plus.dart' as eth_sig_util;
 import 'package:eth_sig_util_plus/util/utils.dart' as eth_sig_util_util;
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -748,57 +747,6 @@ class EVMService {
     );
 
     return signature;
-  }
-
-  Future<List<Map<String, dynamic>>> getBalance({
-    required String address,
-  }) async {
-    final uri = Uri.parse(
-      'https://rpc.walletconnect.org/v1/account/$address/balance',
-    );
-    final queryParams = {
-      'projectId': _walletKit.core.projectId,
-      'currency': 'usd',
-      // 'chainId': chainSupported.chainId,
-    };
-    final package = await PackageInfo.fromPlatform();
-    final response = await http.get(
-      uri.replace(queryParameters: queryParams),
-      headers: {
-        'Content-Type': 'application/json',
-        'x-sdk-type': 'flutter-sample-wallet',
-        'x-sdk-version': package.version,
-        'origin': package.packageName,
-      },
-    );
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-        final balances = (jsonData['balances'] as List).map((e) {
-          return e as Map<String, dynamic>;
-        }).toList();
-        return balances
-          ..sort((a, b) {
-            // final bQuantity = double.tryParse(b['quantity']['numeric']) ?? 0.0;
-            // final aQuantity = double.tryParse(a['quantity']['numeric']) ?? 0.0;
-            final bQuantity = b['value'] as double? ?? 0.0;
-            final aQuantity = a['value'] as double? ?? 0.0;
-            return bQuantity.compareTo(aQuantity);
-          });
-      } catch (e) {
-        throw Exception('Failed to load balance. $e');
-      }
-    }
-    try {
-      final errorData = jsonDecode(response.body) as Map<String, dynamic>;
-      final reasons = errorData['reasons'] as List<dynamic>;
-      final reason = reasons.isNotEmpty
-          ? reasons.first['description'] ?? ''
-          : response.body;
-      throw Exception(reason);
-    } catch (e) {
-      rethrow;
-    }
   }
 
   // Validate signatures

@@ -14,12 +14,12 @@ PODS:
     - MTBBarcodeScanner
   - reown_yttrium_utils (0.0.1):
     - Flutter
-    - YttriumUtilsWrapper (= 0.10.50)
-  - Sentry/HybridSDK (8.58.2)
-  - sentry_flutter (9.20.0):
+    - YttriumUtilsWrapper (= 0.10.54)
+  - Sentry/HybridSDK (8.58.3)
+  - sentry_flutter (9.21.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.58.2)
+    - Sentry/HybridSDK (= 8.58.3)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -34,7 +34,7 @@ PODS:
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
-  - YttriumUtilsWrapper (0.10.50)
+  - YttriumUtilsWrapper (0.10.54)
   - YttriumWrapper (0.10.50)
 
 DEPENDENCIES:
@@ -95,15 +95,15 @@ SPEC CHECKSUMS:
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
-  reown_yttrium_utils: 7e71901a2dcb0f4f7af766e325b25a7a22c07b1e
-  Sentry: de29b881e83bd91cf99a927f82f1fd86bfb39db2
-  sentry_flutter: cbb414ef141b64f901bc1ba32daa871349510ce4
+  reown_yttrium_utils: a369c63bc0ad51ec5530e781f8e204192fe351a0
+  Sentry: 108fdbb76299c4189af12246bf0308c09c278922
+  sentry_flutter: 32e67cb4756ce3de42bbd56581fa935922ff328f
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   walletconnect_pay: 78e7baf83dd7974a0d9ae2cd70c7f11b7a53b2e2
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
-  YttriumUtilsWrapper: de844e114bf30b248b5d8de6662bceac9c85ba2b
+  YttriumUtilsWrapper: 6ef73adb996f91da5250e35e12e3684d3024e275
   YttriumWrapper: d7f63336830536f1da41b745ed8bacedb04228c4
 
 PODFILE CHECKSUM: f15d300013bf3f49206576bb82c1d46cc60fd0fe
