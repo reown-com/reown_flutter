@@ -79,10 +79,11 @@ class _BalancesPageState extends State<BalancesPage> {
           chainId: selectedChain.chainId,
         ),
         if (solanaKeys.isNotEmpty)
+          // Fail-soft: a Solana balance error shouldn't wipe EVM balances.
           BlockchainApiUtils.getBalance(
             address: solanaKeys.first.address,
             chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          ),
+          ).catchError((_) => <Map<String, dynamic>>[]),
       ];
       final balances = (await Future.wait(balanceFutures, eagerError: false))
           .expand((r) => r)

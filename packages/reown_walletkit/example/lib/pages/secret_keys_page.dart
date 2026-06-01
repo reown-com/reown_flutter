@@ -135,10 +135,11 @@ class _EVMAccountsState extends State<_EVMAccounts> {
         chainId: _selectedChain.chainId,
       ),
       if (solanaKeys.isNotEmpty)
+        // Fail-soft: a Solana balance error shouldn't wipe EVM balances.
         BlockchainApiUtils.getBalance(
           address: solanaKeys.first.address,
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ),
+        ).catchError((_) => <Map<String, dynamic>>[]),
     ];
 
     Future.wait(futures, eagerError: false)
