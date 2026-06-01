@@ -8,19 +8,22 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 class BlockchainApiUtils {
   static const _balancePath = 'https://rpc.walletconnect.org/v1/account';
 
-  /// Fetches balances for [address] on [chainId] via the Reown blockchain
-  /// API. Works across namespaces — `eip155:1`, `solana:5eykt4Us…`, etc.
-  /// The path takes a single address per call.
+  /// Fetches balances for [address] via the Reown blockchain API. Works across
+  /// namespaces — `eip155:1`, `solana:5eykt4Us…`, etc. The path takes a single
+  /// address per call.
+  ///
+  /// When [chainId] is omitted, the API returns balances across all supported
+  /// EVM chains for that address in a single call.
   static Future<List<Map<String, dynamic>>> getBalance({
     required String address,
-    required String chainId,
+    String? chainId,
   }) async {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     final uri = Uri.parse('$_balancePath/$address/balance');
     final queryParams = {
       'projectId': walletKit.core.projectId,
       'currency': 'usd',
-      'chainId': chainId,
+      if (chainId != null) 'chainId': chainId,
     };
     final package = await PackageInfo.fromPlatform();
     final response = await http.get(
