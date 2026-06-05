@@ -97,10 +97,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@afc741fbe638ca13cfc10de2ed59b064c2b59436
+        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@afc741fbe638ca13cfc10de2ed59b064c2b59436
+        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -259,6 +259,29 @@ jobs:
         working-directory: packages/reown_walletkit/example/ios
         run: pod install
 
+      # iOS resolves Universal Links via the AASA file, which it fetches through
+      # Apple's CDN — often stale/missing on a fresh simulator, so the link opens
+      # Safari instead of the wallet. Appending `?mode=developer` to each associated
+      # domain makes the simulator fetch the AASA directly from the origin server,
+      # bypassing the CDN. Patched only here (CI runner); the committed entitlements
+      # file is untouched, so release builds keep reading the clean file.
+      - name: Enable associated-domains developer mode (Maestro build only)
+        run: |
+          set -euo pipefail
+          PB=/usr/libexec/PlistBuddy
+          ENT=packages/reown_walletkit/example/ios/Runner/Runner.entitlements
+          KEY=":com.apple.developer.associated-domains"
+          i=0
+          while val=$("$PB" -c "Print $KEY:$i" "$ENT" 2>/dev/null); do
+            case "$val" in
+              applinks:*'?mode=developer') ;;
+              applinks:*) "$PB" -c "Set $KEY:$i ${val}?mode=developer" "$ENT" ;;
+            esac
+            i=$((i + 1))
+          done
+          echo "Patched applinks entries in $ENT:"
+          "$PB" -c "Print $KEY" "$ENT"
+
       - name: Build Runner.app via xcodebuild (automatic signing)
         id: build_ios
         working-directory: packages/reown_walletkit/example/ios
@@ -282,7 +305,12 @@ jobs:
       - name: Boot iOS simulator
         run: |
           xcrun simctl boot "iPhone 16" 2>/dev/null || true
-          xcrun simctl bootstatus "iPhone 16"
+          # Wait for full boot before configuring the simulator
+          xcrun simctl bootstatus "iPhone 16" -b
+          # Reset associated-domains state before install so the applinks binding isn't wiped later
+          xcrun simctl spawn booted swcutil reset || true
+          # Disable UIKit animations to reduce Maestro timing flakiness
+          xcrun simctl spawn booted defaults write com.apple.UIKit UIAnimationDragCoefficient -float 0 || true
 
       - name: Install app on simulator
         run: |
@@ -295,16 +323,25 @@ jobs:
           fi
           echo "Installing: $APP_PATH"
           xcrun simctl install booted "$APP_PATH"
+          # Prime the associated-domains cache for the pay Universal Link domains
+          for domain in pay.walletconnect.com staging.pay.walletconnect.com dev.pay.walletconnect.com lab.reown.com; do
+            xcrun simctl spawn booted swcutil dl -d "$domain" || true
+          done
+          sleep 3
+          echo "=== swcutil show (after install + priming) ==="
+          xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@afc741fbe638ca13cfc10de2ed59b064c2b59436
+        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@afc741fbe638ca13cfc10de2ed59b064c2b59436
+        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
 
       - name: Run Maestro iOS tests
         id: maestro_ios
         run: |
+          echo "=== swcutil show (Maestro run start) ==="
+          xcrun simctl spawn booted swcutil show || true
           maestro test \
             --env APP_ID=com.walletconnect.flutterwallet.internal \
             --env WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }} \
