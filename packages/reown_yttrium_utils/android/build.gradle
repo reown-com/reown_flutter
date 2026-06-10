@@ -47,8 +47,6 @@ android {
     }
 
     defaultConfig {
-        // Aligned with reown_core, whose flutter_secure_storage v10 dependency
-        // requires minSdk 23.
         minSdk = 23
     }
 

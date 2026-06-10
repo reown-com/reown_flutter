@@ -40,17 +40,9 @@ class SecureStore implements IStore<Map<String, dynamic>> {
 
     try {
       // Try secure storage first
-      // flutter_secure_storage v10 deprecated `encryptedSharedPreferences`
-      // (Jetpack Security is deprecated by Google). Data previously stored via
-      // EncryptedSharedPreferences (v9.x) is migrated automatically to the new
-      // custom-cipher storage on first access, since migrateOnAlgorithmChange
-      // defaults to true. No action is required from integrators.
-      //
-      // resetOnError is disabled because its default (true) wipes the entire
-      // shared "FlutterSecureStorage" backing store on a read/decrypt error -
-      // which would destroy not only our session keys but any other secure
-      // entries the host app stores under the default name. Surfacing the error
-      // lets our fallback storage path handle it without erasing data.
+      // v9.x EncryptedSharedPreferences data is migrated automatically on
+      // first access. resetOnError is disabled to avoid wiping the shared
+      // backing store (and the host app's own entries) on a read error.
       _secureStorage = const FlutterSecureStorage(
         aOptions: AndroidOptions(resetOnError: false),
         iOptions: IOSOptions(
@@ -60,10 +52,7 @@ class SecureStore implements IStore<Map<String, dynamic>> {
 
       await restore();
     } catch (e) {
-      // Fall back to regular storage if secure storage fails. This also covers
-      // a failed flutter_secure_storage v10 migration (e.g. OEM keystore
-      // issues): log it so a migration failure is distinguishable from secure
-      // storage simply being unavailable.
+      // Fall back to regular storage if secure storage fails
       debugPrint(
         'SecureStore: secure storage init/restore failed, '
         'falling back to shared_preferences: $e',
