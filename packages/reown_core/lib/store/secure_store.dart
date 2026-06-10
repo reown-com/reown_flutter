@@ -54,8 +54,8 @@ class SecureStore implements IStore<Map<String, dynamic>> {
     } catch (e) {
       // Fall back to regular storage if secure storage fails
       debugPrint(
-        'SecureStore: secure storage init/restore failed, '
-        'falling back to shared_preferences: $e',
+        'SecureStore: secure storage init/restore failed, falling back to '
+        '${_fallbackStorage.runtimeType}: $e',
       );
       _useFallbackStorage = true;
       // Try to restore from fallback storage

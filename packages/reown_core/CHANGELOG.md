@@ -4,8 +4,8 @@
   deprecated Android `EncryptedSharedPreferences` (v9.x) is migrated
   automatically to the new custom-cipher storage on first access; no action is
   required from integrators.
-- Disabled `resetOnError` so a read/decrypt error no longer wipes the entire
-  shared secure-storage backing store.
+- Disabled the Android `resetOnError` option so a read/decrypt error no longer
+  wipes the entire shared secure-storage backing store.
 - **Breaking (Android):** `flutter_secure_storage` v10 raises the minimum
   Android SDK to 23.
 
