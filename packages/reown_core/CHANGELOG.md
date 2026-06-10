@@ -1,3 +1,14 @@
+## 1.4.0
+
+- Upgraded `flutter_secure_storage` to `^10.0.0`. Existing data stored via the
+  deprecated Android `EncryptedSharedPreferences` (v9.x) is migrated
+  automatically to the new custom-cipher storage on first access; no action is
+  required from integrators.
+- Disabled `resetOnError` so a read/decrypt error no longer wipes the entire
+  shared secure-storage backing store.
+- **Breaking (Android):** `flutter_secure_storage` v10 raises the minimum
+  Android SDK to 23.
+
 ## 1.3.8
 
 - Dependency updates
