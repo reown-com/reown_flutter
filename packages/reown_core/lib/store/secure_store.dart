@@ -60,7 +60,14 @@ class SecureStore implements IStore<Map<String, dynamic>> {
 
       await restore();
     } catch (e) {
-      // Fall back to regular storage if secure storage fails
+      // Fall back to regular storage if secure storage fails. This also covers
+      // a failed flutter_secure_storage v10 migration (e.g. OEM keystore
+      // issues): log it so a migration failure is distinguishable from secure
+      // storage simply being unavailable.
+      debugPrint(
+        'SecureStore: secure storage init/restore failed, '
+        'falling back to shared_preferences: $e',
+      );
       _useFallbackStorage = true;
       // Try to restore from fallback storage
       await _restoreFromFallback();
