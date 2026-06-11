@@ -100,10 +100,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/pay-tests@3a145abaa0dcf9f609fabe17f6e6722e0db49535
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/setup@3a145abaa0dcf9f609fabe17f6e6722e0db49535
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -335,10 +335,10 @@ jobs:
           xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/pay-tests@3a145abaa0dcf9f609fabe17f6e6722e0db49535
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/setup@3a145abaa0dcf9f609fabe17f6e6722e0db49535
 
       - name: Run Maestro iOS tests
         id: maestro_ios
