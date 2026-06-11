@@ -40,8 +40,11 @@ class SecureStore implements IStore<Map<String, dynamic>> {
 
     try {
       // Try secure storage first
+      // v9.x EncryptedSharedPreferences data is migrated automatically on
+      // first access. resetOnError is disabled to avoid wiping the shared
+      // backing store (and the host app's own entries) on a read error.
       _secureStorage = const FlutterSecureStorage(
-        aOptions: AndroidOptions(encryptedSharedPreferences: true),
+        aOptions: AndroidOptions(resetOnError: false),
         iOptions: IOSOptions(
           accessibility: KeychainAccessibility.first_unlock_this_device,
         ),
@@ -50,6 +53,10 @@ class SecureStore implements IStore<Map<String, dynamic>> {
       await restore();
     } catch (e) {
       // Fall back to regular storage if secure storage fails
+      debugPrint(
+        'SecureStore: secure storage init/restore failed, falling back to '
+        '${_fallbackStorage.runtimeType}: $e',
+      );
       _useFallbackStorage = true;
       // Try to restore from fallback storage
       await _restoreFromFallback();
