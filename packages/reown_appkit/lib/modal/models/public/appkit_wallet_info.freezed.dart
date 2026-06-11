@@ -296,7 +296,7 @@ $AppKitModalWalletListingCopyWith<$Res> get listing {
 /// @nodoc
 mixin _$AppKitModalWalletListing {
 
- String get id; String get name; String get homepage;@JsonKey(name: 'image_id') String get imageId; int get order;@JsonKey(name: 'mobile_link') String? get mobileLink;@JsonKey(name: 'desktop_link') String? get desktopLink;@JsonKey(name: 'link_mode') String? get linkMode;@JsonKey(name: 'webapp_link') String? get webappLink;@JsonKey(name: 'app_store') String? get appStore;@JsonKey(name: 'play_store') String? get playStore; String? get rdns;@JsonKey(name: 'chrome_store') String? get chromeStore; List<Injected>? get injected; List<String>? get chains; List<String>? get categories; String? get description;@JsonKey(name: 'badge_type') String? get badgeType;@JsonKey(name: 'supports_wc') bool? get supportsWc;@JsonKey(name: 'is_top_wallet') bool? get isTopWallet;
+ String get id; String get name; String get homepage;@JsonKey(name: 'image_id') String get imageId; int get order;@JsonKey(name: 'android_app_id') String? get androidAppId;@JsonKey(name: 'mobile_link') String? get mobileLink;@JsonKey(name: 'desktop_link') String? get desktopLink;@JsonKey(name: 'link_mode') String? get linkMode;@JsonKey(name: 'webapp_link') String? get webappLink;@JsonKey(name: 'app_store') String? get appStore;@JsonKey(name: 'play_store') String? get playStore; String? get rdns;@JsonKey(name: 'chrome_store') String? get chromeStore; List<Injected>? get injected; List<String>? get chains; List<String>? get categories; String? get description;@JsonKey(name: 'badge_type') String? get badgeType;@JsonKey(name: 'supports_wc') bool? get supportsWc;@JsonKey(name: 'is_top_wallet') bool? get isTopWallet;
 /// Create a copy of AppKitModalWalletListing
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -309,16 +309,16 @@ $AppKitModalWalletListingCopyWith<AppKitModalWalletListing> get copyWith => _$Ap
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppKitModalWalletListing&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.homepage, homepage) || other.homepage == homepage)&&(identical(other.imageId, imageId) || other.imageId == imageId)&&(identical(other.order, order) || other.order == order)&&(identical(other.mobileLink, mobileLink) || other.mobileLink == mobileLink)&&(identical(other.desktopLink, desktopLink) || other.desktopLink == desktopLink)&&(identical(other.linkMode, linkMode) || other.linkMode == linkMode)&&(identical(other.webappLink, webappLink) || other.webappLink == webappLink)&&(identical(other.appStore, appStore) || other.appStore == appStore)&&(identical(other.playStore, playStore) || other.playStore == playStore)&&(identical(other.rdns, rdns) || other.rdns == rdns)&&(identical(other.chromeStore, chromeStore) || other.chromeStore == chromeStore)&&const DeepCollectionEquality().equals(other.injected, injected)&&const DeepCollectionEquality().equals(other.chains, chains)&&const DeepCollectionEquality().equals(other.categories, categories)&&(identical(other.description, description) || other.description == description)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.supportsWc, supportsWc) || other.supportsWc == supportsWc)&&(identical(other.isTopWallet, isTopWallet) || other.isTopWallet == isTopWallet));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppKitModalWalletListing&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.homepage, homepage) || other.homepage == homepage)&&(identical(other.imageId, imageId) || other.imageId == imageId)&&(identical(other.order, order) || other.order == order)&&(identical(other.androidAppId, androidAppId) || other.androidAppId == androidAppId)&&(identical(other.mobileLink, mobileLink) || other.mobileLink == mobileLink)&&(identical(other.desktopLink, desktopLink) || other.desktopLink == desktopLink)&&(identical(other.linkMode, linkMode) || other.linkMode == linkMode)&&(identical(other.webappLink, webappLink) || other.webappLink == webappLink)&&(identical(other.appStore, appStore) || other.appStore == appStore)&&(identical(other.playStore, playStore) || other.playStore == playStore)&&(identical(other.rdns, rdns) || other.rdns == rdns)&&(identical(other.chromeStore, chromeStore) || other.chromeStore == chromeStore)&&const DeepCollectionEquality().equals(other.injected, injected)&&const DeepCollectionEquality().equals(other.chains, chains)&&const DeepCollectionEquality().equals(other.categories, categories)&&(identical(other.description, description) || other.description == description)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.supportsWc, supportsWc) || other.supportsWc == supportsWc)&&(identical(other.isTopWallet, isTopWallet) || other.isTopWallet == isTopWallet));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,homepage,imageId,order,mobileLink,desktopLink,linkMode,webappLink,appStore,playStore,rdns,chromeStore,const DeepCollectionEquality().hash(injected),const DeepCollectionEquality().hash(chains),const DeepCollectionEquality().hash(categories),description,badgeType,supportsWc,isTopWallet]);
+int get hashCode => Object.hashAll([runtimeType,id,name,homepage,imageId,order,androidAppId,mobileLink,desktopLink,linkMode,webappLink,appStore,playStore,rdns,chromeStore,const DeepCollectionEquality().hash(injected),const DeepCollectionEquality().hash(chains),const DeepCollectionEquality().hash(categories),description,badgeType,supportsWc,isTopWallet]);
 
 @override
 String toString() {
-  return 'AppKitModalWalletListing(id: $id, name: $name, homepage: $homepage, imageId: $imageId, order: $order, mobileLink: $mobileLink, desktopLink: $desktopLink, linkMode: $linkMode, webappLink: $webappLink, appStore: $appStore, playStore: $playStore, rdns: $rdns, chromeStore: $chromeStore, injected: $injected, chains: $chains, categories: $categories, description: $description, badgeType: $badgeType, supportsWc: $supportsWc, isTopWallet: $isTopWallet)';
+  return 'AppKitModalWalletListing(id: $id, name: $name, homepage: $homepage, imageId: $imageId, order: $order, androidAppId: $androidAppId, mobileLink: $mobileLink, desktopLink: $desktopLink, linkMode: $linkMode, webappLink: $webappLink, appStore: $appStore, playStore: $playStore, rdns: $rdns, chromeStore: $chromeStore, injected: $injected, chains: $chains, categories: $categories, description: $description, badgeType: $badgeType, supportsWc: $supportsWc, isTopWallet: $isTopWallet)';
 }
 
 
@@ -329,7 +329,7 @@ abstract mixin class $AppKitModalWalletListingCopyWith<$Res>  {
   factory $AppKitModalWalletListingCopyWith(AppKitModalWalletListing value, $Res Function(AppKitModalWalletListing) _then) = _$AppKitModalWalletListingCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String homepage,@JsonKey(name: 'image_id') String imageId, int order,@JsonKey(name: 'mobile_link') String? mobileLink,@JsonKey(name: 'desktop_link') String? desktopLink,@JsonKey(name: 'link_mode') String? linkMode,@JsonKey(name: 'webapp_link') String? webappLink,@JsonKey(name: 'app_store') String? appStore,@JsonKey(name: 'play_store') String? playStore, String? rdns,@JsonKey(name: 'chrome_store') String? chromeStore, List<Injected>? injected, List<String>? chains, List<String>? categories, String? description,@JsonKey(name: 'badge_type') String? badgeType,@JsonKey(name: 'supports_wc') bool? supportsWc,@JsonKey(name: 'is_top_wallet') bool? isTopWallet
+ String id, String name, String homepage,@JsonKey(name: 'image_id') String imageId, int order,@JsonKey(name: 'android_app_id') String? androidAppId,@JsonKey(name: 'mobile_link') String? mobileLink,@JsonKey(name: 'desktop_link') String? desktopLink,@JsonKey(name: 'link_mode') String? linkMode,@JsonKey(name: 'webapp_link') String? webappLink,@JsonKey(name: 'app_store') String? appStore,@JsonKey(name: 'play_store') String? playStore, String? rdns,@JsonKey(name: 'chrome_store') String? chromeStore, List<Injected>? injected, List<String>? chains, List<String>? categories, String? description,@JsonKey(name: 'badge_type') String? badgeType,@JsonKey(name: 'supports_wc') bool? supportsWc,@JsonKey(name: 'is_top_wallet') bool? isTopWallet
 });
 
 
@@ -346,14 +346,15 @@ class _$AppKitModalWalletListingCopyWithImpl<$Res>
 
 /// Create a copy of AppKitModalWalletListing
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? homepage = null,Object? imageId = null,Object? order = null,Object? mobileLink = freezed,Object? desktopLink = freezed,Object? linkMode = freezed,Object? webappLink = freezed,Object? appStore = freezed,Object? playStore = freezed,Object? rdns = freezed,Object? chromeStore = freezed,Object? injected = freezed,Object? chains = freezed,Object? categories = freezed,Object? description = freezed,Object? badgeType = freezed,Object? supportsWc = freezed,Object? isTopWallet = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? homepage = null,Object? imageId = null,Object? order = null,Object? androidAppId = freezed,Object? mobileLink = freezed,Object? desktopLink = freezed,Object? linkMode = freezed,Object? webappLink = freezed,Object? appStore = freezed,Object? playStore = freezed,Object? rdns = freezed,Object? chromeStore = freezed,Object? injected = freezed,Object? chains = freezed,Object? categories = freezed,Object? description = freezed,Object? badgeType = freezed,Object? supportsWc = freezed,Object? isTopWallet = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,homepage: null == homepage ? _self.homepage : homepage // ignore: cast_nullable_to_non_nullable
 as String,imageId: null == imageId ? _self.imageId : imageId // ignore: cast_nullable_to_non_nullable
 as String,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
-as int,mobileLink: freezed == mobileLink ? _self.mobileLink : mobileLink // ignore: cast_nullable_to_non_nullable
+as int,androidAppId: freezed == androidAppId ? _self.androidAppId : androidAppId // ignore: cast_nullable_to_non_nullable
+as String?,mobileLink: freezed == mobileLink ? _self.mobileLink : mobileLink // ignore: cast_nullable_to_non_nullable
 as String?,desktopLink: freezed == desktopLink ? _self.desktopLink : desktopLink // ignore: cast_nullable_to_non_nullable
 as String?,linkMode: freezed == linkMode ? _self.linkMode : linkMode // ignore: cast_nullable_to_non_nullable
 as String?,webappLink: freezed == webappLink ? _self.webappLink : webappLink // ignore: cast_nullable_to_non_nullable
@@ -450,10 +451,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String homepage, @JsonKey(name: 'image_id')  String imageId,  int order, @JsonKey(name: 'mobile_link')  String? mobileLink, @JsonKey(name: 'desktop_link')  String? desktopLink, @JsonKey(name: 'link_mode')  String? linkMode, @JsonKey(name: 'webapp_link')  String? webappLink, @JsonKey(name: 'app_store')  String? appStore, @JsonKey(name: 'play_store')  String? playStore,  String? rdns, @JsonKey(name: 'chrome_store')  String? chromeStore,  List<Injected>? injected,  List<String>? chains,  List<String>? categories,  String? description, @JsonKey(name: 'badge_type')  String? badgeType, @JsonKey(name: 'supports_wc')  bool? supportsWc, @JsonKey(name: 'is_top_wallet')  bool? isTopWallet)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String homepage, @JsonKey(name: 'image_id')  String imageId,  int order, @JsonKey(name: 'android_app_id')  String? androidAppId, @JsonKey(name: 'mobile_link')  String? mobileLink, @JsonKey(name: 'desktop_link')  String? desktopLink, @JsonKey(name: 'link_mode')  String? linkMode, @JsonKey(name: 'webapp_link')  String? webappLink, @JsonKey(name: 'app_store')  String? appStore, @JsonKey(name: 'play_store')  String? playStore,  String? rdns, @JsonKey(name: 'chrome_store')  String? chromeStore,  List<Injected>? injected,  List<String>? chains,  List<String>? categories,  String? description, @JsonKey(name: 'badge_type')  String? badgeType, @JsonKey(name: 'supports_wc')  bool? supportsWc, @JsonKey(name: 'is_top_wallet')  bool? isTopWallet)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppKitModalWalletListing() when $default != null:
-return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_that.mobileLink,_that.desktopLink,_that.linkMode,_that.webappLink,_that.appStore,_that.playStore,_that.rdns,_that.chromeStore,_that.injected,_that.chains,_that.categories,_that.description,_that.badgeType,_that.supportsWc,_that.isTopWallet);case _:
+return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_that.androidAppId,_that.mobileLink,_that.desktopLink,_that.linkMode,_that.webappLink,_that.appStore,_that.playStore,_that.rdns,_that.chromeStore,_that.injected,_that.chains,_that.categories,_that.description,_that.badgeType,_that.supportsWc,_that.isTopWallet);case _:
   return orElse();
 
 }
@@ -471,10 +472,10 @@ return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String homepage, @JsonKey(name: 'image_id')  String imageId,  int order, @JsonKey(name: 'mobile_link')  String? mobileLink, @JsonKey(name: 'desktop_link')  String? desktopLink, @JsonKey(name: 'link_mode')  String? linkMode, @JsonKey(name: 'webapp_link')  String? webappLink, @JsonKey(name: 'app_store')  String? appStore, @JsonKey(name: 'play_store')  String? playStore,  String? rdns, @JsonKey(name: 'chrome_store')  String? chromeStore,  List<Injected>? injected,  List<String>? chains,  List<String>? categories,  String? description, @JsonKey(name: 'badge_type')  String? badgeType, @JsonKey(name: 'supports_wc')  bool? supportsWc, @JsonKey(name: 'is_top_wallet')  bool? isTopWallet)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String homepage, @JsonKey(name: 'image_id')  String imageId,  int order, @JsonKey(name: 'android_app_id')  String? androidAppId, @JsonKey(name: 'mobile_link')  String? mobileLink, @JsonKey(name: 'desktop_link')  String? desktopLink, @JsonKey(name: 'link_mode')  String? linkMode, @JsonKey(name: 'webapp_link')  String? webappLink, @JsonKey(name: 'app_store')  String? appStore, @JsonKey(name: 'play_store')  String? playStore,  String? rdns, @JsonKey(name: 'chrome_store')  String? chromeStore,  List<Injected>? injected,  List<String>? chains,  List<String>? categories,  String? description, @JsonKey(name: 'badge_type')  String? badgeType, @JsonKey(name: 'supports_wc')  bool? supportsWc, @JsonKey(name: 'is_top_wallet')  bool? isTopWallet)  $default,) {final _that = this;
 switch (_that) {
 case _AppKitModalWalletListing():
-return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_that.mobileLink,_that.desktopLink,_that.linkMode,_that.webappLink,_that.appStore,_that.playStore,_that.rdns,_that.chromeStore,_that.injected,_that.chains,_that.categories,_that.description,_that.badgeType,_that.supportsWc,_that.isTopWallet);}
+return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_that.androidAppId,_that.mobileLink,_that.desktopLink,_that.linkMode,_that.webappLink,_that.appStore,_that.playStore,_that.rdns,_that.chromeStore,_that.injected,_that.chains,_that.categories,_that.description,_that.badgeType,_that.supportsWc,_that.isTopWallet);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -488,10 +489,10 @@ return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String homepage, @JsonKey(name: 'image_id')  String imageId,  int order, @JsonKey(name: 'mobile_link')  String? mobileLink, @JsonKey(name: 'desktop_link')  String? desktopLink, @JsonKey(name: 'link_mode')  String? linkMode, @JsonKey(name: 'webapp_link')  String? webappLink, @JsonKey(name: 'app_store')  String? appStore, @JsonKey(name: 'play_store')  String? playStore,  String? rdns, @JsonKey(name: 'chrome_store')  String? chromeStore,  List<Injected>? injected,  List<String>? chains,  List<String>? categories,  String? description, @JsonKey(name: 'badge_type')  String? badgeType, @JsonKey(name: 'supports_wc')  bool? supportsWc, @JsonKey(name: 'is_top_wallet')  bool? isTopWallet)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String homepage, @JsonKey(name: 'image_id')  String imageId,  int order, @JsonKey(name: 'android_app_id')  String? androidAppId, @JsonKey(name: 'mobile_link')  String? mobileLink, @JsonKey(name: 'desktop_link')  String? desktopLink, @JsonKey(name: 'link_mode')  String? linkMode, @JsonKey(name: 'webapp_link')  String? webappLink, @JsonKey(name: 'app_store')  String? appStore, @JsonKey(name: 'play_store')  String? playStore,  String? rdns, @JsonKey(name: 'chrome_store')  String? chromeStore,  List<Injected>? injected,  List<String>? chains,  List<String>? categories,  String? description, @JsonKey(name: 'badge_type')  String? badgeType, @JsonKey(name: 'supports_wc')  bool? supportsWc, @JsonKey(name: 'is_top_wallet')  bool? isTopWallet)?  $default,) {final _that = this;
 switch (_that) {
 case _AppKitModalWalletListing() when $default != null:
-return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_that.mobileLink,_that.desktopLink,_that.linkMode,_that.webappLink,_that.appStore,_that.playStore,_that.rdns,_that.chromeStore,_that.injected,_that.chains,_that.categories,_that.description,_that.badgeType,_that.supportsWc,_that.isTopWallet);case _:
+return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_that.androidAppId,_that.mobileLink,_that.desktopLink,_that.linkMode,_that.webappLink,_that.appStore,_that.playStore,_that.rdns,_that.chromeStore,_that.injected,_that.chains,_that.categories,_that.description,_that.badgeType,_that.supportsWc,_that.isTopWallet);case _:
   return null;
 
 }
@@ -503,7 +504,7 @@ return $default(_that.id,_that.name,_that.homepage,_that.imageId,_that.order,_th
 @JsonSerializable()
 
 class _AppKitModalWalletListing implements AppKitModalWalletListing {
-  const _AppKitModalWalletListing({required this.id, required this.name, required this.homepage, @JsonKey(name: 'image_id') required this.imageId, required this.order, @JsonKey(name: 'mobile_link') this.mobileLink, @JsonKey(name: 'desktop_link') this.desktopLink, @JsonKey(name: 'link_mode') this.linkMode, @JsonKey(name: 'webapp_link') this.webappLink, @JsonKey(name: 'app_store') this.appStore, @JsonKey(name: 'play_store') this.playStore, this.rdns, @JsonKey(name: 'chrome_store') this.chromeStore, final  List<Injected>? injected, final  List<String>? chains, final  List<String>? categories, this.description, @JsonKey(name: 'badge_type') this.badgeType, @JsonKey(name: 'supports_wc') this.supportsWc, @JsonKey(name: 'is_top_wallet') this.isTopWallet}): _injected = injected,_chains = chains,_categories = categories;
+  const _AppKitModalWalletListing({required this.id, required this.name, required this.homepage, @JsonKey(name: 'image_id') required this.imageId, required this.order, @JsonKey(name: 'android_app_id') this.androidAppId, @JsonKey(name: 'mobile_link') this.mobileLink, @JsonKey(name: 'desktop_link') this.desktopLink, @JsonKey(name: 'link_mode') this.linkMode, @JsonKey(name: 'webapp_link') this.webappLink, @JsonKey(name: 'app_store') this.appStore, @JsonKey(name: 'play_store') this.playStore, this.rdns, @JsonKey(name: 'chrome_store') this.chromeStore, final  List<Injected>? injected, final  List<String>? chains, final  List<String>? categories, this.description, @JsonKey(name: 'badge_type') this.badgeType, @JsonKey(name: 'supports_wc') this.supportsWc, @JsonKey(name: 'is_top_wallet') this.isTopWallet}): _injected = injected,_chains = chains,_categories = categories;
   factory _AppKitModalWalletListing.fromJson(Map<String, dynamic> json) => _$AppKitModalWalletListingFromJson(json);
 
 @override final  String id;
@@ -511,6 +512,7 @@ class _AppKitModalWalletListing implements AppKitModalWalletListing {
 @override final  String homepage;
 @override@JsonKey(name: 'image_id') final  String imageId;
 @override final  int order;
+@override@JsonKey(name: 'android_app_id') final  String? androidAppId;
 @override@JsonKey(name: 'mobile_link') final  String? mobileLink;
 @override@JsonKey(name: 'desktop_link') final  String? desktopLink;
 @override@JsonKey(name: 'link_mode') final  String? linkMode;
@@ -564,16 +566,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppKitModalWalletListing&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.homepage, homepage) || other.homepage == homepage)&&(identical(other.imageId, imageId) || other.imageId == imageId)&&(identical(other.order, order) || other.order == order)&&(identical(other.mobileLink, mobileLink) || other.mobileLink == mobileLink)&&(identical(other.desktopLink, desktopLink) || other.desktopLink == desktopLink)&&(identical(other.linkMode, linkMode) || other.linkMode == linkMode)&&(identical(other.webappLink, webappLink) || other.webappLink == webappLink)&&(identical(other.appStore, appStore) || other.appStore == appStore)&&(identical(other.playStore, playStore) || other.playStore == playStore)&&(identical(other.rdns, rdns) || other.rdns == rdns)&&(identical(other.chromeStore, chromeStore) || other.chromeStore == chromeStore)&&const DeepCollectionEquality().equals(other._injected, _injected)&&const DeepCollectionEquality().equals(other._chains, _chains)&&const DeepCollectionEquality().equals(other._categories, _categories)&&(identical(other.description, description) || other.description == description)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.supportsWc, supportsWc) || other.supportsWc == supportsWc)&&(identical(other.isTopWallet, isTopWallet) || other.isTopWallet == isTopWallet));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppKitModalWalletListing&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.homepage, homepage) || other.homepage == homepage)&&(identical(other.imageId, imageId) || other.imageId == imageId)&&(identical(other.order, order) || other.order == order)&&(identical(other.androidAppId, androidAppId) || other.androidAppId == androidAppId)&&(identical(other.mobileLink, mobileLink) || other.mobileLink == mobileLink)&&(identical(other.desktopLink, desktopLink) || other.desktopLink == desktopLink)&&(identical(other.linkMode, linkMode) || other.linkMode == linkMode)&&(identical(other.webappLink, webappLink) || other.webappLink == webappLink)&&(identical(other.appStore, appStore) || other.appStore == appStore)&&(identical(other.playStore, playStore) || other.playStore == playStore)&&(identical(other.rdns, rdns) || other.rdns == rdns)&&(identical(other.chromeStore, chromeStore) || other.chromeStore == chromeStore)&&const DeepCollectionEquality().equals(other._injected, _injected)&&const DeepCollectionEquality().equals(other._chains, _chains)&&const DeepCollectionEquality().equals(other._categories, _categories)&&(identical(other.description, description) || other.description == description)&&(identical(other.badgeType, badgeType) || other.badgeType == badgeType)&&(identical(other.supportsWc, supportsWc) || other.supportsWc == supportsWc)&&(identical(other.isTopWallet, isTopWallet) || other.isTopWallet == isTopWallet));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,name,homepage,imageId,order,mobileLink,desktopLink,linkMode,webappLink,appStore,playStore,rdns,chromeStore,const DeepCollectionEquality().hash(_injected),const DeepCollectionEquality().hash(_chains),const DeepCollectionEquality().hash(_categories),description,badgeType,supportsWc,isTopWallet]);
+int get hashCode => Object.hashAll([runtimeType,id,name,homepage,imageId,order,androidAppId,mobileLink,desktopLink,linkMode,webappLink,appStore,playStore,rdns,chromeStore,const DeepCollectionEquality().hash(_injected),const DeepCollectionEquality().hash(_chains),const DeepCollectionEquality().hash(_categories),description,badgeType,supportsWc,isTopWallet]);
 
 @override
 String toString() {
-  return 'AppKitModalWalletListing(id: $id, name: $name, homepage: $homepage, imageId: $imageId, order: $order, mobileLink: $mobileLink, desktopLink: $desktopLink, linkMode: $linkMode, webappLink: $webappLink, appStore: $appStore, playStore: $playStore, rdns: $rdns, chromeStore: $chromeStore, injected: $injected, chains: $chains, categories: $categories, description: $description, badgeType: $badgeType, supportsWc: $supportsWc, isTopWallet: $isTopWallet)';
+  return 'AppKitModalWalletListing(id: $id, name: $name, homepage: $homepage, imageId: $imageId, order: $order, androidAppId: $androidAppId, mobileLink: $mobileLink, desktopLink: $desktopLink, linkMode: $linkMode, webappLink: $webappLink, appStore: $appStore, playStore: $playStore, rdns: $rdns, chromeStore: $chromeStore, injected: $injected, chains: $chains, categories: $categories, description: $description, badgeType: $badgeType, supportsWc: $supportsWc, isTopWallet: $isTopWallet)';
 }
 
 
@@ -584,7 +586,7 @@ abstract mixin class _$AppKitModalWalletListingCopyWith<$Res> implements $AppKit
   factory _$AppKitModalWalletListingCopyWith(_AppKitModalWalletListing value, $Res Function(_AppKitModalWalletListing) _then) = __$AppKitModalWalletListingCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String homepage,@JsonKey(name: 'image_id') String imageId, int order,@JsonKey(name: 'mobile_link') String? mobileLink,@JsonKey(name: 'desktop_link') String? desktopLink,@JsonKey(name: 'link_mode') String? linkMode,@JsonKey(name: 'webapp_link') String? webappLink,@JsonKey(name: 'app_store') String? appStore,@JsonKey(name: 'play_store') String? playStore, String? rdns,@JsonKey(name: 'chrome_store') String? chromeStore, List<Injected>? injected, List<String>? chains, List<String>? categories, String? description,@JsonKey(name: 'badge_type') String? badgeType,@JsonKey(name: 'supports_wc') bool? supportsWc,@JsonKey(name: 'is_top_wallet') bool? isTopWallet
+ String id, String name, String homepage,@JsonKey(name: 'image_id') String imageId, int order,@JsonKey(name: 'android_app_id') String? androidAppId,@JsonKey(name: 'mobile_link') String? mobileLink,@JsonKey(name: 'desktop_link') String? desktopLink,@JsonKey(name: 'link_mode') String? linkMode,@JsonKey(name: 'webapp_link') String? webappLink,@JsonKey(name: 'app_store') String? appStore,@JsonKey(name: 'play_store') String? playStore, String? rdns,@JsonKey(name: 'chrome_store') String? chromeStore, List<Injected>? injected, List<String>? chains, List<String>? categories, String? description,@JsonKey(name: 'badge_type') String? badgeType,@JsonKey(name: 'supports_wc') bool? supportsWc,@JsonKey(name: 'is_top_wallet') bool? isTopWallet
 });
 
 
@@ -601,14 +603,15 @@ class __$AppKitModalWalletListingCopyWithImpl<$Res>
 
 /// Create a copy of AppKitModalWalletListing
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? homepage = null,Object? imageId = null,Object? order = null,Object? mobileLink = freezed,Object? desktopLink = freezed,Object? linkMode = freezed,Object? webappLink = freezed,Object? appStore = freezed,Object? playStore = freezed,Object? rdns = freezed,Object? chromeStore = freezed,Object? injected = freezed,Object? chains = freezed,Object? categories = freezed,Object? description = freezed,Object? badgeType = freezed,Object? supportsWc = freezed,Object? isTopWallet = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? homepage = null,Object? imageId = null,Object? order = null,Object? androidAppId = freezed,Object? mobileLink = freezed,Object? desktopLink = freezed,Object? linkMode = freezed,Object? webappLink = freezed,Object? appStore = freezed,Object? playStore = freezed,Object? rdns = freezed,Object? chromeStore = freezed,Object? injected = freezed,Object? chains = freezed,Object? categories = freezed,Object? description = freezed,Object? badgeType = freezed,Object? supportsWc = freezed,Object? isTopWallet = freezed,}) {
   return _then(_AppKitModalWalletListing(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,homepage: null == homepage ? _self.homepage : homepage // ignore: cast_nullable_to_non_nullable
 as String,imageId: null == imageId ? _self.imageId : imageId // ignore: cast_nullable_to_non_nullable
 as String,order: null == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
-as int,mobileLink: freezed == mobileLink ? _self.mobileLink : mobileLink // ignore: cast_nullable_to_non_nullable
+as int,androidAppId: freezed == androidAppId ? _self.androidAppId : androidAppId // ignore: cast_nullable_to_non_nullable
+as String?,mobileLink: freezed == mobileLink ? _self.mobileLink : mobileLink // ignore: cast_nullable_to_non_nullable
 as String?,desktopLink: freezed == desktopLink ? _self.desktopLink : desktopLink // ignore: cast_nullable_to_non_nullable
 as String?,linkMode: freezed == linkMode ? _self.linkMode : linkMode // ignore: cast_nullable_to_non_nullable
 as String?,webappLink: freezed == webappLink ? _self.webappLink : webappLink // ignore: cast_nullable_to_non_nullable

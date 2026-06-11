@@ -182,6 +182,7 @@ class ExplorerService with ExplorerStorage implements IExplorerService {
       customWallet = customWallet.copyWith(listing: listing);
       final installed = await _uriService.isInstalled(
         customWallet.listing.mobileLink,
+        androidAppId: customWallet.listing.androidAppId,
       );
       if (installed || customWallet.listing.webappLink != null) {
         customWallet = customWallet.copyWith(installed: true);
