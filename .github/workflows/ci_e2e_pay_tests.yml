@@ -20,6 +20,9 @@ on:
       - 'packages/reown_walletkit/example/**'
       - 'packages/walletconnect_pay/**'
       - '.github/workflows/ci_e2e_pay_tests.yml'
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref_name }}
@@ -27,7 +30,7 @@ concurrency:
 
 jobs:
   pay-tests-android:
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
 
@@ -208,7 +211,7 @@ jobs:
             }
 
   pay-tests-ios:
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
 
