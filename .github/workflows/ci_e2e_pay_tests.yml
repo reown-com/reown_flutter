@@ -20,6 +20,9 @@ on:
       - 'packages/reown_walletkit/example/**'
       - 'packages/walletconnect_pay/**'
       - '.github/workflows/ci_e2e_pay_tests.yml'
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref_name }}
@@ -27,7 +30,7 @@ concurrency:
 
 jobs:
   pay-tests-android:
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
 
@@ -97,10 +100,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/pay-tests@0730e323043dd2c4989bfc76f11303bb4e2c5774
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -208,7 +211,7 @@ jobs:
             }
 
   pay-tests-ios:
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
 
@@ -332,10 +335,10 @@ jobs:
           xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/pay-tests@0730e323043dd2c4989bfc76f11303bb4e2c5774
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
 
       - name: Run Maestro iOS tests
         id: maestro_ios
