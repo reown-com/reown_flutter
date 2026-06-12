@@ -96,7 +96,11 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
 
   void _updateStepLabel(Action action) {
     final method = action.walletRpc.method;
-    if (method == 'eth_sendTransaction') {
+    // Only the approve tx in a multi-step (Permit2 approve + pay) flow is a
+    // one-time token setup. A single-action eth_sendTransaction is the payment
+    // itself, so it must not show the "future payments will skip this step"
+    // note. Mirrors RN's shouldShowSetupLoader (actions.length > 1 && approval).
+    if (_isMultiStep && method == 'eth_sendTransaction') {
       _stepLabel.value = _settingUpLabel;
     } else {
       _stepLabel.value = _isMultiStep ? _finalizingLabel : _processingLabel;
