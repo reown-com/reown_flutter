@@ -5,9 +5,7 @@
 
 set -euo pipefail
 
-# TEMP: pinned to WalletConnect/actions PR #97 head (adds pay_usdt_polygon +
-# maestro/permit2-reset). Re-pin to the squash-merge commit once #97 lands.
-REF="${1:-d07c1f8a83dde5c52b7c8649a6814f98ba716b6b}"
+REF="${1:-3fd66ca1de3848a089d8e3c628e6f54bfcfd999f}"
 REPO="WalletConnect/actions"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"

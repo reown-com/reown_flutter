@@ -99,10 +99,8 @@ jobs:
             --target-platform android-x64 \
             --split-per-abi
 
-      # TEMP: pinned to the WalletConnect/actions PR #97 head (adds pay_usdt_polygon
-      # + the permit2-reset action). Re-pin to the squash-merge commit once #97 lands.
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
+        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
@@ -149,7 +147,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
+        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
@@ -351,10 +349,8 @@ jobs:
           echo "=== swcutil show (after install + priming) ==="
           xcrun simctl spawn booted swcutil show || true
 
-      # TEMP: pinned to the WalletConnect/actions PR #97 head (adds pay_usdt_polygon
-      # + the permit2-reset action). Re-pin to the squash-merge commit once #97 lands.
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
+        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
@@ -384,7 +380,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
+        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
