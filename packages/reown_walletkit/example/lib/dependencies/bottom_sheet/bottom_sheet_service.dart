@@ -17,6 +17,7 @@ class BottomSheetService extends IBottomSheetService {
     bool showBackButton = false,
     Widget? leadingWidget,
     (int, int) stepper = (0, 0),
+    bool enableDrag = true,
   }) async {
     // Create the bottom sheet queue item
     final completer = Completer<dynamic>();
@@ -27,6 +28,7 @@ class BottomSheetService extends IBottomSheetService {
       showBackButton: showBackButton,
       leadingWidget: leadingWidget,
       stepper: stepper,
+      enableDrag: enableDrag,
     );
 
     // If the current sheet it null, set it to the queue item

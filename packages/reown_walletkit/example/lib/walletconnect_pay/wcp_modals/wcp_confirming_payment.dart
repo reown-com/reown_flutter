@@ -210,14 +210,22 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.s5),
-                          child: Text(
-                            label.subtitle!,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: context.colors.textSecondary,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w400,
-                              height: 1.125,
+                          // Only rendered during one-time token setup (e.g. the
+                          // USDT Permit2 `approve` step). Exposed by id so the
+                          // pay_usdt_polygon Maestro flow can softly observe it.
+                          child: Semantics(
+                            container: true,
+                            identifier: 'pay-loading-setup-note',
+                            label: 'pay-loading-setup-note',
+                            child: Text(
+                              label.subtitle!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: context.colors.textSecondary,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w400,
+                                height: 1.125,
+                              ),
                             ),
                           ),
                         ),

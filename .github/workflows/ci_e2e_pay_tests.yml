@@ -99,8 +99,10 @@ jobs:
             --target-platform android-x64 \
             --split-per-abi
 
+      # TEMP: pinned to the WalletConnect/actions PR #97 head (adds pay_usdt_polygon
+      # + the permit2-reset action). Re-pin to the squash-merge commit once #97 lands.
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@0730e323043dd2c4989bfc76f11303bb4e2c5774
+        uses: WalletConnect/actions/maestro/pay-tests@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
@@ -138,6 +140,21 @@ jobs:
             adb logcat > /tmp/logcat.txt 2>&1 &
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
             maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
+
+      # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
+      # run re-exercises the on-chain approve step. Runs even when the suite
+      # failed (if: always()) so a mid-flow failure doesn't leave the allowance
+      # set; continue-on-error so a reset hiccup can't fail an otherwise-green
+      # run. Node step (signs a tx) — the private key goes via env, never the CLI.
+      - name: Reset USDT Permit2 allowance (Polygon)
+        if: always()
+        continue-on-error: true
+        uses: WalletConnect/actions/maestro/permit2-reset@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
+        with:
+          chain-id: eip155:137
+          rpc-url: https://polygon-bor-rpc.publicnode.com
+          token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -334,8 +351,10 @@ jobs:
           echo "=== swcutil show (after install + priming) ==="
           xcrun simctl spawn booted swcutil show || true
 
+      # TEMP: pinned to the WalletConnect/actions PR #97 head (adds pay_usdt_polygon
+      # + the permit2-reset action). Re-pin to the squash-merge commit once #97 lands.
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@0730e323043dd2c4989bfc76f11303bb4e2c5774
+        uses: WalletConnect/actions/maestro/pay-tests@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
@@ -356,6 +375,21 @@ jobs:
             --include-tags pay \
             --test-output-dir /tmp/maestro-output \
             .maestro/
+
+      # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
+      # run re-exercises the on-chain approve step. Runs even when the suite
+      # failed (if: always()) so a mid-flow failure doesn't leave the allowance
+      # set; continue-on-error so a reset hiccup can't fail an otherwise-green
+      # run. Node step (signs a tx) — the private key goes via env, never the CLI.
+      - name: Reset USDT Permit2 allowance (Polygon)
+        if: always()
+        continue-on-error: true
+        uses: WalletConnect/actions/maestro/permit2-reset@d07c1f8a83dde5c52b7c8649a6814f98ba716b6b
+        with:
+          chain-id: eip155:137
+          rpc-url: https://polygon-bor-rpc.publicnode.com
+          token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
 
       # Clean up app build before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts

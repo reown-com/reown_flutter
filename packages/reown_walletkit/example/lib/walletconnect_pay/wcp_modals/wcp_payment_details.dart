@@ -389,14 +389,21 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
           ),
         ),
         const SizedBox(height: AppSpacing.s5),
-        _OptionList(
-          options: paymentOptionsResponse.options,
-          collectDataCompletedIds: _collectDataCompletedIds,
-          preps: _prep,
-          onOptionSelected: _selectOption,
-          // Per-row (i) only appears on collectData rows now and opens the
-          // "Why do we collect personal details?" explainer.
-          onOptionInfoTap: (_) => _openInfoPage(),
+        // Flexible so the list grows to fill the available sheet height (capped
+        // by the sheet) and shrink-wraps for a short list. A fixed-height window
+        // sits in the lower-middle of the sheet, below the screen center, so a
+        // center-anchored programmatic swipe (Maestro) lands above it and never
+        // scrolls; filling the height puts the scroll region under the center.
+        Flexible(
+          child: _OptionList(
+            options: paymentOptionsResponse.options,
+            collectDataCompletedIds: _collectDataCompletedIds,
+            preps: _prep,
+            onOptionSelected: _selectOption,
+            // Per-row (i) only appears on collectData rows now and opens the
+            // "Why do we collect personal details?" explainer.
+            onOptionInfoTap: (_) => _openInfoPage(),
+          ),
         ),
         const SizedBox(height: AppSpacing.s5),
         _MerchantFooter(
@@ -662,25 +669,39 @@ class _OptionList extends StatelessWidget {
         stops: [0.0, 0.06, 0.94, 1.0],
       ).createShader(bounds),
       blendMode: BlendMode.dstIn,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: 280),
-        child: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: AppSpacing.s2),
-                ...options.asMap().entries.map((entry) {
-                  final index = entry.key;
-                  final option = entry.value;
-                  final prep = preps.putIfAbsent(option.id, _OptionPrep.new);
-                  // Select-screen rows are uniform — no in-place selection
-                  // state since tapping advances directly. Test ids use a
-                  // plain `pay-option-$index` (Maestro's documented
-                  // convention) instead of carrying a `-selected` suffix
-                  // that the new flow can't honor before the user taps.
-                  return WCPOptionRow(
+      // Capped by the parent Flexible (available sheet height); SingleChildScroll
+      // View shrink-wraps under loose constraints, so a short list stays compact
+      // and a long one fills the height and scrolls.
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: AppSpacing.s2),
+              ...options.asMap().entries.map((entry) {
+                final index = entry.key;
+                final option = entry.value;
+                final prep = preps.putIfAbsent(option.id, _OptionPrep.new);
+                final display = option.amount.display;
+                // Stable, network+token-keyed testID for deterministic
+                // selection (e.g. `pay-option-usdt-polygon`), additive to the
+                // order-dependent `pay-option-$index`. Lets a flow pick a
+                // specific asset+network when the same token appears on
+                // multiple networks (used by pay_usdt_polygon).
+                final stableTestId = 'pay-option-'
+                    '${'${display.assetSymbol}-${display.networkName ?? 'unknown'}'.toLowerCase().replaceAll(RegExp(r'\s+'), '-')}';
+                // Select-screen rows are uniform — no in-place selection
+                // state since tapping advances directly. Test ids use a
+                // plain `pay-option-$index` (Maestro's documented
+                // convention) instead of carrying a `-selected` suffix
+                // that the new flow can't honor before the user taps.
+                return Semantics(
+                  key: ValueKey(stableTestId),
+                  container: true,
+                  identifier: stableTestId,
+                  label: stableTestId,
+                  child: WCPOptionRow(
                     option: option,
                     isSelected: false,
                     showSelectedTint: false,
@@ -691,11 +712,11 @@ class _OptionList extends StatelessWidget {
                     feeEstimate: prep.hasApproval ? prep.estimate : null,
                     isFeeLoading: prep.hasApproval &&
                         (prep.estimate == null || prep.isFeeLoading),
-                  );
-                }),
-                const SizedBox(height: AppSpacing.s2),
-              ],
-            ),
+                  ),
+                );
+              }),
+              const SizedBox(height: AppSpacing.s2),
+            ],
           ),
         ),
       ),

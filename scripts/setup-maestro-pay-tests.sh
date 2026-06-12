@@ -5,7 +5,9 @@
 
 set -euo pipefail
 
-REF="${1:-f9522878950f7bd904a628b2c4d486b93034a4fe}"
+# TEMP: pinned to WalletConnect/actions PR #97 head (adds pay_usdt_polygon +
+# maestro/permit2-reset). Re-pin to the squash-merge commit once #97 lands.
+REF="${1:-d07c1f8a83dde5c52b7c8649a6814f98ba716b6b}"
 REPO="WalletConnect/actions"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -47,7 +49,21 @@ cp "$SRC_DIR"/flows/pay_*.yaml "$TARGET_DIR/flows/"
 mkdir -p "$TARGET_DIR/scripts"
 cp "$SRC_DIR"/scripts/*.js "$TARGET_DIR/scripts/"
 
+# Also fetch the canonical Permit2 allowance-reset helper so it can be run
+# locally (node revoke-permit2-approval.js) to reset the USDT-on-Polygon
+# allowance back to 0 after a manual pay_usdt_polygon run. CI uses the shared
+# maestro/permit2-reset action instead; this copy is gitignored.
+REVOKE_SRC="$(find "$TMP_DIR" -type f -path '*/maestro/permit2-reset/revoke-permit2-approval.js' | head -1)"
+if [ -n "$REVOKE_SRC" ]; then
+  cp "$REVOKE_SRC" "$TARGET_DIR/scripts/revoke-permit2-approval.js"
+fi
+
 echo "Pay test flows copied to $TARGET_DIR/"
 echo "  $(count_matches "$TARGET_DIR" 'pay_*.yaml') root flows"
 echo "  $(count_matches "$TARGET_DIR/flows" 'pay_*.yaml') sub-flows"
 echo "  $(count_matches "$TARGET_DIR/scripts" '*.js') scripts"
+if [ -n "$REVOKE_SRC" ]; then
+  echo "  permit2 reset helper -> .maestro/scripts/revoke-permit2-approval.js"
+else
+  echo "  (permit2-reset helper not found in $REPO@$REF; skipped)"
+fi
