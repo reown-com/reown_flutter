@@ -699,6 +699,11 @@ class _OptionList extends StatelessWidget {
                 return Semantics(
                   key: ValueKey(stableTestId),
                   container: true,
+                  // Keep the inner WCPOptionRow's `pay-option-$index` node a
+                  // separate, addressable semantics node — without this the
+                  // stable-id wrapper can absorb it and break existing
+                  // index-based Maestro flows.
+                  explicitChildNodes: true,
                   identifier: stableTestId,
                   label: stableTestId,
                   child: WCPOptionRow(
