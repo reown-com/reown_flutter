@@ -818,6 +818,12 @@ class WalletKitService implements IWalletKitService {
     final committed = ValueNotifier<bool>(false);
     final preferredUnit = await WCPLastTokenStore.instance.read();
     final result = await _bottomSheetHandler.queueBottomSheet(
+      // The select view hosts its own scrollable option list. Disable the
+      // sheet's drag-to-dismiss so its vertical drag recognizer doesn't compete
+      // with (and swallow) the inner scroll — otherwise the list won't scroll
+      // under a programmatic swipe (Maestro pay_usdt_polygon). Dismissal is
+      // already gated (isDismissible: false + explicit close button + PopScope).
+      enableDrag: false,
       widget: WCPPaymentDetailsWidget(
         paymentOptionsResponse: response,
         paymentRequest: _pendingPaymentRequest!,

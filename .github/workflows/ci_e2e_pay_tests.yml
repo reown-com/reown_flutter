@@ -100,7 +100,7 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@0730e323043dd2c4989bfc76f11303bb4e2c5774
+        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
@@ -138,6 +138,21 @@ jobs:
             adb logcat > /tmp/logcat.txt 2>&1 &
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
             maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
+
+      # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
+      # run re-exercises the on-chain approve step. Runs even when the suite
+      # failed (if: always()) so a mid-flow failure doesn't leave the allowance
+      # set; continue-on-error so a reset hiccup can't fail an otherwise-green
+      # run. Node step (signs a tx) — the private key goes via env, never the CLI.
+      - name: Reset USDT Permit2 allowance (Polygon)
+        if: always()
+        continue-on-error: true
+        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        with:
+          chain-id: eip155:137
+          rpc-url: https://polygon-bor-rpc.publicnode.com
+          token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -335,7 +350,7 @@ jobs:
           xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@0730e323043dd2c4989bfc76f11303bb4e2c5774
+        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
@@ -356,6 +371,21 @@ jobs:
             --include-tags pay \
             --test-output-dir /tmp/maestro-output \
             .maestro/
+
+      # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
+      # run re-exercises the on-chain approve step. Runs even when the suite
+      # failed (if: always()) so a mid-flow failure doesn't leave the allowance
+      # set; continue-on-error so a reset hiccup can't fail an otherwise-green
+      # run. Node step (signs a tx) — the private key goes via env, never the CLI.
+      - name: Reset USDT Permit2 allowance (Polygon)
+        if: always()
+        continue-on-error: true
+        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        with:
+          chain-id: eip155:137
+          rpc-url: https://polygon-bor-rpc.publicnode.com
+          token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
 
       # Clean up app build before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
