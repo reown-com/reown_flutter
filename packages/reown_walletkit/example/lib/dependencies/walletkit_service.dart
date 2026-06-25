@@ -790,7 +790,7 @@ class WalletKitService implements IWalletKitService {
   }
 
   String _universalLink() {
-    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_walletkit');
+    Uri link = Uri.parse('https://lab.reown.com/flutter_walletkit');
     if (_flavor.isNotEmpty || kDebugMode) {
       return link.replace(path: '${link.path}_internal').toString();
     }
