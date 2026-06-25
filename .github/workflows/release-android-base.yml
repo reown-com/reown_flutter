@@ -129,19 +129,13 @@ jobs:
 
       - name: Upload to Firebase
         id: firebase-upload
-        working-directory: ${{ inputs.working-directory }}
-        run: |
-          if [ -n "${{ inputs.release-notes }}" ]; then
-            CHANGELOG="${{ inputs.release-notes }}"
-          else
-            CHANGELOG="Branch: ${{ github.ref_name }}"
-          fi
-
-          firebase appdistribution:distribute \
-            build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk \
-            --app ${{ inputs.firebase-app-id }} \
-            --groups "flutter-team, javascript-team, kotlin-team, rust-team, unity, wc-testers" \
-            --release-notes "$CHANGELOG"
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ inputs.firebase-app-id }}
+          serviceCredentialsFileContent: ${{ secrets.GSA_KEY }}
+          groups: flutter-team, javascript-team, kotlin-team, rust-team, unity, wc-testers
+          file: ${{ inputs.working-directory }}/build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk
+          releaseNotes: ${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}
 
       - name: Send Slack notification
         if: always() && !cancelled()
