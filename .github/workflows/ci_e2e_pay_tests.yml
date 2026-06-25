@@ -325,8 +325,8 @@ jobs:
           # Pick whatever iPhone simulator the runner actually has, so this
           # doesn't break each time the Xcode/runner image bumps the model.
           SIMULATOR_UDID=$(xcrun simctl list devices available \
-            | grep -Eo 'iPhone[^(]*\([A-F0-9-]{36}\)' \
-            | grep -Eo '[A-F0-9-]{36}' | head -n 1)
+            | grep -Eo 'iPhone[^(]*\([A-Fa-f0-9-]{36}\)' \
+            | grep -Eo '[A-Fa-f0-9-]{36}' | head -n 1)
           if [ -z "$SIMULATOR_UDID" ]; then
             echo "ERROR: no available iPhone simulator found"
             xcrun simctl list devices available
