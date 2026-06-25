@@ -135,7 +135,7 @@ jobs:
           serviceCredentialsFileContent: ${{ secrets.GSA_KEY }}
           groups: flutter-team, javascript-team, kotlin-team, rust-team, unity, wc-testers
           file: ${{ inputs.working-directory }}/build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk
-          releaseNotes: ${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}
+          releaseNotes: "${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}"
 
       - name: Send Slack notification
         if: always() && !cancelled()
