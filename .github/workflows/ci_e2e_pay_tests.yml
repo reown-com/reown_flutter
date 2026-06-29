@@ -100,10 +100,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        uses: WalletConnect/actions/maestro/pay-tests@a6436dfbb6404e7c086b24054821eb8efcc41b22 # provisional — re-pin to merged-master SHA of WalletConnect/actions#106 before merge
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
+        uses: WalletConnect/actions/maestro/setup@a6436dfbb6404e7c086b24054821eb8efcc41b22 # provisional — re-pin to merged-master SHA of WalletConnect/actions#106 before merge
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -147,7 +147,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        uses: WalletConnect/actions/maestro/permit2-reset@a6436dfbb6404e7c086b24054821eb8efcc41b22 # provisional — re-pin to merged-master SHA of WalletConnect/actions#106 before merge
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
@@ -361,10 +361,10 @@ jobs:
           xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        uses: WalletConnect/actions/maestro/pay-tests@a6436dfbb6404e7c086b24054821eb8efcc41b22 # provisional — re-pin to merged-master SHA of WalletConnect/actions#106 before merge
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
+        uses: WalletConnect/actions/maestro/setup@a6436dfbb6404e7c086b24054821eb8efcc41b22 # provisional — re-pin to merged-master SHA of WalletConnect/actions#106 before merge
 
       - name: Run Maestro iOS tests
         id: maestro_ios
@@ -391,7 +391,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        uses: WalletConnect/actions/maestro/permit2-reset@a6436dfbb6404e7c086b24054821eb8efcc41b22 # provisional — re-pin to merged-master SHA of WalletConnect/actions#106 before merge
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
