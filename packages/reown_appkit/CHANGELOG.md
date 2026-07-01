@@ -2,7 +2,7 @@
 
 - Fixed wallet install detection
 - Fixed modal close guard
-- Bumped `reown_core` to 1.4.0 — `flutter_secure_storage` v10 (existing data
+- Updated `reown_core` to 1.4.0 — `flutter_secure_storage` v10 (existing data
   auto-migrates; raises the minimum Android SDK to 23)
 
 ## 1.8.3

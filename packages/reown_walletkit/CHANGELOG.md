@@ -1,7 +1,7 @@
 ## 1.4.1
 
 - Dependency updates (`walletconnect_pay`, `reown_yttrium`)
-- Bumped `reown_core` to 1.4.0 — `flutter_secure_storage` v10 (existing data
+- Updated `reown_core` to 1.4.0 — `flutter_secure_storage` v10 (existing data
   auto-migrates; raises the minimum Android SDK to 23)
 
 ## 1.4.0
