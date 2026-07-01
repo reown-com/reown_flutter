@@ -1063,8 +1063,9 @@ class WalletKitService implements IWalletKitService {
       case PaymentStatus.cancelled:
         return 'cancelled';
       case PaymentStatus.succeeded:
-        // Already paid — reuse the "not found / already completed" copy.
-        return 'not_found';
+        // Already paid (e.g. re-scanning a completed payment) — surfaced as a
+        // generic result, matching the shared Maestro pay test contract.
+        return 'generic';
       case PaymentStatus.failed:
         return 'generic';
       case PaymentStatus.requires_action:
