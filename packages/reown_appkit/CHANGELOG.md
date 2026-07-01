@@ -1,3 +1,10 @@
+## 1.8.4
+
+- Fixed wallet install detection
+- Fixed modal close guard
+- Bumped `reown_core` to 1.4.0 — `flutter_secure_storage` v10 (existing data
+  auto-migrates; raises the minimum Android SDK to 23)
+
 ## 1.8.3
 
 - Enabled Coinbase exchange in Deposit With Exchange flow
