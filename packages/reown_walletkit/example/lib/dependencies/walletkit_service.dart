@@ -310,11 +310,17 @@ class WalletKitService implements IWalletKitService {
       _currentPaymentOptions = optionsResponse;
 
       if (_currentPaymentOptions!.options.isEmpty) {
+        // Empty options can mean the payment is terminal (expired / cancelled /
+        // already paid) or simply that the wallet can't afford any option.
+        // getPaymentOptions is called with includePaymentInfo: true, so a
+        // terminal payment comes back as a successful response carrying
+        // info.status rather than throwing — inspect it to show the right
+        // message instead of defaulting everything to "Not enough funds".
         await _bottomSheetHandler.queueBottomSheet(
           widget: WCPPaymentResult(
             status: PaymentStatus.failed,
-            info: _currentPaymentOptions!.info!,
-            errorType: 'insufficient_funds',
+            info: _currentPaymentOptions!.info,
+            errorType: _emptyOptionsErrorType(_currentPaymentOptions!.info),
           ),
         );
         _currentPaymentOptions = null;
@@ -983,39 +989,54 @@ class WalletKitService implements IWalletKitService {
   }
 
   String _detectErrorType(dynamic error) {
-    // Check typed SDK errors first
+    // Check typed SDK errors first. The native layer surfaces the Yttrium pay
+    // error variant name / HTTP status as `code` (e.g. PaymentExpired, 410),
+    // which is far more reliable than substring-matching the message.
     if (error is ConfirmPaymentError || error is GetPaymentOptionsError) {
-      final message = (error as PayError).message?.toLowerCase() ?? '';
-      if (message.contains('insufficient') || message.contains('balance')) {
-        return 'insufficient_funds';
-      }
-      if (message.contains('expired')) {
+      final code = (error as PayError).code.toLowerCase();
+      if (code.contains('expired') || code == '410') {
         return 'expired';
       }
-      if (message.contains('cancel')) {
+      if (code.contains('cancel')) {
         return 'cancelled';
       }
-      if (message.contains('not found') || message.contains('404')) {
+      if (code.contains('notfound') || code == '404') {
         return 'not_found';
+      }
+      if (code.contains('insufficient') || code.contains('funds')) {
+        return 'insufficient_funds';
+      }
+
+      final message = error.message?.toLowerCase() ?? '';
+      final byMessage = _detectErrorTypeFromString(message);
+      if (byMessage != null) {
+        return byMessage;
       }
     }
 
     // Fallback: string matching on toString()
-    final msg = error.toString().toLowerCase();
-    if (msg.contains('insufficient') || msg.contains('balance')) {
+    return _detectErrorTypeFromString(error.toString().toLowerCase()) ??
+        'generic';
+  }
+
+  /// Substring-based classification shared by the message and toString()
+  /// fallbacks. Keyword set mirrors the RN reference wallet's detectErrorType.
+  String? _detectErrorTypeFromString(String value) {
+    if (value.contains('insufficient') ||
+        value.contains('balance') ||
+        value.contains('funds')) {
       return 'insufficient_funds';
     }
-    if (msg.contains('expired')) {
+    if (value.contains('expired') || value.contains('timeout')) {
       return 'expired';
     }
-    if (msg.contains('cancel')) {
+    if (value.contains('cancel')) {
       return 'cancelled';
     }
-    if (msg.contains('not found') || msg.contains('404')) {
+    if (value.contains('not found') || value.contains('404')) {
       return 'not_found';
     }
-
-    return 'generic';
+    return null;
   }
 
   String? _paymentErrorType(PaymentStatus status) {
@@ -1029,6 +1050,29 @@ class WalletKitService implements IWalletKitService {
       return 'cancelled';
     }
     return null;
+  }
+
+  /// Maps the payment status carried by a successful (but option-less)
+  /// getPaymentOptions response to a result-modal error type. Terminal
+  /// payments (expired / cancelled / already paid) surface their own message;
+  /// an active payment with no affordable option falls back to no-funds.
+  String _emptyOptionsErrorType(PaymentInfo? info) {
+    switch (info?.status) {
+      case PaymentStatus.expired:
+        return 'expired';
+      case PaymentStatus.cancelled:
+        return 'cancelled';
+      case PaymentStatus.succeeded:
+        // Already paid (e.g. re-scanning a completed payment) — surfaced as a
+        // generic result, matching the shared Maestro pay test contract.
+        return 'generic';
+      case PaymentStatus.failed:
+        return 'generic';
+      case PaymentStatus.requires_action:
+      case PaymentStatus.processing:
+      case null:
+        return 'insufficient_funds';
+    }
   }
 
   void _openScanModal() {
