@@ -7,9 +7,10 @@ name: E2E Wallet Balance Check
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # Run daily at 07:00 UTC
-    - cron: '0 7 * * *'
+  # Called as a gating job by ci_e2e_pay_tests.yml (which runs on PRs + the
+  # daily 07:00 UTC schedule), mirroring reown-kotlin / reown-swift. No standalone
+  # schedule here — it would double-fire alongside the pay-tests cron.
+  workflow_call: {}
 
 permissions:
   contents: read

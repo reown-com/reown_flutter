@@ -42,9 +42,18 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  check-balance:
+    # Skip on draft PRs (matches the test jobs) so a draft run has all jobs
+    # skipped -> run conclusion "skipped", never counted toward KPIs.
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    uses: ./.github/workflows/e2e_balance_check.yml
+    secrets: inherit
+
   pay-tests-android:
-    # Skip draft PRs (still runnable manually via workflow_dispatch).
-    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
+    needs: check-balance
+    # always(): balance alert should not block tests. Skip draft PRs (still
+    # runnable manually via workflow_dispatch).
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios')) }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
 
@@ -240,8 +249,10 @@ jobs:
             }
 
   pay-tests-ios:
-    # Skip draft PRs (still runnable manually via workflow_dispatch).
-    if: ${{ (github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
+    needs: check-balance
+    # always(): balance alert should not block tests. Skip draft PRs (still
+    # runnable manually via workflow_dispatch).
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android')) }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
 
