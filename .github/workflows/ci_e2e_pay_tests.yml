@@ -20,6 +20,13 @@ on:
           - ios
         default: both
   pull_request:
+    # Explicit types = GitHub defaults + ready_for_review, so E2E fires
+    # immediately when a draft is marked ready (not just on the next push).
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     paths:
       - 'packages/reown_walletkit/example/**'
       - 'packages/walletconnect_pay/**'
