@@ -790,7 +790,7 @@ class WalletKitService implements IWalletKitService {
   }
 
   String _universalLink() {
-    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_walletkit');
+    Uri link = Uri.parse('https://lab.reown.com/flutter_walletkit');
     if (_flavor.isNotEmpty || kDebugMode) {
       return link.replace(path: '${link.path}_internal').toString();
     }
@@ -818,6 +818,12 @@ class WalletKitService implements IWalletKitService {
     final committed = ValueNotifier<bool>(false);
     final preferredUnit = await WCPLastTokenStore.instance.read();
     final result = await _bottomSheetHandler.queueBottomSheet(
+      // The select view hosts its own scrollable option list. Disable the
+      // sheet's drag-to-dismiss so its vertical drag recognizer doesn't compete
+      // with (and swallow) the inner scroll — otherwise the list won't scroll
+      // under a programmatic swipe (Maestro pay_usdt_polygon). Dismissal is
+      // already gated (isDismissible: false + explicit close button + PopScope).
+      enableDrag: false,
       widget: WCPPaymentDetailsWidget(
         paymentOptionsResponse: response,
         paymentRequest: _pendingPaymentRequest!,

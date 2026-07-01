@@ -77,7 +77,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:host="appkit-lab.reown.com" />
+                <data android:host="lab.reown.com" />
                 <data android:pathPattern="/flutter_walletkit" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
@@ -87,7 +87,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <data android:host="appkit-lab.reown.com" />
+                <data android:host="lab.reown.com" />
                 <data android:pathPattern="/flutter_walletkit_internal" />
             </intent-filter>
             <!-- WalletConnect Pay App Links -->

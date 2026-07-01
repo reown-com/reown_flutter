@@ -56,12 +56,10 @@ jobs:
           platform: 'android'
 
       - name: Setup Firebase
-        # Note: Key file is written to runner.temp which is automatically cleaned up after job
-        run: |
-          echo '${{ secrets.GSA_KEY }}' > ${{ runner.temp }}/gcp_key.json
-          chmod 600 ${{ runner.temp }}/gcp_key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=${{ runner.temp }}/gcp_key.json" >> $GITHUB_ENV
-          npm install -g firebase-tools@13.29.0
+        uses: w9jds/setup-firebase@main
+        with:
+          tools-version: 13.0.1
+          gcp_sa_key: ${{ secrets.GSA_KEY }}
 
       - name: Add Secrets file
         working-directory: ${{ inputs.working-directory }}/android
@@ -131,19 +129,13 @@ jobs:
 
       - name: Upload to Firebase
         id: firebase-upload
-        working-directory: ${{ inputs.working-directory }}
-        run: |
-          if [ -n "${{ inputs.release-notes }}" ]; then
-            CHANGELOG="${{ inputs.release-notes }}"
-          else
-            CHANGELOG="Branch: ${{ github.ref_name }}"
-          fi
-
-          firebase appdistribution:distribute \
-            build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk \
-            --app ${{ inputs.firebase-app-id }} \
-            --groups "flutter-team, javascript-team, kotlin-team, rust-team, unity, wc-testers" \
-            --release-notes "$CHANGELOG"
+        uses: wzieba/Firebase-Distribution-Github-Action@bd494989dd4bec0343f78adee87fe66e48279ad6 # v1.7.1
+        with:
+          appId: ${{ inputs.firebase-app-id }}
+          serviceCredentialsFileContent: ${{ secrets.GSA_KEY }}
+          groups: flutter-team, javascript-team, kotlin-team, rust-team, unity, wc-testers
+          file: ${{ inputs.working-directory }}/build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk
+          releaseNotes: "${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}"
 
       - name: Send Slack notification
         if: always() && !cancelled()

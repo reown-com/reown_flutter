@@ -96,7 +96,11 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
 
   void _updateStepLabel(Action action) {
     final method = action.walletRpc.method;
-    if (method == 'eth_sendTransaction') {
+    // Only the approve tx in a multi-step (Permit2 approve + pay) flow is a
+    // one-time token setup. A single-action eth_sendTransaction is the payment
+    // itself, so it must not show the "future payments will skip this step"
+    // note. Mirrors RN's shouldShowSetupLoader (actions.length > 1 && approval).
+    if (_isMultiStep && method == 'eth_sendTransaction') {
       _stepLabel.value = _settingUpLabel;
     } else {
       _stepLabel.value = _isMultiStep ? _finalizingLabel : _processingLabel;
@@ -210,14 +214,22 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.s5),
-                          child: Text(
-                            label.subtitle!,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: context.colors.textSecondary,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w400,
-                              height: 1.125,
+                          // Only rendered during one-time token setup (e.g. the
+                          // USDT Permit2 `approve` step). Exposed by id so the
+                          // pay_usdt_polygon Maestro flow can softly observe it.
+                          child: Semantics(
+                            container: true,
+                            identifier: 'pay-loading-setup-note',
+                            label: 'pay-loading-setup-note',
+                            child: Text(
+                              label.subtitle!,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: context.colors.textSecondary,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w400,
+                                height: 1.125,
+                              ),
                             ),
                           ),
                         ),

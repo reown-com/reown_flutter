@@ -7,7 +7,7 @@ final posClilentProvider = Provider<IPosClient>((ref) {
   final metadata = Metadata(
     merchantName: 'DTC Pay',
     description: 'Secure Crypto Payment Terminal',
-    url: 'https://appkit-lab.reown.com',
+    url: 'https://lab.reown.com',
     logoIcon: 'https://avatars.githubusercontent.com/u/179229932',
   );
   return PosClient(

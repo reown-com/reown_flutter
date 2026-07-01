@@ -20,6 +20,9 @@ on:
       - 'packages/reown_walletkit/example/**'
       - 'packages/walletconnect_pay/**'
       - '.github/workflows/ci_e2e_pay_tests.yml'
+  schedule:
+    # Run daily at 07:00 UTC
+    - cron: '0 7 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref_name }}
@@ -27,7 +30,7 @@ concurrency:
 
 jobs:
   pay-tests-android:
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
 
@@ -97,10 +100,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -135,6 +138,21 @@ jobs:
             adb logcat > /tmp/logcat.txt 2>&1 &
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
             maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
+
+      # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
+      # run re-exercises the on-chain approve step. Runs even when the suite
+      # failed (if: always()) so a mid-flow failure doesn't leave the allowance
+      # set; continue-on-error so a reset hiccup can't fail an otherwise-green
+      # run. Node step (signs a tx) — the private key goes via env, never the CLI.
+      - name: Reset USDT Permit2 allowance (Polygon)
+        if: always()
+        continue-on-error: true
+        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        with:
+          chain-id: eip155:137
+          rpc-url: https://polygon-bor-rpc.publicnode.com
+          token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -208,7 +226,7 @@ jobs:
             }
 
   pay-tests-ios:
-    if: ${{ github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
 
@@ -304,9 +322,20 @@ jobs:
 
       - name: Boot iOS simulator
         run: |
-          xcrun simctl boot "iPhone 16" 2>/dev/null || true
+          # Pick whatever iPhone simulator the runner actually has, so this
+          # doesn't break each time the Xcode/runner image bumps the model.
+          SIMULATOR_UDID=$(xcrun simctl list devices available \
+            | grep -Eo 'iPhone[^(]*\([A-Fa-f0-9-]{36}\)' \
+            | grep -Eo '[A-Fa-f0-9-]{36}' | head -n 1)
+          if [ -z "$SIMULATOR_UDID" ]; then
+            echo "ERROR: no available iPhone simulator found"
+            xcrun simctl list devices available
+            exit 1
+          fi
+          echo "Using simulator: $SIMULATOR_UDID"
+          xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
           # Wait for full boot before configuring the simulator
-          xcrun simctl bootstatus "iPhone 16" -b
+          xcrun simctl bootstatus "$SIMULATOR_UDID" -b
           # Reset associated-domains state before install so the applinks binding isn't wiped later
           xcrun simctl spawn booted swcutil reset || true
           # Disable UIKit animations to reduce Maestro timing flakiness
@@ -332,10 +361,10 @@ jobs:
           xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/pay-tests@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@52e0ab7755ca993bd829062278654ed12b2d471d
+        uses: WalletConnect/actions/maestro/setup@0730e323043dd2c4989bfc76f11303bb4e2c5774
 
       - name: Run Maestro iOS tests
         id: maestro_ios
@@ -353,6 +382,21 @@ jobs:
             --include-tags pay \
             --test-output-dir /tmp/maestro-output \
             .maestro/
+
+      # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
+      # run re-exercises the on-chain approve step. Runs even when the suite
+      # failed (if: always()) so a mid-flow failure doesn't leave the allowance
+      # set; continue-on-error so a reset hiccup can't fail an otherwise-green
+      # run. Node step (signs a tx) — the private key goes via env, never the CLI.
+      - name: Reset USDT Permit2 allowance (Polygon)
+        if: always()
+        continue-on-error: true
+        uses: WalletConnect/actions/maestro/permit2-reset@3fd66ca1de3848a089d8e3c628e6f54bfcfd999f
+        with:
+          chain-id: eip155:137
+          rpc-url: https://polygon-bor-rpc.publicnode.com
+          token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
 
       # Clean up app build before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
