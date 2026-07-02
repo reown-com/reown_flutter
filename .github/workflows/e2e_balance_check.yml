@@ -7,9 +7,8 @@ name: E2E Wallet Balance Check
 
 on:
   workflow_dispatch: {}
-  schedule:
-    # Run daily at 07:00 UTC
-    - cron: '0 7 * * *'
+  # Run as a job by ci_e2e_pay_tests.yml (mirrors kotlin/swift); no standalone schedule.
+  workflow_call: {}
 
 permissions:
   contents: read
