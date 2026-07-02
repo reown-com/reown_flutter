@@ -329,7 +329,7 @@ jobs:
               -scheme internal \
               -configuration Debug-internal \
               -sdk iphonesimulator \
-              -destination "generic/platform=iOS Simulator,arch=arm64" \
+              -destination "generic/platform=iOS Simulator" \
               -derivedDataPath ../build/ios-ddcache \
               EXCLUDED_ARCHS[sdk=iphonesimulator*]=x86_64 \
               CODE_SIGNING_ALLOWED=YES \
