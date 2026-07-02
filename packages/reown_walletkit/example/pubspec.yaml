@@ -29,10 +29,9 @@ dependencies:
   on_chain: ^7.1.0
   package_info_plus: ^8.1.2
   pointycastle: ^4.0.0
+  mobile_scanner: ^6.0.10
   polkadart: '>=0.4.7 <0.8.0'
   polkadart_keyring: '>=0.4.4 <0.8.0'
-  qr_bar_code_scanner_dialog:
-    path: packages/qr-bar-code-scanner-dialog
   reown_walletkit:
     path: ../
   reown_yttrium_utils:

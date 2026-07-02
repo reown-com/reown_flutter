@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:qr_bar_code_scanner_dialog/qr_bar_code_scanner_dialog.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -13,6 +12,7 @@ import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
+import 'package:reown_walletkit_wallet/widgets/qr_scanner_page.dart';
 
 class ScanModal extends StatefulWidget {
   const ScanModal({super.key});
@@ -115,17 +115,21 @@ class _ScanModalState extends State<ScanModal> {
     _pairWithUri(uri);
   }
 
-  void _onScanQrCode(BuildContext context) {
+  Future<void> _onScanQrCode(BuildContext context) async {
     Navigator.of(context).pop();
     final rootContext = navigatorKey.currentContext;
     if (rootContext == null) return;
     try {
-      QrBarCodeScannerDialog().getScannedQrBarCode(
-        context: rootContext,
-        onCode: (value) {
-          _pairWithUri(value);
-        },
+      final value = await Navigator.of(rootContext).push<String>(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (_) => const QrScannerPage(),
+        ),
       );
+      if (value == null || value.isEmpty) return;
+      // Defer pairing to the next frame so the scanner's teardown never
+      // shares a frame with the request modal's open animation.
+      WidgetsBinding.instance.addPostFrameCallback((_) => _pairWithUri(value));
     } catch (e) {
       debugPrint('[ScanModal] scan error: $e');
     }
