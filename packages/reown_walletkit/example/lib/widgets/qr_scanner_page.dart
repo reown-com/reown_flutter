@@ -63,7 +63,7 @@ class _QrScannerPageState extends State<QrScannerPage>
   }
 
   void _onDetect(BarcodeCapture capture) {
-    if (_handled) return;
+    if (_handled || !mounted) return;
     final code = capture.barcodes
         .map((b) => b.rawValue)
         .firstWhere((v) => v != null && v.isNotEmpty, orElse: () => null);
