@@ -317,6 +317,11 @@ jobs:
       - name: Build Runner.app via xcodebuild (automatic signing)
         id: build_ios
         working-directory: packages/reown_walletkit/example/ios
+        # Build arm64-only for the simulator. mobile_scanner pulls in Google
+        # MLKitBarcodeScanning, which ships no x86_64 simulator slice, so a
+        # fat "generic/platform=iOS Simulator" build fails with
+        # "Module 'mobile_scanner' not found" on the x86_64 slice. The runner
+        # is Apple Silicon, so arm64 is the only slice we need.
         run: |
           set -o pipefail && env NSUnbufferedIO=YES \
             xcodebuild \
@@ -324,8 +329,9 @@ jobs:
               -scheme internal \
               -configuration Debug-internal \
               -sdk iphonesimulator \
-              -destination "generic/platform=iOS Simulator" \
+              -destination "generic/platform=iOS Simulator,arch=arm64" \
               -derivedDataPath ../build/ios-ddcache \
+              EXCLUDED_ARCHS[sdk=iphonesimulator*]=x86_64 \
               CODE_SIGNING_ALLOWED=YES \
               CODE_SIGN_STYLE=Automatic \
               DEVELOPMENT_TEAM=W5R8AG9K22 \
