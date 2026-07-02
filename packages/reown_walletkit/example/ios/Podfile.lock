@@ -57,7 +57,7 @@ PODS:
   - PromisesObjC (2.4.1)
   - reown_yttrium_utils (0.0.1):
     - Flutter
-    - YttriumUtilsWrapper (= 0.10.54)
+    - YttriumUtilsWrapper (= 0.10.57)
   - Sentry/HybridSDK (8.58.3)
   - sentry_flutter (9.22.0):
     - Flutter
@@ -73,12 +73,12 @@ PODS:
     - Flutter
   - walletconnect_pay (0.0.1):
     - Flutter
-    - YttriumWrapper (= 0.10.50)
+    - YttriumWrapper (= 0.10.57)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
-  - YttriumUtilsWrapper (0.10.54)
-  - YttriumWrapper (0.10.50)
+  - YttriumUtilsWrapper (0.10.57)
+  - YttriumWrapper (0.10.57)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -154,16 +154,16 @@ SPEC CHECKSUMS:
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
-  reown_yttrium_utils: a369c63bc0ad51ec5530e781f8e204192fe351a0
+  reown_yttrium_utils: f6834c869af607ef3e35bd4a5a1279d8a6e9205b
   Sentry: 108fdbb76299c4189af12246bf0308c09c278922
   sentry_flutter: fbb8a76a5a009ce7ba7bde295ee6b50b11916851
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  walletconnect_pay: 78e7baf83dd7974a0d9ae2cd70c7f11b7a53b2e2
+  walletconnect_pay: e44b50c7f1749d1f5f8833aca56231a1b2b69df3
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
-  YttriumUtilsWrapper: 6ef73adb996f91da5250e35e12e3684d3024e275
-  YttriumWrapper: d7f63336830536f1da41b745ed8bacedb04228c4
+  YttriumUtilsWrapper: 6b8e25838fc8a62098b562ca650682040cf9f0bc
+  YttriumWrapper: f00470f57bbfa858d346d9a70503c7cc8e10e1e3
 
 PODFILE CHECKSUM: f7ca775d2d7860d344dee1814c9abc4bf4001527
 
