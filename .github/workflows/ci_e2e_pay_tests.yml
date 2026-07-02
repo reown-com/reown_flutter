@@ -1,9 +1,5 @@
 name: E2E Pay Tests
-# run-name shows the platform under test (both/android/ios). The trailing
-# "(skip-metrics)" marker is consumed by the E2E KPI metrics job
-# (WalletConnect/actions) to drop a run from the dashboard; we stamp it on runs that
-# shouldn't count: draft PRs, and manual (workflow_dispatch) runs off the default
-# branch ('develop'). Don't change/remove the marker.
+# "(skip-metrics)" tells the E2E KPI job (WalletConnect/actions) to drop this run.
 run-name: "E2E Pay Tests (${{ github.event.inputs.platform || 'both' }})${{ ((github.event_name == 'pull_request' && github.event.pull_request.draft) || (github.event_name == 'workflow_dispatch' && github.ref_name != 'develop')) && ' (skip-metrics)' || '' }}"
 
 permissions:
@@ -22,8 +18,6 @@ on:
           - ios
         default: both
   pull_request:
-    # Explicit types = GitHub defaults + ready_for_review, so E2E fires
-    # immediately when a draft is marked ready (not just on the next push).
     types:
       - opened
       - synchronize
@@ -43,16 +37,12 @@ concurrency:
 
 jobs:
   check-balance:
-    # Skip on draft PRs (matches the test jobs) so a draft run has all jobs
-    # skipped -> run conclusion "skipped", never counted toward KPIs.
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     uses: ./.github/workflows/e2e_balance_check.yml
     secrets: inherit
 
   pay-tests-android:
     needs: check-balance
-    # always(): balance alert should not block tests. Skip draft PRs (still
-    # runnable manually via workflow_dispatch).
     if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios')) }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
@@ -250,8 +240,6 @@ jobs:
 
   pay-tests-ios:
     needs: check-balance
-    # always(): balance alert should not block tests. Skip draft PRs (still
-    # runnable manually via workflow_dispatch).
     if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android')) }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
