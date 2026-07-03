@@ -1,4 +1,6 @@
 name: E2E Pay Tests
+# "(skip-metrics)" tells the E2E KPI job (WalletConnect/actions) to drop this run.
+run-name: "E2E Pay Tests (${{ github.event.inputs.platform || 'both' }})${{ ((github.event_name == 'pull_request' && github.event.pull_request.draft) || (github.event_name == 'workflow_dispatch' && github.ref_name != 'develop')) && ' (skip-metrics)' || '' }}"
 
 permissions:
   contents: read
@@ -16,6 +18,11 @@ on:
           - ios
         default: both
   pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
     paths:
       - 'packages/reown_walletkit/example/**'
       - 'packages/walletconnect_pay/**'
@@ -29,8 +36,14 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  check-balance:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    uses: ./.github/workflows/e2e_balance_check.yml
+    secrets: inherit
+
   pay-tests-android:
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios') }}
+    needs: check-balance
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios')) }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
 
@@ -226,7 +239,8 @@ jobs:
             }
 
   pay-tests-ios:
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android') }}
+    needs: check-balance
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android')) }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
 
@@ -303,6 +317,15 @@ jobs:
       - name: Build Runner.app via xcodebuild (automatic signing)
         id: build_ios
         working-directory: packages/reown_walletkit/example/ios
+        # Build the simulator app for x86_64. mobile_scanner pulls in Google
+        # MLKit, whose .frameworks are fat binaries with an arm64-*device*
+        # slice and an x86_64-*simulator* slice, but NO arm64-simulator slice.
+        # On the Apple Silicon runner the default arm64 simulator build fails
+        # to link MLKit ("building for 'iOS-simulator', but linking in object
+        # file ... built for 'iOS'"). x86_64 is the only working simulator
+        # slice; it runs on the simulator via Rosetta 2. EXCLUDED_ARCHS alone
+        # isn't enough (arm64 is the standard arch here), so pin ARCHS=x86_64
+        # with ONLY_ACTIVE_ARCH=NO.
         run: |
           set -o pipefail && env NSUnbufferedIO=YES \
             xcodebuild \
@@ -312,6 +335,8 @@ jobs:
               -sdk iphonesimulator \
               -destination "generic/platform=iOS Simulator" \
               -derivedDataPath ../build/ios-ddcache \
+              ARCHS=x86_64 \
+              ONLY_ACTIVE_ARCH=NO \
               CODE_SIGNING_ALLOWED=YES \
               CODE_SIGN_STYLE=Automatic \
               DEVELOPMENT_TEAM=W5R8AG9K22 \

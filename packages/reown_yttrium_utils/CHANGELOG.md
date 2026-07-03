@@ -1,5 +1,6 @@
 ## 0.0.3
 
+- Bumped Yttrium Utils to 0.10.58 (Android) / 0.10.57 (iOS).
 - Raised the minimum Android SDK to 23 to align with `reown_core`'s
   `flutter_secure_storage` v10 dependency.
 
