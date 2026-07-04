@@ -113,10 +113,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@d385e7a80fb4a3d378ee685021f3f7e24ccdf291
+        uses: WalletConnect/actions/maestro/pay-tests@ddc7c0f9acd8b1576e9a78f0ef67f4b8fbb36db2
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@d385e7a80fb4a3d378ee685021f3f7e24ccdf291
+        uses: WalletConnect/actions/maestro/setup@ddc7c0f9acd8b1576e9a78f0ef67f4b8fbb36db2
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -160,7 +160,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@d385e7a80fb4a3d378ee685021f3f7e24ccdf291
+        uses: WalletConnect/actions/maestro/permit2-reset@ddc7c0f9acd8b1576e9a78f0ef67f4b8fbb36db2
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
@@ -386,10 +386,10 @@ jobs:
           xcrun simctl spawn booted swcutil show || true
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@d385e7a80fb4a3d378ee685021f3f7e24ccdf291
+        uses: WalletConnect/actions/maestro/pay-tests@ddc7c0f9acd8b1576e9a78f0ef67f4b8fbb36db2
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@d385e7a80fb4a3d378ee685021f3f7e24ccdf291
+        uses: WalletConnect/actions/maestro/setup@ddc7c0f9acd8b1576e9a78f0ef67f4b8fbb36db2
 
       - name: Run Maestro iOS tests
         id: maestro_ios
@@ -416,7 +416,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@d385e7a80fb4a3d378ee685021f3f7e24ccdf291
+        uses: WalletConnect/actions/maestro/permit2-reset@ddc7c0f9acd8b1576e9a78f0ef67f4b8fbb36db2
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
