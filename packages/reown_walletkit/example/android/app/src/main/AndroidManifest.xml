@@ -110,18 +110,9 @@
                 <data android:host="appkit-lab.reown.com" />
                 <data android:pathPattern="/flutter_walletkit_internal" />
             </intent-filter>
-            <!-- WalletConnect Pay App Links -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" android:host="pay.walletconnect.com" />
-                <data android:scheme="https" android:host="staging.pay.walletconnect.com" />
-                <data android:scheme="https" android:host="dev.pay.walletconnect.com" />
-            </intent-filter>
-            <!-- WalletConnect Pay NFC -->
+            <!-- WalletConnect Pay NFC (pay links reach the wallet via NFC;
+                 the https App Links / autoVerify registration for these hosts
+                 was removed — universal-link pay is no longer supported). -->
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 

@@ -49,6 +49,10 @@ class DeepLinkHandler {
   //     Uri.parse(_walletKit.metadata.redirect?.universal ?? '');
   // static String get host => universalUri.host;
 
+  // Pay links reach the wallet via NFC (the NDEF_DISCOVERED intent-filter on
+  // Android / associated NFC delivery on iOS). Universal-link registration for
+  // these hosts was removed from AndroidManifest.xml / Runner.entitlements, so
+  // on native these URLs now arrive via NFC rather than a tapped App Link.
   static const _payHosts = [
     'pay.walletconnect.com',
     'staging.pay.walletconnect.com',
