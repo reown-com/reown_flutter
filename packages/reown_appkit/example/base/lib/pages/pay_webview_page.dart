@@ -103,7 +103,14 @@ class _PayWebViewPageState extends State<PayWebViewPage> {
       }
       return NavigationDecision.prevent;
     }
-    return NavigationDecision.navigate;
+    // Allow https (the checkout) and about: (blank/initial). Block any other
+    // scheme so the page can't drive the OS into arbitrary native schemes
+    // (tel:, sms:, intent:, …).
+    final scheme = Uri.tryParse(request.url)?.scheme.toLowerCase();
+    if (scheme == 'https' || scheme == 'about') {
+      return NavigationDecision.navigate;
+    }
+    return NavigationDecision.prevent;
   }
 
   void _onBridgeMessage(JavaScriptMessage message) {
