@@ -1,5 +1,9 @@
-# Use git source to avoid CDN propagation delays
-source 'https://github.com/CocoaPods/Specs.git'
+# Use the CocoaPods CDN. The legacy git Specs repo requires cloning ~837k
+# files, which collides on macOS's case-insensitive filesystem and
+# intermittently breaks `pod install` in CI. Temporarily switch back to the
+# git source only when validating a freshly-published pod before it
+# propagates to the CDN.
+source 'https://cdn.cocoapods.org/'
 
 # Uncomment this line to define a global platform for your project
 platform :ios, '15.5'
