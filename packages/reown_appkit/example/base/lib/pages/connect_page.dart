@@ -73,8 +73,17 @@ class ConnectPageState extends State<ConnectPage> {
   // (returnUrl + preferUniversalLinks) and opens the checkout in a WebView.
   // Mirrors the React Native sample's `PasteUrlButton`.
   Future<void> _onPastePaymentUrl() async {
-    final data = await Clipboard.getData(Clipboard.kTextPlain);
-    final raw = data?.text?.trim() ?? '';
+    final String raw;
+    try {
+      final data = await Clipboard.getData(Clipboard.kTextPlain);
+      raw = data?.text?.trim() ?? '';
+    } catch (_) {
+      _showPayError(
+        "Couldn't read clipboard",
+        'Check app permissions, then try again.',
+      );
+      return;
+    }
     if (raw.isEmpty) {
       _showPayError(
         'No URL in clipboard',
@@ -176,14 +185,12 @@ class ConnectPageState extends State<ConnectPage> {
               const SizedBox(height: StyleConstants.linear8),
               Visibility(
                 visible: !widget.appKitModal.isConnected,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: StyleConstants.linear16,
-                  ),
-                  child: ElevatedButton(
-                    onPressed: _onPastePaymentUrl,
-                    child: const Text('Paste payment URL'),
-                  ),
+                // The enclosing ListView already applies horizontal padding, so
+                // the button is placed directly (no extra Padding) to stay
+                // aligned with the rest of the content.
+                child: ElevatedButton(
+                  onPressed: _onPastePaymentUrl,
+                  child: const Text('Paste payment URL'),
                 ),
               ),
               Visibility(

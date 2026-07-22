@@ -122,16 +122,20 @@ class _PayWebViewPageState extends State<PayWebViewPage> {
       return;
     }
 
-    final type = json['type'] as String?;
-    final success = json['success'] as bool?;
-    final isSuccess = type == 'PAY_SUCCESS' || success == true;
-    final isFailure = type == 'PAY_FAILURE' || success == false;
+    // Read fields defensively — a non-string `type`/`message`/`error` (or a
+    // non-bool `success`) from a malformed or malicious message must not throw.
+    final type = json['type'] is String ? json['type'] as String : null;
+    final rawSuccess = json['success'];
+    final isSuccess = type == 'PAY_SUCCESS' || rawSuccess == true;
+    final isFailure = type == 'PAY_FAILURE' || rawSuccess == false;
 
     if (isSuccess) {
       if (!mounted) return;
-      setState(() => _successMessage = json['message'] as String? ?? '');
+      final msg = json['message'];
+      setState(() => _successMessage = msg is String ? msg : '');
     } else if (isFailure) {
-      _showError('Payment failed', json['error'] as String?);
+      final err = json['error'];
+      _showError('Payment failed', err is String ? err : null);
       _goBack();
     }
   }
