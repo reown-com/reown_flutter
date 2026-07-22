@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/pages/pay_webview_page.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
@@ -67,6 +69,54 @@ class ConnectPageState extends State<ConnectPage> {
     return;
   }
 
+  // Reads a Pay gateway URL from the clipboard, appends the WebView params
+  // (returnUrl + preferUniversalLinks) and opens the checkout in a WebView.
+  // Mirrors the React Native sample's `PasteUrlButton`.
+  Future<void> _onPastePaymentUrl() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    final raw = data?.text?.trim() ?? '';
+    if (raw.isEmpty) {
+      _showPayError(
+        'No URL in clipboard',
+        'Copy a payment URL, then try again.',
+      );
+      return;
+    }
+
+    final parsed = Uri.tryParse(raw);
+    if (parsed == null || parsed.scheme != 'https') {
+      _showPayError(
+        'Invalid payment URL',
+        'Copy a valid https:// payment URL, then try again.',
+      );
+      return;
+    }
+
+    // Return destination the checkout hands to wallets so the OS routes the
+    // user back after signing. Use the app's configured native redirect.
+    final returnUrl =
+        widget.appKitModal.appKit!.metadata.redirect?.native ??
+        'wcflutterdapp://';
+    final payUrl = buildPayUrl(raw, returnUrl);
+
+    if (!mounted) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => PayWebViewPage(url: payUrl)),
+    );
+  }
+
+  void _showPayError(String title, String description) {
+    if (!mounted) return;
+    toastification.show(
+      type: ToastificationType.error,
+      title: Text(title),
+      description: Text(description),
+      context: context,
+      autoCloseDuration: const Duration(seconds: 3),
+      alignment: Alignment.bottomCenter,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
@@ -124,6 +174,18 @@ class ConnectPageState extends State<ConnectPage> {
               // ),
               // Divider(color: themeColors.grayGlass010),
               const SizedBox(height: StyleConstants.linear8),
+              Visibility(
+                visible: !widget.appKitModal.isConnected,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: StyleConstants.linear16,
+                  ),
+                  child: ElevatedButton(
+                    onPressed: _onPastePaymentUrl,
+                    child: const Text('Paste payment URL'),
+                  ),
+                ),
+              ),
               Visibility(
                 visible: widget.appKitModal.isConnected,
                 child: Column(
