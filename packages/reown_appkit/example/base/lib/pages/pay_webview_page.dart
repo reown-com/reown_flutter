@@ -134,7 +134,10 @@ class _PayWebViewPageState extends State<PayWebViewPage> {
   // intentionally not handled: they can fire for sub-resources and would eject
   // a valid session.
   void _onWebResourceError(WebResourceError error) {
-    if (error.isForMainFrame == false) return;
+    // Only act on a confirmed main-frame failure. `isForMainFrame` is nullable
+    // (iOS/WKWebView leaves it null), and treating null/false as "eject" would
+    // dismiss a live checkout on a failing sub-resource (analytics, pixels…).
+    if (error.isForMainFrame != true) return;
     _showError(
       'Failed to load payment page',
       'Check your connection and try again.',
