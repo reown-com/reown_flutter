@@ -42,6 +42,9 @@ sealed class ReownAppKitModalColors with _$ReownAppKitModalColors {
     required Color orange100,
     required Color purple100,
     required Color yellow100,
+    // Optional input-specific overrides (for OTP, search, etc.)
+    Color? inputBackground,
+    Color? inputBorder,
   }) = _AppKitModalColors;
 
   static const darkMode = ReownAppKitModalColors(

@@ -191,8 +191,9 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final borderColor = themeColors.inputBorder ?? themeColors.grayGlass005;
     final unfocusedBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: themeColors.grayGlass005, width: 1.0),
+      borderSide: BorderSide(color: borderColor, width: 1.0),
       borderRadius: radiuses.isSquare()
           ? BorderRadius.zero
           : (radiuses.isCircular()
@@ -334,7 +335,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
                 ? focusedBorder
                 : unfocusedBorder,
             filled: true,
-            fillColor: themeColors.grayGlass002,
+            fillColor: themeColors.inputBackground ?? themeColors.grayGlass002,
             contentPadding: const EdgeInsets.all(0.0),
           ),
         ),
