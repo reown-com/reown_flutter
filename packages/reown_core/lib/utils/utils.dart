@@ -35,7 +35,7 @@ class ReownCoreUtils {
   /// Some Windows installs return quoted product names in
   /// [Platform.operatingSystemVersion], e.g. `"Windows 10 Pro" 10.0 (...)`.
   static String sanitizeOSVersion(String version) {
-    return version;
+    return version.replaceAll('"', '');
   }
 
   static String getOS() {
@@ -45,7 +45,7 @@ class ReownCoreUtils {
     } else {
       return <String>[
         Platform.operatingSystem,
-        Platform.operatingSystemVersion,
+        sanitizeOSVersion(Platform.operatingSystemVersion),
       ].join('-');
     }
   }

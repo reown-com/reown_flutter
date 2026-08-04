@@ -7,9 +7,7 @@ void main() {
   group('sanitizeOSVersion', () {
     test('strips double quotes from windows os version strings', () {
       expect(
-        ReownCoreUtils.sanitizeOSVersion(
-          '"Windows 10 Pro" 10.0 (Build 19045)',
-        ),
+        ReownCoreUtils.sanitizeOSVersion('"Windows 10 Pro" 10.0 (Build 19045)'),
         'Windows 10 Pro 10.0 (Build 19045)',
       );
     });
