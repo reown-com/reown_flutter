@@ -110,6 +110,15 @@ void main() {
 
         expect(os.contains('"'), isFalse);
       });
+
+      test('test_sanitize_os_version_strips_double_quotes', () {
+        expect(
+          WalletconnectPayUtils.sanitizeOSVersion(
+            '"Windows 10 Pro" 10.0 (Build 19045)',
+          ),
+          'Windows 10 Pro 10.0 (Build 19045)',
+        );
+      });
     });
 
     group('SDK Headers Configuration', () {

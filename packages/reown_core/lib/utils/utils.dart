@@ -31,7 +31,7 @@ class ReownCoreUtils {
     return DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000 + offset;
   }
 
-  /// Strips characters that break WalletConnect relay `ua` validation.
+  /// Strips literal `"` characters that break WalletConnect relay `ua` validation.
   /// Some Windows installs return quoted product names in
   /// [Platform.operatingSystemVersion], e.g. `"Windows 10 Pro" 10.0 (...)`.
   static String sanitizeOSVersion(String version) {
