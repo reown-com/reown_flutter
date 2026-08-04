@@ -104,6 +104,12 @@ void main() {
           expect(os.contains('-'), true);
         }
       });
+
+      test('test_os_does_not_contain_double_quotes', () {
+        final os = WalletconnectPayUtils.getOS();
+
+        expect(os.contains('"'), isFalse);
+      });
     });
 
     group('SDK Headers Configuration', () {

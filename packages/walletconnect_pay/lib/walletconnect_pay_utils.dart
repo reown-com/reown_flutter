@@ -10,7 +10,8 @@ class WalletconnectPayUtils {
     } else {
       return <String>[
         Platform.operatingSystem,
-        Platform.operatingSystemVersion,
+        // Some Windows installs quote the product name; strip for ua safety.
+        Platform.operatingSystemVersion.replaceAll('"', ''),
       ].join('-');
     }
   }
