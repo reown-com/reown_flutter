@@ -4,6 +4,24 @@ import 'package:reown_core/reown_core.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  group('sanitizeOSVersion', () {
+    test('strips double quotes from windows os version strings', () {
+      expect(
+        ReownCoreUtils.sanitizeOSVersion(
+          '"Windows 10 Pro" 10.0 (Build 19045)',
+        ),
+        'Windows 10 Pro 10.0 (Build 19045)',
+      );
+    });
+
+    test('leaves versions without quotes unchanged', () {
+      expect(
+        ReownCoreUtils.sanitizeOSVersion('Version 15.0 (Build 24A335)'),
+        'Version 15.0 (Build 24A335)',
+      );
+    });
+  });
+
   group('recursiveSearchForMapKey', () {
     test(
       'should parse solana_signTransaction/solana_signAndSendTransaction and extract signature',
