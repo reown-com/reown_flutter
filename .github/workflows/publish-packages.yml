@@ -86,8 +86,6 @@ jobs:
 
       - name: Create release branch
         id: create_branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH_NAME="publish_workflow_${{ github.run_number }}"
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
@@ -96,7 +94,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
           git checkout -b $BRANCH_NAME
-          git push -u https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $BRANCH_NAME
+          git push -u origin $BRANCH_NAME
 
           echo "Created and pushed branch: $BRANCH_NAME"
 
@@ -140,8 +138,6 @@ jobs:
 
       - name: Commit and push pubspec.yaml changes for reown_core
         if: github.event.inputs.core == 'true' && github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -150,7 +146,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_core): Update reown_yttrium to ^${{ needs.publish-yttrium.outputs.package_version }} [skip ci]"
-            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+            git push origin ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_core/pubspec.yaml"
           fi
@@ -166,6 +162,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_core
         if: github.event.inputs.core == 'true'
@@ -194,6 +191,10 @@ jobs:
         if: github.event.inputs.core == 'true'
         working-directory: packages/reown_core
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.core == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for reown_core to be available on pub.dev
         if: github.event.inputs.core == 'true'
@@ -250,8 +251,6 @@ jobs:
 
       - name: Commit and push pubspec.yaml changes for reown_sign
         if: github.event.inputs.sign == 'true' && github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -260,7 +259,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_sign): Update reown_core to ^${{ needs.publish-core.outputs.package_version }} [skip ci]"
-            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+            git push origin ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_sign/pubspec.yaml"
           fi
@@ -276,6 +275,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_sign
         if: github.event.inputs.sign == 'true'
@@ -304,6 +304,10 @@ jobs:
         if: github.event.inputs.sign == 'true'
         working-directory: packages/reown_sign
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.sign == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for reown_sign to be available on pub.dev
         if: github.event.inputs.sign == 'true'
@@ -369,8 +373,6 @@ jobs:
 
       - name: Commit and push pubspec.yaml changes for reown_appkit
         if: github.event.inputs.appkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -379,7 +381,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_appkit): Update core/sign dependencies [skip ci]"
-            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+            git push origin ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_appkit/pubspec.yaml"
           fi
@@ -395,6 +397,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_appkit
         if: github.event.inputs.appkit == 'true'
@@ -423,6 +426,10 @@ jobs:
         if: github.event.inputs.appkit == 'true'
         working-directory: packages/reown_appkit
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.appkit == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for reown_appkit to be available on pub.dev
         if: github.event.inputs.appkit == 'true'
@@ -491,8 +498,6 @@ jobs:
 
       - name: Commit and push pubspec.yaml changes for reown_walletkit
         if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.walletconnect_pay == 'true' && needs.publish-walletconnect-pay.outputs.package_version != ''))
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -501,7 +506,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_walletkit): Update core/sign/walletconnect_pay dependencies [skip ci]"
-            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+            git push origin ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
           fi
@@ -517,6 +522,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_walletkit
         if: github.event.inputs.walletkit == 'true'
@@ -545,6 +551,10 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         working-directory: packages/reown_walletkit
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.walletkit == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for reown_walletkit to be available on pub.dev
         if: github.event.inputs.walletkit == 'true'
@@ -602,6 +612,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_yttrium
         if: github.event.inputs.yttrium == 'true'
@@ -630,6 +641,10 @@ jobs:
         if: github.event.inputs.yttrium == 'true'
         working-directory: packages/reown_yttrium
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.yttrium == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for reown_yttrium to be available on pub.dev
         if: github.event.inputs.yttrium == 'true'
@@ -687,6 +702,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_cli
         if: github.event.inputs.cli == 'true'
@@ -715,6 +731,10 @@ jobs:
         if: github.event.inputs.cli == 'true'
         working-directory: packages/reown_cli
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.cli == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for reown_cli to be available on pub.dev
         if: github.event.inputs.cli == 'true'
@@ -772,6 +792,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for pos_client
         if: github.event.inputs.pos == 'true'
@@ -800,6 +821,10 @@ jobs:
         if: github.event.inputs.pos == 'true'
         working-directory: packages/pos_client
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.pos == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for pos_client to be available on pub.dev
         if: github.event.inputs.pos == 'true'
@@ -857,6 +882,7 @@ jobs:
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+          chmod 600 $HOME/.config/dart/pub-credentials.json
 
       - name: Run code generation for walletconnect_pay
         if: github.event.inputs.walletconnect_pay == 'true'
@@ -886,6 +912,10 @@ jobs:
         if: github.event.inputs.walletconnect_pay == 'true'
         working-directory: packages/walletconnect_pay
         run: flutter pub publish --force
+
+      - name: Remove pub.dev credentials
+        if: always() && github.event.inputs.walletconnect_pay == 'true'
+        run: rm -f $HOME/.config/dart/pub-credentials.json
 
       - name: Wait for walletconnect_pay to be available on pub.dev
         if: github.event.inputs.walletconnect_pay == 'true'
@@ -941,12 +971,10 @@ jobs:
 
       - name: Push all changes
         if: steps.check_changes.outputs.has_changes == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+          git push origin ${{ needs.create-branch.outputs.branch_name }}
 
       - name: Create Pull Request
         if: steps.check_changes.outputs.has_changes == 'true'
