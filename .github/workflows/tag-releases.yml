@@ -19,6 +19,11 @@ on:
     types: [closed]
     branches: [develop]
   workflow_dispatch:
+    inputs:
+      target_sha:
+        description: "Commit SHA to tag/target (defaults to the checked-out HEAD). Set this when backfilling so releases point at the commit that actually shipped, not a moved develop HEAD."
+        required: false
+        default: ""
 
 concurrency:
   group: tag-releases
@@ -50,7 +55,9 @@ jobs:
           ref: >-
             ${{ github.event_name == 'pull_request'
                 && github.event.pull_request.merge_commit_sha
-                || github.sha }}
+                || (github.event.inputs.target_sha != ''
+                    && github.event.inputs.target_sha
+                    || github.sha) }}
 
       - name: Fetch tags
         run: git fetch --tags --force

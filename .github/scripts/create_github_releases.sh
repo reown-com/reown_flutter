@@ -28,7 +28,11 @@
 #
 set -euo pipefail
 
-# The eight published packages. dir == package name for all of them.
+# The eight packages that have a publish job in publish-packages.yml
+# (dir == package name for all of them). This list MUST mirror those jobs:
+# a manifest can only ever contain packages that were actually published there.
+# reown_yttrium_utils is intentionally excluded — it has no publish job, so it
+# never appears in a manifest. Add it here only if/when a publish job is added.
 ALLOWLIST=(
   reown_core
   reown_sign
