@@ -106,6 +106,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if reown_core should be published
         if: github.event.inputs.core == 'false'
@@ -201,6 +202,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_core ${{ steps.get_version.outputs.version }}
 
+      - name: Mark reown_core as published
+        id: mark_published
+        if: github.event.inputs.core == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.core == 'true'
@@ -216,6 +222,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if reown_sign should be published
         if: github.event.inputs.sign == 'false'
@@ -311,6 +318,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_sign ${{ steps.get_version.outputs.version }}
 
+      - name: Mark reown_sign as published
+        id: mark_published
+        if: github.event.inputs.sign == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.sign == 'true'
@@ -324,6 +336,9 @@ jobs:
     name: Publish reown_appkit
     needs: [create-branch, publish-core, publish-sign]
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if reown_appkit should be published
         if: github.event.inputs.appkit == 'false'
@@ -430,6 +445,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_appkit ${{ steps.get_version.outputs.version }}
 
+      - name: Mark reown_appkit as published
+        id: mark_published
+        if: github.event.inputs.appkit == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.appkit == 'true'
@@ -443,6 +463,9 @@ jobs:
     name: Publish reown_walletkit
     needs: [create-branch, publish-core, publish-sign, publish-walletconnect-pay]
     runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if reown_walletkit should be published
         if: github.event.inputs.walletkit == 'false'
@@ -552,6 +575,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_walletkit ${{ steps.get_version.outputs.version }}
 
+      - name: Mark reown_walletkit as published
+        id: mark_published
+        if: github.event.inputs.walletkit == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.walletkit == 'true'
@@ -567,6 +595,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if reown_yttrium should be published
         if: github.event.inputs.yttrium == 'false'
@@ -637,6 +666,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_yttrium ${{ steps.get_version.outputs.version }}
 
+      - name: Mark reown_yttrium as published
+        id: mark_published
+        if: github.event.inputs.yttrium == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.yttrium == 'true'
@@ -652,6 +686,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if reown_cli should be published
         if: github.event.inputs.cli == 'false'
@@ -722,6 +757,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_cli ${{ steps.get_version.outputs.version }}
 
+      - name: Mark reown_cli as published
+        id: mark_published
+        if: github.event.inputs.cli == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.cli == 'true'
@@ -737,6 +777,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if pos_client should be published
         if: github.event.inputs.pos == 'false'
@@ -807,6 +848,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh pos_client ${{ steps.get_version.outputs.version }}
 
+      - name: Mark pos_client as published
+        id: mark_published
+        if: github.event.inputs.pos == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.pos == 'true'
@@ -822,6 +868,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
+      published: ${{ steps.mark_published.outputs.published }}
     steps:
       - name: Check if walletconnect_pay should be published
         if: github.event.inputs.walletconnect_pay == 'false'
@@ -893,6 +940,11 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh walletconnect_pay ${{ steps.get_version.outputs.version }}
 
+      - name: Mark walletconnect_pay as published
+        id: mark_published
+        if: github.event.inputs.walletconnect_pay == 'true'
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.walletconnect_pay == 'true'
@@ -924,6 +976,72 @@ jobs:
         with:
           ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0
+
+      # Build a machine-readable manifest of the versions that were CONFIRMED
+      # published to pub.dev (published output set right after the availability
+      # wait). This is consumed by the tag-releases workflow after the PR merges.
+      # Committing it also guarantees the branch is ahead of develop, so a PR is
+      # opened even for an independent-package publish that changed no deps.
+      - name: Build release manifest
+        id: manifest
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          # name|published|version for every package job
+          ENTRIES=(
+            "reown_core|${{ needs.publish-core.outputs.published }}|${{ needs.publish-core.outputs.package_version }}"
+            "reown_sign|${{ needs.publish-sign.outputs.published }}|${{ needs.publish-sign.outputs.package_version }}"
+            "reown_appkit|${{ needs.publish-appkit.outputs.published }}|${{ needs.publish-appkit.outputs.package_version }}"
+            "reown_walletkit|${{ needs.publish-walletkit.outputs.published }}|${{ needs.publish-walletkit.outputs.package_version }}"
+            "reown_yttrium|${{ needs.publish-yttrium.outputs.published }}|${{ needs.publish-yttrium.outputs.package_version }}"
+            "reown_cli|${{ needs.publish-cli.outputs.published }}|${{ needs.publish-cli.outputs.package_version }}"
+            "pos_client|${{ needs.publish-pos.outputs.published }}|${{ needs.publish-pos.outputs.package_version }}"
+            "walletconnect_pay|${{ needs.publish-walletconnect-pay.outputs.published }}|${{ needs.publish-walletconnect-pay.outputs.package_version }}"
+          )
+
+          PKGS_JSON="[]"
+          PKG_LIST=""
+          for e in "${ENTRIES[@]}"; do
+            IFS='|' read -r name published version <<<"$e"
+            if [[ "$published" == "true" && -n "$version" ]]; then
+              PKGS_JSON="$(jq -c --arg n "$name" --arg v "$version" \
+                '. + [{name:$n, version:$v}]' <<<"$PKGS_JSON")"
+              PKG_LIST="${PKG_LIST}- ${name} ${version}"$'\n'
+            fi
+          done
+
+          COUNT="$(jq 'length' <<<"$PKGS_JSON")"
+          if [[ "$COUNT" -eq 0 ]]; then
+            echo "No packages were confirmed published; no manifest will be written."
+            echo "has_manifest=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          mkdir -p .github/release-manifests
+          MF=".github/release-manifests/publish_workflow_${RUN_NUMBER}.json"
+          jq -n \
+            --argjson rid "$RUN_ID" \
+            --argjson rn "$RUN_NUMBER" \
+            --argjson pkgs "$(jq 'sort_by(.name)' <<<"$PKGS_JSON")" \
+            '{schema_version: 1, workflow_run_id: $rid, workflow_run_number: $rn, packages: $pkgs}' \
+            > "$MF"
+          echo "Wrote $MF:"
+          cat "$MF"
+
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add "$MF"
+          git commit -m "ci(release): add publish manifest for run ${RUN_NUMBER} [skip ci]"
+
+          echo "has_manifest=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "pkg_list<<PKG_EOF"
+            printf '%s' "$PKG_LIST"
+            echo "PKG_EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Check if there are any changes to commit
         id: check_changes
@@ -960,18 +1078,13 @@ jobs:
             This PR contains package dependency updates and releases from the automated publishing workflow.
 
             ## Packages Published
-            ${{ github.event.inputs.core == 'true' && '- reown_core' || '' }}
-            ${{ github.event.inputs.sign == 'true' && '- reown_sign' || '' }}
-            ${{ github.event.inputs.appkit == 'true' && '- reown_appkit' || '' }}
-            ${{ github.event.inputs.walletkit == 'true' && '- reown_walletkit' || '' }}
-            ${{ github.event.inputs.yttrium == 'true' && '- reown_yttrium' || '' }}
-            ${{ github.event.inputs.cli == 'true' && '- reown_cli' || '' }}
-            ${{ github.event.inputs.pos == 'true' && '- pos_client' || '' }}
-            ${{ github.event.inputs.walletconnect_pay == 'true' && '- walletconnect_pay' || '' }}
+            ${{ steps.manifest.outputs.pkg_list }}
 
             ## Changes
             - Updated package dependencies to latest published versions
-            - All packages have been successfully published to pub.dev
+            - Only versions confirmed available on pub.dev are listed above
+            - A release manifest was committed under `.github/release-manifests/`;
+              GitHub Releases are created from it after this PR merges
 
             This PR was automatically created by the GitHub Actions workflow.
 

@@ -1,0 +1,139 @@
+name: Tag Releases
+
+# Creates a GitHub Release ("<package_name>-v<version>") for every package version
+# confirmed published to pub.dev, targeting the develop mainline commit.
+#
+# Normal path: the automated release PR (from publish-packages.yml) merges into
+# develop carrying a release manifest; this workflow reads that manifest, verifies
+# each version on pub.dev, and creates the releases at the merge commit. Manifests
+# are kept under .github/release-manifests/ as a permanent per-run audit trail.
+#
+# Manual path: workflow_dispatch scans the current pubspec versions and backfills
+# any that are on pub.dev but not yet released.
+#
+# NOTE: pull_request workflows run the file version on the BASE branch, so this
+# only applies to release PRs merged AFTER this file lands on develop.
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: tag-releases
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  create-releases:
+    name: Create GitHub Releases
+    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch' ||
+        (
+          github.event.pull_request.merged == true &&
+          github.event.pull_request.head.repo.full_name == github.repository &&
+          github.event.pull_request.user.login == 'github-actions[bot]' &&
+          github.event.pull_request.title == 'ci: Package dependency updates and releases' &&
+          startsWith(github.event.pull_request.head.ref, 'publish_workflow_')
+        )
+      }}
+    steps:
+      - name: Checkout target commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: >-
+            ${{ github.event_name == 'pull_request'
+                && github.event.pull_request.merge_commit_sha
+                || github.sha }}
+
+      - name: Fetch tags
+        run: git fetch --tags --force
+
+      - name: Resolve mode and target SHA
+        id: cfg
+        run: |
+          set -euo pipefail
+          SHA="$(git rev-parse HEAD)"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "mode=manual" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=manifest" >> "$GITHUB_OUTPUT"
+          fi
+          echo "dry_run=${{ vars.TAG_RELEASES_DRY_RUN || 'false' }}" >> "$GITHUB_OUTPUT"
+
+      - name: Validate release branch and locate manifest
+        id: manifest
+        if: steps.cfg.outputs.mode == 'manifest'
+        run: |
+          set -euo pipefail
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          # startsWith in the job `if` is intentionally loose; enforce the exact
+          # shape here so e.g. `publish_workflow_change` cannot slip through.
+          if [[ ! "$BRANCH" =~ ^publish_workflow_[0-9]+$ ]]; then
+            echo "Branch '$BRANCH' does not match ^publish_workflow_[0-9]+\$; refusing." >&2
+            exit 1
+          fi
+          RUN_NUMBER="${BRANCH#publish_workflow_}"
+          MF=".github/release-manifests/${BRANCH}.json"
+          if [[ ! -f "$MF" ]]; then
+            echo "No manifest at $MF in the merged tree; nothing to release."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          MF_RUN="$(jq -r '.workflow_run_number' "$MF")"
+          if [[ "$MF_RUN" != "$RUN_NUMBER" ]]; then
+            echo "Manifest run number ($MF_RUN) != branch run number ($RUN_NUMBER)." >&2
+            exit 1
+          fi
+          echo "path=$MF" >> "$GITHUB_OUTPUT"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create releases
+        if: steps.cfg.outputs.mode == 'manual' || steps.manifest.outputs.found == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODE: ${{ steps.cfg.outputs.mode }}
+          TARGET_SHA: ${{ steps.cfg.outputs.sha }}
+          MANIFEST_PATH: ${{ steps.manifest.outputs.path }}
+          DRY_RUN: ${{ steps.cfg.outputs.dry_run }}
+          SUMMARY_FILE: ${{ github.workspace }}/.release-summary.txt
+        run: |
+          chmod +x .github/scripts/create_github_releases.sh
+          .github/scripts/create_github_releases.sh
+
+      - name: Build Slack summary
+        id: slack
+        if: steps.cfg.outputs.mode == 'manual' || steps.manifest.outputs.found == 'true'
+        run: |
+          set -euo pipefail
+          SUMMARY_FILE="${{ github.workspace }}/.release-summary.txt"
+          if [[ -s "$SUMMARY_FILE" ]]; then
+            COUNT="$(wc -l < "$SUMMARY_FILE" | tr -d ' ')"
+            LINES="$(sed 's#^#• https://github.com/${{ github.repository }}/releases/tag/#' "$SUMMARY_FILE")"
+            {
+              echo "text<<SLACK_EOF"
+              echo "*New GitHub Releases created* ($COUNT)"
+              echo "$LINES"
+              echo "SLACK_EOF"
+            } >> "$GITHUB_OUTPUT"
+            echo "have=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No releases created; skipping Slack summary."
+            echo "have=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post Slack summary
+        if: steps.slack.outputs.have == 'true'
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: ${{ toJSON(steps.slack.outputs.text) }}
