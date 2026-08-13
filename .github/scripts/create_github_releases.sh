@@ -223,8 +223,8 @@ process_manual() {
     fi
     # Use Ruby's stdlib YAML (preinstalled on GitHub runners) — avoids an
     # unpinned yq download in the release workflow.
-    pubname="$(ruby -ryaml -e 'puts (YAML.load_file(ARGV[0])["name"]).to_s' "$ps")"
-    version="$(ruby -ryaml -e 'puts (YAML.load_file(ARGV[0])["version"]).to_s' "$ps")"
+    pubname="$(ruby -ryaml -e 'puts (YAML.safe_load(File.read(ARGV[0]), permitted_classes: [], permitted_symbols: [], aliases: false)["name"]).to_s' "$ps")"
+    version="$(ruby -ryaml -e 'puts (YAML.safe_load(File.read(ARGV[0]), permitted_classes: [], permitted_symbols: [], aliases: false)["version"]).to_s' "$ps")"
     [[ "$pubname" == "$name" ]] || die "pubspec name '${pubname}' != expected '${name}' in ${ps}"
     [[ -n "$version" ]] || die "no version found in ${ps}"
     process "$name" "$version" "false"
