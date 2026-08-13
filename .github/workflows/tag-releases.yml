@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       target_sha:
-        description: "Commit SHA to tag/target (defaults to the checked-out HEAD). Set this when backfilling so releases point at the commit that actually shipped, not a moved develop HEAD."
+        description: "Commit to tag. Leave blank to use the selected branch's HEAD; for a backfill, enter the commit containing the published package."
         required: false
         default: ""
 
@@ -48,25 +48,33 @@ jobs:
         )
       }}
     steps:
-      - name: Checkout target commit
+      - name: Checkout workflow branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: >-
             ${{ github.event_name == 'pull_request'
                 && github.event.pull_request.merge_commit_sha
-                || (github.event.inputs.target_sha != ''
-                    && github.event.inputs.target_sha
-                    || github.sha) }}
+                || github.ref }}
 
       - name: Fetch tags
         run: git fetch --tags --force
 
       - name: Resolve mode and target SHA
         id: cfg
+        env:
+          TARGET_SHA_INPUT: ${{ github.event.inputs.target_sha }}
         run: |
           set -euo pipefail
-          SHA="$(git rev-parse HEAD)"
+          if [[ -n "$TARGET_SHA_INPUT" ]]; then
+            if [[ ! "$TARGET_SHA_INPUT" =~ ^[0-9a-fA-F]{7,40}$ ]]; then
+              echo "target_sha must be a hexadecimal commit SHA: $TARGET_SHA_INPUT" >&2
+              exit 1
+            fi
+            SHA="$(git rev-parse "$TARGET_SHA_INPUT^{commit}")"
+          else
+            SHA="$(git rev-parse HEAD)"
+          fi
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "mode=manual" >> "$GITHUB_OUTPUT"
