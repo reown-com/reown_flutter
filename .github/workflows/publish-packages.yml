@@ -159,9 +159,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.core == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for reown_core
         if: github.event.inputs.core == 'true'
@@ -271,9 +273,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.sign == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for reown_sign
         if: github.event.inputs.sign == 'true'
@@ -392,9 +396,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.appkit == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for reown_appkit
         if: github.event.inputs.appkit == 'true'
@@ -516,9 +522,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.walletkit == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for reown_walletkit
         if: github.event.inputs.walletkit == 'true'
@@ -605,9 +613,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.yttrium == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for reown_yttrium
         if: github.event.inputs.yttrium == 'true'
@@ -694,9 +704,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.cli == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for reown_cli
         if: github.event.inputs.cli == 'true'
@@ -783,9 +795,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.pos == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run generate_files.sh for pos_client
         if: github.event.inputs.pos == 'true'
@@ -872,9 +886,11 @@ jobs:
 
       - name: Configure pub.dev credentials
         if: github.event.inputs.walletconnect_pay == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
           mkdir -p $HOME/.config/dart
-          (umask 077 && echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json)
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Run code generation for walletconnect_pay
         if: github.event.inputs.walletconnect_pay == 'true'
