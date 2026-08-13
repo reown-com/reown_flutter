@@ -212,6 +212,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.core == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -332,6 +333,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.sign == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -463,6 +465,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.appkit == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -597,6 +600,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.walletkit == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -694,6 +698,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.yttrium == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -791,6 +796,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.cli == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -888,6 +894,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.pos == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -986,6 +993,7 @@ jobs:
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.walletconnect_pay == 'true'
+        continue-on-error: true
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -1007,7 +1015,17 @@ jobs:
         publish-walletconnect-pay,
       ]
     runs-on: ubuntu-latest
-    if: always() && (needs.publish-core.result == 'success' || needs.publish-sign.result == 'success' || needs.publish-appkit.result == 'success' || needs.publish-walletkit.result == 'success' || needs.publish-yttrium.result == 'success' || needs.publish-cli.result == 'success' || needs.publish-pos.result == 'success' || needs.publish-walletconnect-pay.result == 'success')
+    if: >-
+      always() && (
+        needs.publish-core.outputs.published == 'true' ||
+        needs.publish-sign.outputs.published == 'true' ||
+        needs.publish-appkit.outputs.published == 'true' ||
+        needs.publish-walletkit.outputs.published == 'true' ||
+        needs.publish-yttrium.outputs.published == 'true' ||
+        needs.publish-cli.outputs.published == 'true' ||
+        needs.publish-pos.outputs.published == 'true' ||
+        needs.publish-walletconnect-pay.outputs.published == 'true'
+      )
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
