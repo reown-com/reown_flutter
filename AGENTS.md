@@ -18,7 +18,7 @@ This skill encodes project-specific conventions including interface-based design
 - **Published Packages**: https://pub.dev/publishers/reown.com/packages
 - **Documentation**: 
   - AppKit: https://docs.reown.com/appkit/flutter/core/installation
-  - WalletKit: https://docs.reown.com/walletkit/flutter/installation
+  - WalletKit: https://docs.walletconnect.network/wallet-sdk/flutter/installation
 - **License**: Apache 2.0
 
 ### Tech Stack

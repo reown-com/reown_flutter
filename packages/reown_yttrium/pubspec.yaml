@@ -3,7 +3,7 @@ description: "Reown is the onchain UX platform that provides toolkits built on t
 version: 0.0.3
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_yttrium
-documentation: https://docs.reown.com/walletkit/flutter/early-access/chain-abstraction
+documentation: https://docs.walletconnect.network/wallet-sdk/flutter/early-access/chain-abstraction
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
