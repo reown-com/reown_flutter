@@ -11,6 +11,8 @@ on:
         required: false
         default: ""
 
+permissions: {}
+
 jobs:
   bootstrap:
     name: Bootstrap placeholder
