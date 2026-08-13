@@ -1,0 +1,24 @@
+name: Tag Releases
+
+# This bootstrap makes the workflow_dispatch entry point available from the
+# default branch. Select the release-improvements branch when running it to
+# execute the full workflow from PR #409 before that PR is merged.
+on:
+  workflow_dispatch:
+    inputs:
+      target_sha:
+        description: "Commit SHA to tag/target"
+        required: false
+        default: ""
+
+permissions: {}
+
+jobs:
+  bootstrap:
+    name: Bootstrap placeholder
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain how to run the PR workflow
+        run: |
+          echo "This placeholder only bootstraps manual dispatch availability."
+          echo "Select the release-improvements branch to run the full workflow from PR #409."
