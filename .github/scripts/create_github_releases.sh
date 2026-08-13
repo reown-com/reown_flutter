@@ -155,15 +155,16 @@ process() {
   fi
 
   local -a args
-  args=(release create "$tag" --title "$tag" --generate-notes --latest=false)
+  args=(release create "$tag" --title "$tag" --latest=false)
 
   local prev
   prev="$(previous_tag "$name" "$version")"
   if [[ -n "$prev" ]]; then
-    args+=(--notes-start-tag "$prev")
+    args+=(--generate-notes --notes-start-tag "$prev")
     log "${tag}: notes generated since ${prev}"
   else
-    log "${tag}: no prior same-package tag; GitHub picks its default baseline"
+    args+=(--notes "Initial automated release for ${name} ${version}.")
+    log "${tag}: no prior same-package tag; using an explicit initial-release note"
   fi
 
   # Tag exists without a release -> attach to the existing (verified) tag.
