@@ -157,14 +157,6 @@ jobs:
         working-directory: packages/reown_core
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.core == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for reown_core
         if: github.event.inputs.core == 'true'
         working-directory: packages/reown_core
@@ -187,6 +179,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.core == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish reown_core to pub.dev
         if: github.event.inputs.core == 'true'
@@ -271,14 +271,6 @@ jobs:
         working-directory: packages/reown_sign
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.sign == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for reown_sign
         if: github.event.inputs.sign == 'true'
         working-directory: packages/reown_sign
@@ -301,6 +293,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.sign == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish reown_sign to pub.dev
         if: github.event.inputs.sign == 'true'
@@ -394,14 +394,6 @@ jobs:
         working-directory: packages/reown_appkit
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.appkit == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for reown_appkit
         if: github.event.inputs.appkit == 'true'
         working-directory: packages/reown_appkit
@@ -424,6 +416,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.appkit == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish reown_appkit to pub.dev
         if: github.event.inputs.appkit == 'true'
@@ -520,14 +520,6 @@ jobs:
         working-directory: packages/reown_walletkit
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.walletkit == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for reown_walletkit
         if: github.event.inputs.walletkit == 'true'
         working-directory: packages/reown_walletkit
@@ -550,6 +542,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.walletkit == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish reown_walletkit to pub.dev
         if: github.event.inputs.walletkit == 'true'
@@ -611,14 +611,6 @@ jobs:
         working-directory: packages/reown_yttrium
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.yttrium == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for reown_yttrium
         if: github.event.inputs.yttrium == 'true'
         working-directory: packages/reown_yttrium
@@ -641,6 +633,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.yttrium == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish reown_yttrium to pub.dev
         if: github.event.inputs.yttrium == 'true'
@@ -702,14 +702,6 @@ jobs:
         working-directory: packages/reown_cli
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.cli == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for reown_cli
         if: github.event.inputs.cli == 'true'
         working-directory: packages/reown_cli
@@ -732,6 +724,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.cli == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish reown_cli to pub.dev
         if: github.event.inputs.cli == 'true'
@@ -793,14 +793,6 @@ jobs:
         working-directory: packages/pos_client
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.pos == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run generate_files.sh for pos_client
         if: github.event.inputs.pos == 'true'
         working-directory: packages/pos_client
@@ -823,6 +815,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.pos == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish pos_client to pub.dev
         if: github.event.inputs.pos == 'true'
@@ -884,14 +884,6 @@ jobs:
         working-directory: packages/walletconnect_pay
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
-      - name: Configure pub.dev credentials
-        if: github.event.inputs.walletconnect_pay == 'true'
-        env:
-          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
-        run: |
-          mkdir -p $HOME/.config/dart
-          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
-
       - name: Run code generation for walletconnect_pay
         if: github.event.inputs.walletconnect_pay == 'true'
         working-directory: packages/walletconnect_pay
@@ -915,6 +907,14 @@ jobs:
           else
             echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.walletconnect_pay == 'true'
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p $HOME/.config/dart
+          (umask 077; printf '%s' "$PUB_CREDENTIALS" > $HOME/.config/dart/pub-credentials.json)
 
       - name: Publish walletconnect_pay to pub.dev
         if: github.event.inputs.walletconnect_pay == 'true'
