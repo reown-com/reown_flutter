@@ -10,7 +10,7 @@ Read more about it on our [website](https://reown.com)
 
 ## Documentation
 
-For a full reference please check the [Official Documentation](https://docs.reown.com/walletkit/flutter/installation)
+For a full reference please check the [Official Documentation](https://docs.walletconnect.network/wallet-sdk/flutter/installation)
 
 ## Example
 
