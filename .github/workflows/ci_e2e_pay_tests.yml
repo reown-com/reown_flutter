@@ -269,8 +269,11 @@ jobs:
           xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
           # Wait for full boot before configuring the simulator
           xcrun simctl bootstatus "$SIMULATOR_UDID" -b
-          # Disable UIKit animations to reduce Maestro timing flakiness
-          xcrun simctl spawn booted defaults write com.apple.UIKit UIAnimationDragCoefficient -float 0 || true
+          # Disable UIKit animations to reduce Maestro timing flakiness.
+          # Target the UDID we just booted, not `booted` — if the runner has
+          # another simulator up, `booted` is ambiguous (simctl errors on
+          # multiple) and could configure the wrong device.
+          xcrun simctl spawn "$SIMULATOR_UDID" defaults write com.apple.UIKit UIAnimationDragCoefficient -float 0 || true
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
