@@ -10,7 +10,7 @@ https://pub.dev/publishers/reown.com/packages
 
 AppKit: https://docs.reown.com/appkit/flutter/core/installation
 
-WalletKit: https://docs.reown.com/walletkit/flutter/installation
+WalletKit: https://docs.walletconnect.network/wallet-sdk/flutter/installation
 
 ## License
 
