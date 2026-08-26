@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Fixed relay connectivity on Windows when the OS version contains double quotes.
+
 ## 1.4.0
 
 - Upgraded `flutter_secure_storage` to `^10.0.0`. Existing data stored via the
