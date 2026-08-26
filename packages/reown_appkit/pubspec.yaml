@@ -30,7 +30,7 @@ dependencies:
   pinenacl: ^0.6.0
   plugin_platform_interface: ^2.1.8
   qr_flutter_wc: ^0.0.3
-  reown_core: ^1.3.8
+  reown_core: ^1.4.0
   reown_sign: ^1.3.9
   shimmer: ^3.0.0
   synchronized: ^3.3.0+3
