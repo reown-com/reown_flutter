@@ -977,39 +977,40 @@ jobs:
             echo "Branch is not ahead of develop, skipping PR creation"
           fi
 
-      - name: Push all changes
-        if: steps.check_changes.outputs.has_changes == 'true'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git push origin ${{ needs.create-branch.outputs.branch_name }}
-
+      # The dependency-update commits are already pushed to the release branch by the
+      # publish jobs, so the PR must be created from the branch as-is. Do NOT use
+      # peter-evans/create-pull-request here: it builds PRs from uncommitted working-tree
+      # changes and force-resets the branch to base when there are none, destroying the
+      # already-pushed commits (this silently dropped dep updates in runs #69 and #70).
       - name: Create Pull Request
         if: steps.check_changes.outputs.has_changes == 'true'
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: develop
-          branch: ${{ needs.create-branch.outputs.branch_name }}
-          title: "ci: Package dependency updates and releases"
-          body: |
-            This PR contains package dependency updates and releases from the automated publishing workflow.
-
-            ## Packages Published
-            ${{ github.event.inputs.core == 'true' && '- reown_core' || '' }}
-            ${{ github.event.inputs.sign == 'true' && '- reown_sign' || '' }}
-            ${{ github.event.inputs.appkit == 'true' && '- reown_appkit' || '' }}
-            ${{ github.event.inputs.walletkit == 'true' && '- reown_walletkit' || '' }}
-            ${{ github.event.inputs.yttrium == 'true' && '- reown_yttrium' || '' }}
-            ${{ github.event.inputs.cli == 'true' && '- reown_cli' || '' }}
-            ${{ github.event.inputs.pos == 'true' && '- pos_client' || '' }}
-            ${{ github.event.inputs.walletconnect_pay == 'true' && '- walletconnect_pay' || '' }}
-
-            ## Changes
-            - Updated package dependencies to latest published versions
-            - All packages have been successfully published to pub.dev
-
-            This PR was automatically created by the GitHub Actions workflow.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo "This PR contains package dependency updates and releases from the automated publishing workflow."
+            echo ""
+            echo "## Packages Published"
+            if [[ "${{ github.event.inputs.core }}" == 'true' ]]; then echo "- reown_core"; fi
+            if [[ "${{ github.event.inputs.sign }}" == 'true' ]]; then echo "- reown_sign"; fi
+            if [[ "${{ github.event.inputs.appkit }}" == 'true' ]]; then echo "- reown_appkit"; fi
+            if [[ "${{ github.event.inputs.walletkit }}" == 'true' ]]; then echo "- reown_walletkit"; fi
+            if [[ "${{ github.event.inputs.yttrium }}" == 'true' ]]; then echo "- reown_yttrium"; fi
+            if [[ "${{ github.event.inputs.cli }}" == 'true' ]]; then echo "- reown_cli"; fi
+            if [[ "${{ github.event.inputs.pos }}" == 'true' ]]; then echo "- pos_client"; fi
+            if [[ "${{ github.event.inputs.walletconnect_pay }}" == 'true' ]]; then echo "- walletconnect_pay"; fi
+            echo ""
+            echo "## Changes"
+            echo "- Updated package dependencies to latest published versions"
+            echo "- All packages have been successfully published to pub.dev"
+            echo ""
+            echo "This PR was automatically created by the GitHub Actions workflow."
+          } > pr_body.md
+          gh pr create \
+            --base develop \
+            --head "${{ needs.create-branch.outputs.branch_name }}" \
+            --title "ci: Package dependency updates and releases" \
+            --body-file pr_body.md
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/publish-packages.yml workflow_dispatch
