@@ -1,3 +1,7 @@
+## 1.5.0
+
+- Stellar TVF support (transaction hash reporting for `stellar_signXDR` / `stellar_signAndSubmitXDR`) via reown_core 1.5.0 and reown_sign 1.4.0.
+
 ## 1.4.1
 
 - Dependency updates (`walletconnect_pay`, `reown_yttrium`)
