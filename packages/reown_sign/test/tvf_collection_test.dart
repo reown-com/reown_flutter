@@ -1224,6 +1224,35 @@ void main() {
         expect(hashes, equals([pubnetV0Hash]));
       });
 
+      test('should compute the correct hash when a signature ends in four zero bytes', () {
+        // Arrange — adversarial: the last 4 bytes of the (structurally valid)
+        // signature are 0x00000000, which an ascending signature-array scan
+        // mistakes for a zero-length signature array. Hash cross-checked
+        // against @stellar/stellar-sdk's Transaction.hash().
+        const zeroTailSigXdr =
+            'AAAAAgAAAABuW7RrrxcrA5UP8IX0wR/DVsdakYMxqY7Ug5ycd5KzgQAAAGQAAAAASZYC0wAAAAEAAAAAAAAAAAAAAABw29iAAAAAAAAAAAEAAAAAAAAAAQAAAABuW7RrrxcrA5UP8IX0wR/DVsdakYMxqY7Ug5ycd5KzgQAAAAAAAAAAAJiWgAAAAAAAAAABd5KzgQAAAEDGLpyx0gomLUe6OHNM90dIb/J8FPe2mR/+9m8suCVKNCF3UH6jhJthgRaiYAchg4uS+yAghMuqqTVHvyAAAAAA';
+        const id = 506;
+        signEngine.pendingTVFRequests[id] = const TVFData(
+          rpcMethods: ['stellar_signXDR'],
+          chainId: 'stellar:pubnet',
+        );
+        final response = JsonRpcResponse(
+          id: id,
+          result: {'signedXDR': zeroTailSigXdr},
+        );
+
+        // Act
+        final hashes = signEngine.collectHashes('stellar', response);
+
+        // Assert
+        expect(
+          hashes,
+          equals([
+            '17e5f1f36ff6edc099fc190d24da41e48ab9dd9f0b0be6c6d68d9eba028ed8d3',
+          ]),
+        );
+      });
+
       test('should extract tx_hash for stellar_signAndSubmitXDR', () {
         // Arrange
         final response = JsonRpcResponse(

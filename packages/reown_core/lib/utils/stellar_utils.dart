@@ -80,9 +80,12 @@ class StellarChainUtils {
   /// (fixed 72-byte entries), which is what the WalletConnect Stellar RPC spec
   /// mandates wallets emit.
   static int _findSignatureArrayOffset(Uint8List bytes) {
-    for (var signatureCount = 0; signatureCount <= _maxEnvelopeSignatures; signatureCount++) {
+    // Scan from the maximum count downward: a real multi-signature array must be
+    // found before the vacuously-matching zero count, which would otherwise win
+    // whenever a signature happens to end in four zero bytes.
+    for (var signatureCount = _maxEnvelopeSignatures; signatureCount >= 0; signatureCount--) {
       final offset = bytes.length - 4 - _decoratedSignatureLength * signatureCount;
-      if (offset < 4) break;
+      if (offset < 4) continue;
       if (_readUint32BE(bytes, offset) != signatureCount) continue;
 
       var isValid = true;
