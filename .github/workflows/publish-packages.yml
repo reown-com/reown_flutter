@@ -146,7 +146,16 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_core): Update reown_yttrium to ^${{ needs.publish-yttrium.outputs.package_version }} [skip ci]"
-            git push origin ${{ needs.create-branch.outputs.branch_name }}
+            # Parallel package jobs push to the same release branch; rebase-retry to
+            # avoid non-fast-forward rejections (e.g. the walletkit/appkit race).
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase origin ${{ needs.create-branch.outputs.branch_name }} && git push origin ${{ needs.create-branch.outputs.branch_name }}; then
+                break
+              fi
+              if [[ $attempt -eq 5 ]]; then echo "Failed to push after 5 attempts"; exit 1; fi
+              echo "Push rejected (concurrent update on release branch), retrying ($attempt)..."
+              sleep $((RANDOM % 4 + 2))
+            done
           else
             echo "No changes to commit in reown_core/pubspec.yaml"
           fi
@@ -260,7 +269,16 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_sign): Update reown_core to ^${{ needs.publish-core.outputs.package_version }} [skip ci]"
-            git push origin ${{ needs.create-branch.outputs.branch_name }}
+            # Parallel package jobs push to the same release branch; rebase-retry to
+            # avoid non-fast-forward rejections (e.g. the walletkit/appkit race).
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase origin ${{ needs.create-branch.outputs.branch_name }} && git push origin ${{ needs.create-branch.outputs.branch_name }}; then
+                break
+              fi
+              if [[ $attempt -eq 5 ]]; then echo "Failed to push after 5 attempts"; exit 1; fi
+              echo "Push rejected (concurrent update on release branch), retrying ($attempt)..."
+              sleep $((RANDOM % 4 + 2))
+            done
           else
             echo "No changes to commit in reown_sign/pubspec.yaml"
           fi
@@ -383,7 +401,16 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_appkit): Update core/sign dependencies [skip ci]"
-            git push origin ${{ needs.create-branch.outputs.branch_name }}
+            # Parallel package jobs push to the same release branch; rebase-retry to
+            # avoid non-fast-forward rejections (e.g. the walletkit/appkit race).
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase origin ${{ needs.create-branch.outputs.branch_name }} && git push origin ${{ needs.create-branch.outputs.branch_name }}; then
+                break
+              fi
+              if [[ $attempt -eq 5 ]]; then echo "Failed to push after 5 attempts"; exit 1; fi
+              echo "Push rejected (concurrent update on release branch), retrying ($attempt)..."
+              sleep $((RANDOM % 4 + 2))
+            done
           else
             echo "No changes to commit in reown_appkit/pubspec.yaml"
           fi
@@ -509,7 +536,16 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_walletkit): Update core/sign/walletconnect_pay dependencies [skip ci]"
-            git push origin ${{ needs.create-branch.outputs.branch_name }}
+            # Parallel package jobs push to the same release branch; rebase-retry to
+            # avoid non-fast-forward rejections (e.g. the walletkit/appkit race).
+            for attempt in 1 2 3 4 5; do
+              if git pull --rebase origin ${{ needs.create-branch.outputs.branch_name }} && git push origin ${{ needs.create-branch.outputs.branch_name }}; then
+                break
+              fi
+              if [[ $attempt -eq 5 ]]; then echo "Failed to push after 5 attempts"; exit 1; fi
+              echo "Push rejected (concurrent update on release branch), retrying ($attempt)..."
+              sleep $((RANDOM % 4 + 2))
+            done
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
           fi
