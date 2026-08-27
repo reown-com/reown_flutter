@@ -1123,6 +1123,13 @@ void main() {
       const testnetV1Hash =
           'c9b2d35ab15c055acb422872a8f1680a84ad6b8ad0d56271cfb74c083edf2007';
 
+      // ENVELOPE_TYPE_TX_V0 (discriminant 0) — exercises the include-leading-zeros path.
+      // Hash cross-checked against @stellar/stellar-sdk's Transaction.hash().
+      const pubnetV0Xdr =
+          'AAAAAG5btGuvFysDlQ/whfTBH8NWx1qRgzGpjtSDnJx3krOBAAAAZAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAsAAAAAAAAAZAAAAAAAAAABd5KzgQAAAEAu0xW2vwIqtuAu4/FFLWHBooGpvqn/N6iHgEX45savBk7SyoFGKIlyhG7ETZQ93tbF1OC/5ym6SdXmwIhIPQUD';
+      const pubnetV0Hash =
+          '5b709eff53cb92c20d2c79e007f6b53ba9be04d6073119d142ffa70d7ea5c7cb';
+
       test('should compute hash for stellar_signXDR on pubnet', () {
         // Arrange
         const id = 500;
@@ -1196,6 +1203,25 @@ void main() {
 
         // Assert
         expect(hashes, equals([testnetV1Hash]));
+      });
+
+      test('should compute hash for a stellar V0 envelope on pubnet', () {
+        // Arrange
+        const id = 505;
+        signEngine.pendingTVFRequests[id] = const TVFData(
+          rpcMethods: ['stellar_signXDR'],
+          chainId: 'stellar:pubnet',
+        );
+        final response = JsonRpcResponse(
+          id: id,
+          result: {'signedXDR': pubnetV0Xdr},
+        );
+
+        // Act
+        final hashes = signEngine.collectHashes('stellar', response);
+
+        // Assert
+        expect(hashes, equals([pubnetV0Hash]));
       });
 
       test('should extract tx_hash for stellar_signAndSubmitXDR', () {
