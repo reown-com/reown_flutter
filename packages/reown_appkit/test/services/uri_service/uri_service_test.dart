@@ -67,6 +67,21 @@ void main() {
       expect(url.queryParameters.containsKey('projectId'), isFalse);
     });
 
+    test('social login url uses ? when the base url has no query', () async {
+      final service = uriServiceWithProjectId(projectId);
+
+      await service.openRedirect(
+        WalletRedirect(web: UrlConstants.webWalletUrl),
+        pType: PlatformType.web,
+        socialOption: AppKitSocialOption.Google,
+      );
+
+      final launched = launchedUrls.single;
+      expect(launched, contains('?provider=google'));
+      expect(launched, isNot(contains('/&provider=')));
+      expect(Uri.parse(launched).queryParameters['projectId'], projectId);
+    });
+
     test('wallet deep link gets neither provider nor projectId', () async {
       final service = uriServiceWithProjectId(projectId);
 
