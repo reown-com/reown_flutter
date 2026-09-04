@@ -1,6 +1,10 @@
-## 1.4.1
+## 1.5.1
 
 - Fixed relay connectivity on Windows when the OS version contains double quotes.
+
+## 1.5.0
+
+- Added Stellar TVF support: compute the transaction hash from signed `stellar_signXDR` envelopes (V0, V1 and fee-bump) and extract `tx_hash` from `stellar_signAndSubmitXDR` responses.
 
 ## 1.4.0
 

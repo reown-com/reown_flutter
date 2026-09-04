@@ -1,3 +1,7 @@
+## 1.9.0
+
+- Stellar TVF support via reown_core 1.5.0 and reown_sign 1.4.0.
+
 ## 1.8.4
 
 - Fixed wallet install detection

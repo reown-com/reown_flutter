@@ -74,5 +74,8 @@ class TVFData {
     // SUI
     'sui_signTransaction',
     'sui_signAndExecuteTransaction',
+    // Stellar
+    'stellar_signXDR',
+    'stellar_signAndSubmitXDR',
   ];
 }
