@@ -4,13 +4,18 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:walletconnect_pay/version.dart' show packageVersion;
 
 class WalletconnectPayUtils {
+  /// Strips literal `"` characters from OS version strings used in ua/headers.
+  static String sanitizeOSVersion(String version) {
+    return version.replaceAll('"', '');
+  }
+
   static String getOS() {
     if (kIsWeb) {
       return 'web-browser';
     } else {
       return <String>[
         Platform.operatingSystem,
-        Platform.operatingSystemVersion,
+        sanitizeOSVersion(Platform.operatingSystemVersion),
       ].join('-');
     }
   }
