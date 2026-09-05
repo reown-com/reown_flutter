@@ -142,8 +142,8 @@ class GenericStore<T> implements IGenericStore<T> {
         }
       } catch (e) {
         // print('Error restoring $storageKey: $e');
-        await storage.delete(storedVersion);
-        onError.broadcast(StoreErrorEvent<String>(storedVersion, e.toString()));
+        await storage.delete(storageKey);
+        onError.broadcast(StoreErrorEvent<String>(storageKey, e.toString()));
       }
     }
   }
