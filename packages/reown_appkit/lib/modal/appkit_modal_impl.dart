@@ -2293,6 +2293,9 @@ extension _EmailConnectorExtension on ReownAppKitModal {
 
   void _onMagicRequest(MagicRequestEvent? args) {
     if (args?.request != null) {
+      if (_widgetStack.containsKey(KeyConstants.approveTransactionPage)) {
+        return;
+      }
       if (_isOpen) {
         _widgetStack.push(const ApproveTransactionPage());
       } else {
