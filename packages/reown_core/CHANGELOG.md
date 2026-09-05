@@ -1,3 +1,7 @@
+## 1.5.0
+
+- Added Stellar TVF support: compute the transaction hash from signed `stellar_signXDR` envelopes (V0, V1 and fee-bump) and extract `tx_hash` from `stellar_signAndSubmitXDR` responses.
+
 ## 1.4.0
 
 - Upgraded `flutter_secure_storage` to `^10.0.0`. Existing data stored via the
