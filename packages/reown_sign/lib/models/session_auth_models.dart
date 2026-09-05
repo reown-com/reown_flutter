@@ -76,7 +76,6 @@ sealed class SessionAuthPayload with _$SessionAuthPayload {
   factory SessionAuthPayload.fromRequestParams(
     SessionAuthRequestParams params,
   ) {
-    final now = DateTime.now();
     return SessionAuthPayload(
       chains: params.chains,
       domain: params.domain,
@@ -84,15 +83,7 @@ sealed class SessionAuthPayload with _$SessionAuthPayload {
       aud: params.uri,
       type: params.type?.t ?? 'eip4361',
       version: '1',
-      iat: DateTime.utc(
-        now.year,
-        now.month,
-        now.day,
-        now.hour,
-        now.minute,
-        now.second,
-        now.millisecond,
-      ).toIso8601String(),
+      iat: DateTime.now().toUtc().toIso8601String(),
       nbf: params.nbf,
       exp: params.exp,
       statement: params.statement,
