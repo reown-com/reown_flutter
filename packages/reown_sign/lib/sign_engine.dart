@@ -11,6 +11,7 @@ import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/utils/algorand_utils.dart';
 import 'package:reown_core/utils/near_utils.dart';
+import 'package:reown_core/utils/stellar_utils.dart';
 import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
@@ -2968,6 +2969,37 @@ class ReownSign implements IReownSign {
           return <String>[txid.toString()];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: stacks, $e');
+        }
+        return null;
+      case 'stellar':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          // stellar_signAndSubmitXDR responses carry the hash directly
+          final txHash = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'tx_hash',
+          );
+          if (txHash != null) {
+            return <String>[txHash.toString()];
+          }
+          // stellar_signXDR responses carry only the signed envelope, so the
+          // hash is computed from it. The network passphrase is bound to the
+          // session's CAIP-2 chain, never trusted from the request payload.
+          final signedXdr = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signedXDR',
+          );
+          if (signedXdr != null) {
+            final id = response.id;
+            final chainId = pendingTVFRequests[id]?.chainId;
+            final computedHash = StellarChainUtils.getStellarTxHashFromSignedXdr(
+              signedXdr.toString(),
+              chainId: chainId,
+            );
+            return <String>[computedHash];
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _tvf data: stellar, $e');
         }
         return null;
       case 'near':
