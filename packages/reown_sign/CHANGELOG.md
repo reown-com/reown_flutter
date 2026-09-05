@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Stamp SIWE / CACAO `iat` with real UTC instead of labeling local wall-clock time as `Z`.
+
 ## 1.4.0
 
 - Collect Stellar TVF transaction hashes (`stellar_signXDR`, `stellar_signAndSubmitXDR`) in the sign engine.

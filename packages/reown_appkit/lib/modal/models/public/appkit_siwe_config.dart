@@ -80,23 +80,12 @@ sealed class SIWECreateMessageArgs with _$SIWECreateMessageArgs {
     required String nonce,
     required CacaoHeader type,
   }) {
-    final now = DateTime.now();
     return SIWECreateMessageArgs(
       chainId: chainId,
       nonce: nonce,
       address: address,
       version: '1',
-      iat:
-          params.iat ??
-          DateTime.utc(
-            now.year,
-            now.month,
-            now.day,
-            now.hour,
-            now.minute,
-            now.second,
-            now.millisecond,
-          ).toIso8601String(),
+      iat: params.iat ?? DateTime.now().toUtc().toIso8601String(),
       domain: params.domain,
       uri: params.uri,
       type: type,
