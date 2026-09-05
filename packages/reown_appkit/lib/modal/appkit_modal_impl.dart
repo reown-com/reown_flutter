@@ -43,6 +43,7 @@ import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/account_page.dart';
+import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/approve_siwe.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -2291,6 +2292,14 @@ extension _EmailConnectorExtension on ReownAppKitModal {
   }
 
   void _onMagicRequest(MagicRequestEvent? args) {
+    if (args?.request != null) {
+      if (_isOpen) {
+        _widgetStack.push(const ApproveTransactionPage());
+      } else {
+        openModalView(const ApproveTransactionPage());
+      }
+      return;
+    }
     if (args?.result != null) {
       if (args!.result is JsonRpcError && _widgetStack.canPop()) {
         _widgetStack.pop();

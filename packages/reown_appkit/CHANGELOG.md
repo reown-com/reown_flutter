@@ -1,3 +1,7 @@
+## 1.9.1
+
+- Show the Magic approve page from `ReownAppKitModal` when social login SIWE asks for `personal_sign`, so verification can run without keeping `AppKitModalAccountButton` mounted.
+
 ## 1.9.0
 
 - Stellar TVF support via reown_core 1.5.0 and reown_sign 1.4.0.
