@@ -285,12 +285,14 @@ class AuthSignature {
 
   static String getChainIdFromMessage(String message) {
     try {
-      const pattern = 'Chain ID: ';
-      final regexp = RegExp('$pattern(?<temp1>\\d+)');
-      final matches = regexp.allMatches(message);
-      for (final Match m in matches) {
-        return m[0]!.toString().replaceAll(pattern, '');
+      const prefix = 'Chain ID: ';
+      String? last;
+      for (final line in message.split('\n')) {
+        if (line.startsWith(prefix)) {
+          last = line.substring(prefix.length).trim();
+        }
       }
+      return last ?? '';
     } catch (_) {}
     return '';
   }
