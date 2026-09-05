@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Emit EIP-55 checksummed addresses in SIWE messages, including uppercase `0X` prefixes.
+
 ## 1.4.0
 
 - Collect Stellar TVF transaction hashes (`stellar_signXDR`, `stellar_signAndSubmitXDR`) in the sign engine.
