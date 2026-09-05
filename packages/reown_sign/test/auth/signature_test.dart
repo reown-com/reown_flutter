@@ -113,6 +113,17 @@ Issued At: 2022-10-10T23:03:35.700Z''';
         AuthSignature.getChainIdFromMessage(statementMentionsAnotherChain),
         '1',
       );
+
+      const trailingTextOnField = '''
+example.com wants you to sign in with your Ethereum account:
+0x06C6A22feB5f8CcEDA0db0D593e6F26A3611d5fa
+
+URI: https://example.com/login
+Version: 1
+Chain ID: 1 (mainnet)
+Nonce: 100
+Issued At: 2022-10-10T23:03:35.700Z''';
+      expect(AuthSignature.getChainIdFromMessage(trailingTextOnField), '1');
     });
 
     // TODO: Fix this test, can't call http requests from within the test

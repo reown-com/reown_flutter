@@ -289,7 +289,12 @@ class AuthSignature {
       String? last;
       for (final line in message.split('\n')) {
         if (line.startsWith(prefix)) {
-          last = line.substring(prefix.length).trim();
+          final match = RegExp(
+            r'^\d+',
+          ).firstMatch(line.substring(prefix.length).trim());
+          if (match != null) {
+            last = match.group(0);
+          }
         }
       }
       return last ?? '';
