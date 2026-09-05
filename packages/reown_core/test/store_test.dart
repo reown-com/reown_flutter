@@ -159,7 +159,7 @@ void main() {
         await onErrorCompleter.future;
 
         expect(store.get('invalid'), {'version': 'swag'});
-        expect(store.get('swag//invalid'), isNull);
+        expect(store.get(genericStore.storageKey), isNull);
         expect(genericStore.has('key'), false);
         expect(genericStore.get('key') == null, true);
       });
