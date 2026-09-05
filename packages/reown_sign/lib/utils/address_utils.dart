@@ -45,7 +45,7 @@ class AddressUtils {
   }
 }
 
-final _evmAddress = RegExp(r'^(0x)?[0-9a-fA-F]{40}$');
+final _evmAddress = RegExp(r'^(0[xX])?[0-9a-fA-F]{40}$');
 
 extension AddressUtilsExtension on String {
   /// Checksums an EVM address per EIP-55. Non-EVM values are returned unchanged

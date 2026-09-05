@@ -29,6 +29,13 @@ void main() {
       );
     });
 
+    test('toEIP55 checksums an EVM address with an uppercase 0X prefix', () {
+      expect(
+        '0X5aaeb6053f3e94c9b9a09f33669435e7ef1beaed'.toEIP55(),
+        '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed',
+      );
+    });
+
     test('toEIP55 keeps an already checksummed address', () {
       expect(TEST_ADDRESS_EIP191.toEIP55(), TEST_ADDRESS_EIP191);
     });
