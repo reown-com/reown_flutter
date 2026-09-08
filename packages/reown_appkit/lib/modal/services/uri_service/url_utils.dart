@@ -71,9 +71,15 @@ class UriService extends IUriService {
       _core.logger.e('Error opening redirect', error: e);
       return false;
     }
-    if (socialOption != null) {
-      final social = socialOption.name.toLowerCase();
-      uriToOpen = Uri.parse('${uriToOpen.toString()}&provider=$social');
+    if (socialOption != null && uriToOpen != null) {
+      final social = Uri.encodeComponent(socialOption.name.toLowerCase());
+      final separator = uriToOpen.hasQuery ? '&' : '?';
+      var url = '${uriToOpen.toString()}${separator}provider=$social';
+      final projectId = _core.projectId.trim();
+      if (projectId.isNotEmpty) {
+        url = '$url&projectId=${Uri.encodeComponent(projectId)}';
+      }
+      uriToOpen = Uri.parse(url);
     }
     _core.logger.i('[$runtimeType] openRedirect $uriToOpen');
     return await _launchUrlFunc(uriToOpen!);
