@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Parse SIWE `Chain ID` from the structured field so a statement that mentions another chain does not change `personal_sign` routing.
+
 ## 1.4.0
 
 - Collect Stellar TVF transaction hashes (`stellar_signXDR`, `stellar_signAndSubmitXDR`) in the sign engine.
