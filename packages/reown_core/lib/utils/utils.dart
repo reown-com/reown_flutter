@@ -31,6 +31,13 @@ class ReownCoreUtils {
     return DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000 + offset;
   }
 
+  /// Strips literal `"` characters that break WalletConnect relay `ua` validation.
+  /// Some Windows installs return quoted product names in
+  /// [Platform.operatingSystemVersion], e.g. `"Windows 10 Pro" 10.0 (...)`.
+  static String sanitizeOSVersion(String version) {
+    return version.replaceAll('"', '');
+  }
+
   static String getOS() {
     if (kIsWeb) {
       // TODO change this into an actual value
@@ -38,7 +45,7 @@ class ReownCoreUtils {
     } else {
       return <String>[
         Platform.operatingSystem,
-        Platform.operatingSystemVersion,
+        sanitizeOSVersion(Platform.operatingSystemVersion),
       ].join('-');
     }
   }

@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Sanitized quoted Windows OS version strings returned by WalletconnectPayUtils.getOS().
+
 ## 1.0.1
 
 - Added WebView-based payment data collection
