@@ -334,7 +334,6 @@ class WalletKitService implements IWalletKitService {
         // flows: leave empty so the user must tap a row on the select
         // screen to make their choice — never pre-pick the first option.
         optionId: paymentOptions.length == 1 ? paymentOptions.first.id : '',
-        signatures: [],
       );
 
       await _processPayment(_currentPaymentOptions!);

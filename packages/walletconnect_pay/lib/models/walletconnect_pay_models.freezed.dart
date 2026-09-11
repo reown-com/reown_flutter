@@ -3943,7 +3943,11 @@ as String,
 /// @nodoc
 mixin _$ConfirmPaymentRequest {
 
- String get paymentId; String get optionId; List<String> get signatures; List<CollectDataFieldResult>? get collectedData; int? get maxPollMs;
+ String get paymentId; String get optionId;@Deprecated('Use data instead') List<String> get signatures;/// Wallet RPC results. Each element is either a plain string (signature,
+/// tx hash) or a JSON object/array (e.g. TRON's
+/// {"raw_data_hex": ..., "signature": [...]}), sent to the gateway as
+/// JSON. When null, falls back to [signatures].
+ List<Object>? get data; List<CollectDataFieldResult>? get collectedData; int? get maxPollMs;
 /// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3956,16 +3960,16 @@ $ConfirmPaymentRequestCopyWith<ConfirmPaymentRequest> get copyWith => _$ConfirmP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConfirmPaymentRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other.signatures, signatures)&&const DeepCollectionEquality().equals(other.collectedData, collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConfirmPaymentRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other.signatures, signatures)&&const DeepCollectionEquality().equals(other.data, data)&&const DeepCollectionEquality().equals(other.collectedData, collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,paymentId,optionId,const DeepCollectionEquality().hash(signatures),const DeepCollectionEquality().hash(collectedData),maxPollMs);
+int get hashCode => Object.hash(runtimeType,paymentId,optionId,const DeepCollectionEquality().hash(signatures),const DeepCollectionEquality().hash(data),const DeepCollectionEquality().hash(collectedData),maxPollMs);
 
 @override
 String toString() {
-  return 'ConfirmPaymentRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, collectedData: $collectedData, maxPollMs: $maxPollMs)';
+  return 'ConfirmPaymentRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, data: $data, collectedData: $collectedData, maxPollMs: $maxPollMs)';
 }
 
 
@@ -3976,7 +3980,7 @@ abstract mixin class $ConfirmPaymentRequestCopyWith<$Res>  {
   factory $ConfirmPaymentRequestCopyWith(ConfirmPaymentRequest value, $Res Function(ConfirmPaymentRequest) _then) = _$ConfirmPaymentRequestCopyWithImpl;
 @useResult
 $Res call({
- String paymentId, String optionId, List<String> signatures, List<CollectDataFieldResult>? collectedData, int? maxPollMs
+ String paymentId, String optionId,@Deprecated('Use data instead') List<String> signatures, List<Object>? data, List<CollectDataFieldResult>? collectedData, int? maxPollMs
 });
 
 
@@ -3993,12 +3997,13 @@ class _$ConfirmPaymentRequestCopyWithImpl<$Res>
 
 /// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? paymentId = null,Object? optionId = null,Object? signatures = null,Object? collectedData = freezed,Object? maxPollMs = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? paymentId = null,Object? optionId = null,Object? signatures = null,Object? data = freezed,Object? collectedData = freezed,Object? maxPollMs = freezed,}) {
   return _then(_self.copyWith(
 paymentId: null == paymentId ? _self.paymentId : paymentId // ignore: cast_nullable_to_non_nullable
 as String,optionId: null == optionId ? _self.optionId : optionId // ignore: cast_nullable_to_non_nullable
 as String,signatures: null == signatures ? _self.signatures : signatures // ignore: cast_nullable_to_non_nullable
-as List<String>,collectedData: freezed == collectedData ? _self.collectedData : collectedData // ignore: cast_nullable_to_non_nullable
+as List<String>,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as List<Object>?,collectedData: freezed == collectedData ? _self.collectedData : collectedData // ignore: cast_nullable_to_non_nullable
 as List<CollectDataFieldResult>?,maxPollMs: freezed == maxPollMs ? _self.maxPollMs : maxPollMs // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
@@ -4082,10 +4087,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String paymentId,  String optionId,  List<String> signatures,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String paymentId,  String optionId, @Deprecated('Use data instead')  List<String> signatures,  List<Object>? data,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ConfirmPaymentRequest() when $default != null:
-return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedData,_that.maxPollMs);case _:
+return $default(_that.paymentId,_that.optionId,_that.signatures,_that.data,_that.collectedData,_that.maxPollMs);case _:
   return orElse();
 
 }
@@ -4103,10 +4108,10 @@ return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String paymentId,  String optionId,  List<String> signatures,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String paymentId,  String optionId, @Deprecated('Use data instead')  List<String> signatures,  List<Object>? data,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)  $default,) {final _that = this;
 switch (_that) {
 case _ConfirmPaymentRequest():
-return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedData,_that.maxPollMs);}
+return $default(_that.paymentId,_that.optionId,_that.signatures,_that.data,_that.collectedData,_that.maxPollMs);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -4120,10 +4125,10 @@ return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String paymentId,  String optionId,  List<String> signatures,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String paymentId,  String optionId, @Deprecated('Use data instead')  List<String> signatures,  List<Object>? data,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)?  $default,) {final _that = this;
 switch (_that) {
 case _ConfirmPaymentRequest() when $default != null:
-return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedData,_that.maxPollMs);case _:
+return $default(_that.paymentId,_that.optionId,_that.signatures,_that.data,_that.collectedData,_that.maxPollMs);case _:
   return null;
 
 }
@@ -4135,16 +4140,33 @@ return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedD
 @JsonSerializable()
 
 class _ConfirmPaymentRequest implements ConfirmPaymentRequest {
-  const _ConfirmPaymentRequest({required this.paymentId, required this.optionId, required final  List<String> signatures, final  List<CollectDataFieldResult>? collectedData, this.maxPollMs}): _signatures = signatures,_collectedData = collectedData;
+  const _ConfirmPaymentRequest({required this.paymentId, required this.optionId, @Deprecated('Use data instead') final  List<String> signatures = const <String>[], final  List<Object>? data, final  List<CollectDataFieldResult>? collectedData, this.maxPollMs}): _signatures = signatures,_data = data,_collectedData = collectedData;
   factory _ConfirmPaymentRequest.fromJson(Map<String, dynamic> json) => _$ConfirmPaymentRequestFromJson(json);
 
 @override final  String paymentId;
 @override final  String optionId;
  final  List<String> _signatures;
-@override List<String> get signatures {
+@override@JsonKey()@Deprecated('Use data instead') List<String> get signatures {
   if (_signatures is EqualUnmodifiableListView) return _signatures;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_signatures);
+}
+
+/// Wallet RPC results. Each element is either a plain string (signature,
+/// tx hash) or a JSON object/array (e.g. TRON's
+/// {"raw_data_hex": ..., "signature": [...]}), sent to the gateway as
+/// JSON. When null, falls back to [signatures].
+ final  List<Object>? _data;
+/// Wallet RPC results. Each element is either a plain string (signature,
+/// tx hash) or a JSON object/array (e.g. TRON's
+/// {"raw_data_hex": ..., "signature": [...]}), sent to the gateway as
+/// JSON. When null, falls back to [signatures].
+@override List<Object>? get data {
+  final value = _data;
+  if (value == null) return null;
+  if (_data is EqualUnmodifiableListView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
  final  List<CollectDataFieldResult>? _collectedData;
@@ -4171,16 +4193,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmPaymentRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other._signatures, _signatures)&&const DeepCollectionEquality().equals(other._collectedData, _collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmPaymentRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other._signatures, _signatures)&&const DeepCollectionEquality().equals(other._data, _data)&&const DeepCollectionEquality().equals(other._collectedData, _collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,paymentId,optionId,const DeepCollectionEquality().hash(_signatures),const DeepCollectionEquality().hash(_collectedData),maxPollMs);
+int get hashCode => Object.hash(runtimeType,paymentId,optionId,const DeepCollectionEquality().hash(_signatures),const DeepCollectionEquality().hash(_data),const DeepCollectionEquality().hash(_collectedData),maxPollMs);
 
 @override
 String toString() {
-  return 'ConfirmPaymentRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, collectedData: $collectedData, maxPollMs: $maxPollMs)';
+  return 'ConfirmPaymentRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, data: $data, collectedData: $collectedData, maxPollMs: $maxPollMs)';
 }
 
 
@@ -4191,7 +4213,7 @@ abstract mixin class _$ConfirmPaymentRequestCopyWith<$Res> implements $ConfirmPa
   factory _$ConfirmPaymentRequestCopyWith(_ConfirmPaymentRequest value, $Res Function(_ConfirmPaymentRequest) _then) = __$ConfirmPaymentRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String paymentId, String optionId, List<String> signatures, List<CollectDataFieldResult>? collectedData, int? maxPollMs
+ String paymentId, String optionId,@Deprecated('Use data instead') List<String> signatures, List<Object>? data, List<CollectDataFieldResult>? collectedData, int? maxPollMs
 });
 
 
@@ -4208,12 +4230,13 @@ class __$ConfirmPaymentRequestCopyWithImpl<$Res>
 
 /// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? paymentId = null,Object? optionId = null,Object? signatures = null,Object? collectedData = freezed,Object? maxPollMs = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? paymentId = null,Object? optionId = null,Object? signatures = null,Object? data = freezed,Object? collectedData = freezed,Object? maxPollMs = freezed,}) {
   return _then(_ConfirmPaymentRequest(
 paymentId: null == paymentId ? _self.paymentId : paymentId // ignore: cast_nullable_to_non_nullable
 as String,optionId: null == optionId ? _self.optionId : optionId // ignore: cast_nullable_to_non_nullable
 as String,signatures: null == signatures ? _self._signatures : signatures // ignore: cast_nullable_to_non_nullable
-as List<String>,collectedData: freezed == collectedData ? _self._collectedData : collectedData // ignore: cast_nullable_to_non_nullable
+as List<String>,data: freezed == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as List<Object>?,collectedData: freezed == collectedData ? _self._collectedData : collectedData // ignore: cast_nullable_to_non_nullable
 as List<CollectDataFieldResult>?,maxPollMs: freezed == maxPollMs ? _self.maxPollMs : maxPollMs // ignore: cast_nullable_to_non_nullable
 as int?,
   ));

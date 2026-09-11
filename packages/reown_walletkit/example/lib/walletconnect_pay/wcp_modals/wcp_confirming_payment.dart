@@ -84,7 +84,7 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
         onActionStarted: _updateStepLabel,
       );
       _stepLabel.value = _isMultiStep ? _finalizingLabel : _processingLabel;
-      final request = widget.paymentRequest.copyWith(signatures: signatures);
+      final request = widget.paymentRequest.copyWith(data: signatures);
       final response = await _walletKitService.confirmPayment(request);
       if (!mounted) return;
       Navigator.of(context).pop(response.status);

@@ -161,7 +161,7 @@ class _PaymentPageState extends State<PaymentPage> {
         request: ConfirmPaymentRequest(
           paymentId: _paymentOptions!.paymentId,
           optionId: _selectedOption!.id,
-          signatures: signatures,
+          data: signatures,
         ),
       );
 
