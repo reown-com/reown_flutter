@@ -4,7 +4,7 @@ PODS:
   - Flutter (1.0.0)
   - flutter_secure_storage (6.0.0):
     - Flutter
-  - GoogleDataTransport (10.1.0):
+  - GoogleDataTransport (10.1.1):
     - nanopb (~> 3.30910.0)
     - PromisesObjC (~> 2.4)
   - GoogleMLKit/BarcodeScanning (7.0.0):
@@ -17,13 +17,13 @@ PODS:
     - GoogleToolboxForMac/Defines (= 4.2.1)
   - "GoogleToolboxForMac/NSData+zlib (4.2.1)":
     - GoogleToolboxForMac/Defines (= 4.2.1)
-  - GoogleUtilities/Environment (8.1.2):
+  - GoogleUtilities/Environment (8.1.3):
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Logger (8.1.2):
+  - GoogleUtilities/Logger (8.1.3):
     - GoogleUtilities/Environment
     - GoogleUtilities/Privacy
-  - GoogleUtilities/Privacy (8.1.2)
-  - GoogleUtilities/UserDefaults (8.1.2):
+  - GoogleUtilities/Privacy (8.1.3)
+  - GoogleUtilities/UserDefaults (8.1.3):
     - GoogleUtilities/Logger
     - GoogleUtilities/Privacy
   - GTMSessionFetcher/Core (3.5.0)
@@ -58,11 +58,11 @@ PODS:
   - reown_yttrium_utils (0.0.1):
     - Flutter
     - YttriumUtilsWrapper (= 0.10.57)
-  - Sentry/HybridSDK (8.58.4)
-  - sentry_flutter (9.25.0):
+  - Sentry/HybridSDK (8.56.2)
+  - sentry_flutter (9.13.0):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 8.58.4)
+    - Sentry/HybridSDK (= 8.56.2)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -73,12 +73,12 @@ PODS:
     - Flutter
   - walletconnect_pay (0.0.1):
     - Flutter
-    - YttriumWrapper (= 0.10.57)
+    - YttriumWrapper (= 0.10.59)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
   - YttriumUtilsWrapper (0.10.57)
-  - YttriumWrapper (0.10.57)
+  - YttriumWrapper (0.10.59)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -141,10 +141,10 @@ SPEC CHECKSUMS:
   connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
-  GoogleDataTransport: aae35b7ea0c09004c3797d53c8c41f66f219d6a7
+  GoogleDataTransport: a24e58982ab3ba2f64d79613e027fe7f57e88539
   GoogleMLKit: eff9e23ec1d90ea4157a1ee2e32a4f610c5b3318
   GoogleToolboxForMac: d1a2cbf009c453f4d6ded37c105e2f67a32206d8
-  GoogleUtilities: 766ace00c6b10d8148408f329d10c4f051931850
+  GoogleUtilities: 4e0c2ad9fa0d0d18b5c4df8bf57b461cba35b0bb
   GTMSessionFetcher: 5aea5ba6bd522a239e236100971f10cb71b96ab6
   MLImage: 0ad1c5f50edd027672d8b26b0fee78a8b4a0fc56
   MLKitBarcodeScanning: 0a3064da0a7f49ac24ceb3cb46a5bc67496facd2
@@ -155,15 +155,15 @@ SPEC CHECKSUMS:
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   PromisesObjC: 752c3227f599e3467650e47ea36f433eeb10c273
   reown_yttrium_utils: f6834c869af607ef3e35bd4a5a1279d8a6e9205b
-  Sentry: 5321d74bdd28d6f6f8beaa1ca06f1fdc746bff49
-  sentry_flutter: d6279f3b5156b6535e2159e03437b571a24cc648
+  Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
+  sentry_flutter: dbed9a62ae39716b685a80140705c330d200d941
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  walletconnect_pay: e44b50c7f1749d1f5f8833aca56231a1b2b69df3
+  walletconnect_pay: f32ca9b9f5c9e29583072b082a6ef7b5d4e12288
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
   YttriumUtilsWrapper: 6b8e25838fc8a62098b562ca650682040cf9f0bc
-  YttriumWrapper: f00470f57bbfa858d346d9a70503c7cc8e10e1e3
+  YttriumWrapper: 64983f0edbf609b800ac3074010224fc5341aaeb
 
 PODFILE CHECKSUM: 3130601d0782ae68843182f40b767c7e2eca2510
 
