@@ -265,9 +265,12 @@ _ConfirmPaymentRequest _$ConfirmPaymentRequestFromJson(
 ) => _ConfirmPaymentRequest(
   paymentId: json['paymentId'] as String,
   optionId: json['optionId'] as String,
-  signatures: (json['signatures'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
+  signatures:
+      (json['signatures'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
+  data: (json['data'] as List<dynamic>?)?.map((e) => e as Object).toList(),
   collectedData: (json['collectedData'] as List<dynamic>?)
       ?.map((e) => CollectDataFieldResult.fromJson(e as Map<String, dynamic>))
       .toList(),
@@ -280,6 +283,7 @@ Map<String, dynamic> _$ConfirmPaymentRequestToJson(
   'paymentId': instance.paymentId,
   'optionId': instance.optionId,
   'signatures': instance.signatures,
+  'data': instance.data,
   'collectedData': instance.collectedData?.map((e) => e.toJson()).toList(),
   'maxPollMs': instance.maxPollMs,
 };
