@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
@@ -46,15 +45,12 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     super.initState();
     _modalNotifyListener();
     widget.appKitModal.addListener(_modalNotifyListener);
-    // TODO [AppKitModalAccountButton] this should go in ReownAppKitModal but for that, init() method of ReownAppKitModal should receive a BuildContext, which would be a breaking change
-    _magicService.onMagicRpcRequest.subscribe(_approveSign);
     _magicService.onMagicLoginRequest.subscribe(_loginRequested);
   }
 
   @override
   void dispose() {
     widget.appKitModal.removeListener(_modalNotifyListener);
-    _magicService.onMagicRpcRequest.unsubscribe(_approveSign);
     _magicService.onMagicLoginRequest.unsubscribe(_loginRequested);
     super.dispose();
   }
@@ -70,16 +66,6 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
 
   void _onTap() {
     widget.appKitModal.openModalView();
-  }
-
-  void _approveSign(MagicRequestEvent? args) async {
-    if (args?.request != null) {
-      if (widget.appKitModal.isOpen) {
-        _widgetStack.push(ApproveTransactionPage());
-      } else {
-        widget.appKitModal.openModalView(ApproveTransactionPage());
-      }
-    }
   }
 
   void _loginRequested(MagicSessionEvent? args) {
