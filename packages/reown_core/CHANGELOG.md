@@ -1,6 +1,9 @@
-## 1.5.1
+## 1.5.2
 
 - Delete the corrupt store bucket on GenericStore restore failure instead of the version metadata key.
+
+## 1.5.1
+
 - Fixed relay connectivity on Windows when the OS version contains double quotes.
 
 ## 1.5.0
