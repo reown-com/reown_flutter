@@ -1,3 +1,7 @@
+## 1.4.2
+
+- Stamp SIWE / CACAO `iat` with real UTC instead of labeling local wall-clock time as `Z`.
+
 ## 1.4.1
 
 - Dependency updates (`reown_core` 1.5.1).
