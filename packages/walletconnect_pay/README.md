@@ -153,13 +153,17 @@ for (final action in actions) {
 
 ### Confirm Payment
 
-Confirm a payment with signatures and optional collected data:
+Confirm a payment with the wallet RPC results and optional collected data.
+Each `data` element is either a plain string (signature, tx hash) or a JSON
+object for chains whose confirm payload is an object — e.g. TRON's
+`{'raw_data_hex': ..., 'signature': [...]}`. The `signatures` field is
+deprecated but still works as a fallback when `data` is not provided:
 
 ```dart
 final confirmRequest = ConfirmPaymentRequest(
   paymentId: response.paymentId,
   optionId: response.options.first.id,
-  signatures: ['0x...', '0x...'], // Signatures from wallet actions
+  data: ['0x...', '0x...'], // Results from wallet actions (strings or JSON objects)
   collectedData: [
     CollectDataFieldResult(
       id: 'fullName',
@@ -223,7 +227,7 @@ Gets the required wallet actions for a payment option.
 
 ##### `Future<ConfirmPaymentResponse> confirmPayment({required ConfirmPaymentRequest request})`
 
-Confirms a payment with signatures and optional collected data.
+Confirms a payment with wallet RPC results and optional collected data.
 
 ## Models
 
@@ -278,7 +282,8 @@ PaymentOption({
 ConfirmPaymentRequest({
   required String paymentId,
   required String optionId,
-  required List<String> signatures,
+  @Deprecated('Use data instead') List<String> signatures = const [],
+  List<Object>? data, // plain strings or JSON objects; falls back to signatures
   List<CollectDataFieldResult>? collectedData,
   int? maxPollMs,
 })

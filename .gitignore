@@ -60,3 +60,6 @@ app.*.map.json
 # Maestro test flows (downloaded from WalletConnect/actions, not checked in)
 .maestro/
 .env.maestro
+
+# fvm local SDK cache (version pin lives in .fvmrc)
+.fvm/
