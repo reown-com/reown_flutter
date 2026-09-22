@@ -216,7 +216,15 @@ sealed class ConfirmPaymentRequest with _$ConfirmPaymentRequest {
   const factory ConfirmPaymentRequest({
     required String paymentId,
     required String optionId,
-    required List<String> signatures,
+    @Deprecated('Use data instead')
+    @Default(<String>[])
+    List<String> signatures,
+
+    /// Wallet RPC results. Each element is either a plain string (signature,
+    /// tx hash) or a JSON object/array (e.g. TRON's
+    /// {"raw_data_hex": ..., "signature": [...]}), sent to the gateway as
+    /// JSON. When null, falls back to [signatures].
+    List<Object>? data,
     List<CollectDataFieldResult>? collectedData,
     int? maxPollMs,
   }) = _ConfirmPaymentRequest;

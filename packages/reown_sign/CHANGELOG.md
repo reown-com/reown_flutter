@@ -1,6 +1,12 @@
-## 1.4.1
+## 1.4.2
 
 - Emit EIP-55 checksummed addresses in SIWE messages, including uppercase `0X` prefixes.
+- Stamp SIWE / CACAO `iat` with real UTC instead of labeling local wall-clock time as `Z`.
+- Parse SIWE `Chain ID` from the structured field so a statement that mentions another chain does not change `personal_sign` routing.
+
+## 1.4.1
+
+- Dependency updates (`reown_core` 1.5.1).
 
 ## 1.4.0
 
