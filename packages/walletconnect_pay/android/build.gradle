@@ -57,9 +57,9 @@ android {
     }
 
     packaging {
-        jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium.so")
-        jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium.so")
-        jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium.so")
+        jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium_wcpay.so")
+        jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium_wcpay.so")
+        jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium_wcpay.so")
         jniLibs.pickFirsts.add("lib/**/libjnidispatch.so")
     }
 
@@ -78,7 +78,7 @@ android {
 
 dependencies {
 //    implementation("com.github.reown-com:yttrium-wcpay:unspecified")
-    implementation("com.github.reown-com.yttrium:yttrium-wcpay:0.10.58") {
+    implementation("com.github.reown-com.yttrium:yttrium-wcpay:0.10.60") {
         exclude(group: 'net.java.dev.jna', module: 'jna')
     }
     implementation("net.java.dev.jna:jna:5.17.0@aar")

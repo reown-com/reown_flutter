@@ -68,6 +68,12 @@ class WalletConnectPay {
   }) async {
     try {
       final requestJson = request.copyWith(maxPollMs: 60000).toJson();
+      // Yttrium accepts exactly one of data/signatures ("signatures" is a
+      // legacy alias of "data"): always send "data", falling back to the
+      // deprecated signatures list when data is not provided.
+      // ignore: deprecated_member_use_from_same_package
+      requestJson['data'] = request.data ?? request.signatures;
+      requestJson.remove('signatures');
       final channelResponse = await _platformInstance.confirmPayment(
         requestJson: jsonEncode(requestJson),
       );

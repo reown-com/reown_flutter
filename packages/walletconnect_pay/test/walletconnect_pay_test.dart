@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 import 'package:walletconnect_pay/walletconnect_pay_platform_interface.dart';
@@ -17,8 +18,11 @@ class MockWalletconnectPayPlatform
     return true;
   }
 
+  String? lastConfirmRequestJson;
+
   @override
   Future<String> confirmPayment({required String requestJson}) async {
+    lastConfirmRequestJson = requestJson;
     return '{"status": "succeeded", "isFinal": true}';
   }
 
@@ -71,6 +75,42 @@ void main() {
     );
     expect(result.status, PaymentStatus.succeeded);
     expect(result.isFinal, true);
+    // Legacy signatures land on the wire under "data"; the deprecated
+    // "signatures" key is never sent (yttrium treats it as an alias and
+    // rejects requests carrying both).
+    final wire =
+        jsonDecode(fakePlatform.lastConfirmRequestJson!)
+            as Map<String, dynamic>;
+    expect(wire['data'], ['test-signature']);
+    expect(wire.containsKey('signatures'), false);
+  });
+
+  test('confirmPayment with JSON object data (TRON)', () async {
+    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+      appId: 'test-project-id',
+      apiKey: 'test-api-key',
+    );
+    MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
+    WalletconnectPayPlatform.instance = fakePlatform;
+
+    final tronResult = {
+      'raw_data_hex': '0a02',
+      'signature': ['0xabc'],
+    };
+    final result = await walletconnectPayPlugin.confirmPayment(
+      request: ConfirmPaymentRequest(
+        paymentId: 'test-payment-id',
+        optionId: 'test-option-id',
+        data: [tronResult, '0x123'],
+      ),
+    );
+    expect(result.status, PaymentStatus.succeeded);
+
+    final wire =
+        jsonDecode(fakePlatform.lastConfirmRequestJson!)
+            as Map<String, dynamic>;
+    expect(wire['data'], [tronResult, '0x123']);
+    expect(wire.containsKey('signatures'), false);
   });
 
   test('getPaymentOptions', () async {

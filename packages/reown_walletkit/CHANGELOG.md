@@ -1,3 +1,8 @@
+## 1.5.1
+
+- Updated `walletconnect_pay` to 1.1.0: `ConfirmPaymentRequest.data` carries wallet RPC results as plain strings or JSON objects (e.g. TRON's `raw_data_hex` + `signature` confirm payload); `signatures` is deprecated and used as fallback.
+- Dependency updates (`reown_core` 1.5.1, `reown_sign` 1.4.1).
+
 ## 1.5.0
 
 - Stellar TVF support (transaction hash reporting for `stellar_signXDR` / `stellar_signAndSubmitXDR`) via reown_core 1.5.0 and reown_sign 1.4.0.
