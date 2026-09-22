@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Dependency updates (`reown_core` 1.5.1).
+
 ## 1.4.0
 
 - Collect Stellar TVF transaction hashes (`stellar_signXDR`, `stellar_signAndSubmitXDR`) in the sign engine.
