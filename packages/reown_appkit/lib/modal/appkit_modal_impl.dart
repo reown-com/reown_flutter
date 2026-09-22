@@ -44,6 +44,7 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/account_page.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
+import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/pages/approve_siwe.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -2064,6 +2065,7 @@ class ReownAppKitModal
     _magicService.onMagicError.subscribe(_onMagicErrorEvent);
     _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
     _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
+    _magicService.onMagicLoginRequest.subscribe(_onMagicLoginRequest);
     // Coinbase
     _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnect);
     _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseError);
@@ -2109,6 +2111,7 @@ class ReownAppKitModal
     _magicService.onMagicError.unsubscribeAll();
     _magicService.onMagicUpdate.unsubscribeAll();
     _magicService.onMagicRpcRequest.unsubscribeAll();
+    _magicService.onMagicLoginRequest.unsubscribeAll();
     //
     // Coinbase
     _coinbaseService.onCoinbaseConnect.unsubscribeAll();
@@ -2289,6 +2292,16 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       await _cleanSession();
     }
     _notify();
+  }
+
+  void _onMagicLoginRequest(MagicSessionEvent? args) {
+    if (args == null) return;
+    final page = SocialLoginPage(socialOption: AppKitSocialOption.Farcaster);
+    if (_isOpen) {
+      _widgetStack.popAllAndPush(page);
+    } else {
+      openModalView(page);
+    }
   }
 
   void _onMagicRequest(MagicRequestEvent? args) {
