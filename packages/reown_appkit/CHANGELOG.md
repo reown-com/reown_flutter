@@ -1,3 +1,7 @@
+## 1.9.1
+
+- Stamp SIWE `iat` with real UTC instead of labeling local wall-clock time as `Z`.
+
 ## 1.9.0
 
 - Stellar TVF support via reown_core 1.5.0 and reown_sign 1.4.0.
