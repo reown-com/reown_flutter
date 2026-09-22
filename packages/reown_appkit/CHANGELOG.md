@@ -1,5 +1,7 @@
 ## 1.9.1
 
+- Show the Magic approve page from `ReownAppKitModal` when social login SIWE asks for `personal_sign`, so verification can run without keeping `AppKitModalAccountButton` mounted.
+- Handle Magic Farcaster login requests from `ReownAppKitModal` so `AppKitModalAccountButton` no longer depends on `IMagicService` or `IWidgetStack`.
 - Stamp SIWE `iat` with real UTC instead of labeling local wall-clock time as `Z`.
 
 ## 1.9.0
