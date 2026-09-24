@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 
@@ -59,10 +58,30 @@ class DeepLinkHandler {
     'dev.pay.walletconnect.com',
   ];
 
+  static const _customSchemes = [
+    'wcflutterwallet',
+    'wcflutterwallet-internal',
+  ];
+
   static bool _isPayLink(String link) {
     final uri = Uri.tryParse(link);
     if (uri == null) return false;
     return _payHosts.contains(uri.host);
+  }
+
+  /// Returns the payload of a `wcflutterwallet[-internal]://wc?uri=<...>`
+  /// link, or null when [link] isn't one. The payload may arrive URL-encoded
+  /// or raw, so the whole link is decoded and everything after `uri=` is kept.
+  static String? _customSchemeUri(String link) {
+    try {
+      final decodedUri = Uri.parse(Uri.decodeFull(link));
+      if (!_customSchemes.contains(decodedUri.scheme)) return null;
+      if (!decodedUri.query.startsWith('uri=')) return null;
+      final payload = decodedUri.query.replaceFirst('uri=', '');
+      return payload.isEmpty ? null : payload;
+    } catch (_) {
+      return null;
+    }
   }
 
   static void _onLink(dynamic link) async {
@@ -77,9 +96,17 @@ class DeepLinkHandler {
       }
     }
 
-    // Route pay.walletconnect.com links through the payment flow.
+    // Route pay.walletconnect.com links through the payment flow, whether
+    // they arrive bare (NFC) or wrapped in our custom scheme
+    // (`wcflutterwallet://wc?uri=<encoded pay link>`, used by the Maestro
+    // pay tests).
     if (_isPayLink('$link')) {
       _handlePayLink('$link');
+      return;
+    }
+    final wrappedUri = _customSchemeUri('$link');
+    if (wrappedUri != null && _isPayLink(wrappedUri)) {
+      _handlePayLink(wrappedUri);
       return;
     }
 
@@ -122,16 +149,10 @@ class DeepLinkHandler {
         final walletKit = GetIt.I<IWalletKitService>().walletKit;
         await walletKit.pair(uri: decodedUri);
       } else {
-        final uriParam = ReownCoreUtils.getSearchParamFromURL(
-          decodedUri.toString(),
-          'uri',
-        );
-        if ((decodedUri.isScheme('wcflutterwallet') ||
-                decodedUri.isScheme('wcflutterwallet-internal')) &&
-            uriParam.isNotEmpty) {
+        final pairingUri = _customSchemeUri('$link');
+        if (pairingUri != null) {
           debugPrint('[WalletKit] [DeepLinkHandler] is custom uri $decodedUri');
           waiting.value = true;
-          final pairingUri = decodedUri.query.replaceFirst('uri=', '');
           final walletKit = GetIt.I<IWalletKitService>().walletKit;
           await walletKit.pair(uri: Uri.parse(pairingUri));
         }
