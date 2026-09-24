@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-REF="${1:-9a51b62bcd63afde28865788de560da9f74b508b}"
+REF="${1:-b6b52aefbe65b73dc5fb7f8937436918b23a5ab5}"
 REPO="WalletConnect/actions"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
