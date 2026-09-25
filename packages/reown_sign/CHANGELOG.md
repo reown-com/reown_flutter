@@ -1,5 +1,6 @@
 ## 1.4.2
 
+- Emit EIP-55 checksummed addresses in SIWE messages, including uppercase `0X` prefixes. Verification still accepts a signature over the address exactly as it was received.
 - Stamp SIWE / CACAO `iat` with real UTC instead of labeling local wall-clock time as `Z`.
 - Parse SIWE `Chain ID` from the structured field so a statement that mentions another chain does not change `personal_sign` routing.
 
