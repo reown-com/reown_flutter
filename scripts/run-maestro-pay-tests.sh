@@ -42,7 +42,7 @@ resolve_maestro_path() {
 if ! ls "$MAESTRO_DIR"/pay_*.yaml >/dev/null 2>&1; then
   echo "Pay test flows not found. Downloading..."
   "$SCRIPT_DIR/setup-maestro-pay-tests.sh" \
-    "${ACTIONS_BRANCH:-f9522878950f7bd904a628b2c4d486b93034a4fe}"
+    "${ACTIONS_BRANCH:-444774bdc9c5b9669068d4c4f501bb298f52f5db}"
 fi
 
 if [ ! -f "$ENV_FILE" ]; then
@@ -81,9 +81,12 @@ if [ ${#MISSING[@]} -gt 0 ]; then
 fi
 
 APP_ID="${MAESTRO_APP_ID:-${APP_ID:-com.walletconnect.flutterwallet.internal}}"
+# Flows deliver payment links as <DEEPLINK_PREFIX><url-encoded payment link>.
+DEEPLINK_PREFIX="${DEEPLINK_PREFIX:-wcflutterwallet-internal://wc?uri=}"
 
 MAESTRO_ARGS=(
   --env "APP_ID=$APP_ID"
+  --env "DEEPLINK_PREFIX=$DEEPLINK_PREFIX"
   --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC"
   --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC"
   --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC"
@@ -109,6 +112,7 @@ done
 
 echo "Running Maestro Pay E2E tests..."
 echo "  App ID: $APP_ID"
+echo "  Deep link prefix: $DEEPLINK_PREFIX"
 echo "  Args: ${RESOLVED_ARGS[*]}"
 
 maestro test "${MAESTRO_ARGS[@]}" "${RESOLVED_ARGS[@]}"

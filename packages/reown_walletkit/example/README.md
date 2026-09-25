@@ -62,7 +62,11 @@ maestro studio
 
 ### Test Mode
 
-When built with `ENABLE_TEST_MODE=true`, the scan modal shows a text input field in addition to the camera/paste options, allowing tests to paste WalletConnect Pay URLs directly.
+When built with `ENABLE_TEST_MODE=true`, the wallet restores `TEST_WALLET_PRIVATE_KEY` instead of generating a random wallet.
+
+### Payment Link Deep Links
+
+The flows don't scan or type payment URLs. They deliver each one with Maestro `openLink` as `<DEEPLINK_PREFIX><url-encoded payment link>`. For the internal flavor the prefix is `wcflutterwallet-internal://wc?uri=`, which `run-maestro-pay-tests.sh` passes by default (override with `DEEPLINK_PREFIX=...`). `DeepLinkHandler` unwraps the `uri` payload and sends pay links to the payment flow, the same one scanned QR codes use.
 
 ### CI
 

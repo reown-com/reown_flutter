@@ -113,10 +113,10 @@ jobs:
             --split-per-abi
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@4be7c0112f9651fc63b18c137650b75d2fc9b200
+        uses: WalletConnect/actions/maestro/pay-tests@444774bdc9c5b9669068d4c4f501bb298f52f5db
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@4be7c0112f9651fc63b18c137650b75d2fc9b200
+        uses: WalletConnect/actions/maestro/setup@444774bdc9c5b9669068d4c4f501bb298f52f5db
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -131,6 +131,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           APP_ID: com.walletconnect.flutterwallet.internal
+          DEEPLINK_PREFIX: wcflutterwallet-internal://wc?uri=
           WPAY_CUSTOMER_KEY_SINGLE_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }}
           WPAY_MERCHANT_ID_SINGLE_NOKYC: ${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }}
           WPAY_CUSTOMER_KEY_MULTI_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }}
@@ -155,7 +156,7 @@ jobs:
             adb logcat -c
             adb logcat > /tmp/logcat.txt 2>&1 &
             adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
-            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
+            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "DEEPLINK_PREFIX=$DEEPLINK_PREFIX" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
 
       # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
       # run re-exercises the on-chain approve step. Runs even when the suite
@@ -165,7 +166,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@4be7c0112f9651fc63b18c137650b75d2fc9b200
+        uses: WalletConnect/actions/maestro/permit2-reset@444774bdc9c5b9669068d4c4f501bb298f52f5db
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
@@ -354,16 +355,17 @@ jobs:
           xcrun simctl install booted "$APP_PATH"
 
       - name: Copy Maestro Pay test flows
-        uses: WalletConnect/actions/maestro/pay-tests@4be7c0112f9651fc63b18c137650b75d2fc9b200
+        uses: WalletConnect/actions/maestro/pay-tests@444774bdc9c5b9669068d4c4f501bb298f52f5db
 
       - name: Install Maestro CLI
-        uses: WalletConnect/actions/maestro/setup@4be7c0112f9651fc63b18c137650b75d2fc9b200
+        uses: WalletConnect/actions/maestro/setup@444774bdc9c5b9669068d4c4f501bb298f52f5db
 
       - name: Run Maestro iOS tests
         id: maestro_ios
         run: |
           maestro test \
             --env APP_ID=com.walletconnect.flutterwallet.internal \
+            --env "DEEPLINK_PREFIX=wcflutterwallet-internal://wc?uri=" \
             --env WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }} \
             --env WPAY_MERCHANT_ID_SINGLE_NOKYC=${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }} \
             --env WPAY_CUSTOMER_KEY_MULTI_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }} \
@@ -382,7 +384,7 @@ jobs:
       - name: Reset USDT Permit2 allowance (Polygon)
         if: always()
         continue-on-error: true
-        uses: WalletConnect/actions/maestro/permit2-reset@4be7c0112f9651fc63b18c137650b75d2fc9b200
+        uses: WalletConnect/actions/maestro/permit2-reset@444774bdc9c5b9669068d4c4f501bb298f52f5db
         with:
           chain-id: eip155:137
           rpc-url: https://polygon-bor-rpc.publicnode.com
