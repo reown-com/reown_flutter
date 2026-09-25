@@ -42,7 +42,7 @@ resolve_maestro_path() {
 if ! ls "$MAESTRO_DIR"/pay_*.yaml >/dev/null 2>&1; then
   echo "Pay test flows not found. Downloading..."
   "$SCRIPT_DIR/setup-maestro-pay-tests.sh" \
-    "${ACTIONS_BRANCH:-b6b52aefbe65b73dc5fb7f8937436918b23a5ab5}"
+    "${ACTIONS_BRANCH:-444774bdc9c5b9669068d4c4f501bb298f52f5db}"
 fi
 
 if [ ! -f "$ENV_FILE" ]; then
