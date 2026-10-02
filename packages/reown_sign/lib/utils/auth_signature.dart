@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
 import 'package:http/http.dart' as http;
 
@@ -151,6 +152,29 @@ class AuthSignature {
     } catch (e) {
       return false;
     }
+  }
+
+  /// Returns true when optional CACAO `exp` / `nbf` are absent or [now]
+  /// is inside the validity window. Unparseable timestamps fail closed.
+  static bool isWithinValidityWindow({
+    String? exp,
+    String? nbf,
+    DateTime? now,
+  }) {
+    final clock = now ?? DateTime.now().toUtc();
+    if (exp != null) {
+      final expTime = DateTime.tryParse(exp)?.toUtc();
+      if (expTime == null || !clock.isBefore(expTime)) {
+        return false;
+      }
+    }
+    if (nbf != null) {
+      final nbfTime = DateTime.tryParse(nbf)?.toUtc();
+      if (nbfTime == null || clock.isBefore(nbfTime)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   // verifies CACAO signature
