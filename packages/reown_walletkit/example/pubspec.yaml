@@ -27,7 +27,7 @@ dependencies:
   json_annotation: ^4.9.0
   kadena_dart_sdk: ^2.3.2
   on_chain: ^7.1.0
-  package_info_plus: ^8.1.2
+  package_info_plus: '>=8.1.2 <11.0.0'
   pointycastle: ^4.0.0
   mobile_scanner: ^6.0.10
   polkadart: '>=0.4.7 <0.8.0'

@@ -1,6 +1,7 @@
 ## 1.5.2
 
 - Delete the corrupt store bucket on GenericStore restore failure instead of the version metadata key.
+- Allowed `package_info_plus` 10.x.
 
 ## 1.5.1
 
