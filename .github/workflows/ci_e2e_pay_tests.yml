@@ -442,14 +442,8 @@ jobs:
       - name: Refresh CocoaPods specs
         run: pod repo update --silent
 
-      # Two-step iOS simulator build: let Flutter emit Dart kernel +
-      # Generated.xcconfig, then drive xcodebuild ourselves. The custom
-      # xcodebuild step exists only to pin ARCHS=x86_64 for the
-      # mobile_scanner/MLKit simulator slice (see the build step below) —
-      # `flutter build ios --simulator` can't override ARCHS. The build is
-      # unsigned: the pay suite no longer exercises Universal Links, so no
-      # associated-domains entitlement needs to survive.
-      - name: Prepare Flutter iOS artifacts
+      - name: Build Runner.app (simulator, debug)
+        id: build_ios
         working-directory: packages/reown_walletkit/example
         # Via env, not inline ${{ }}, so the key never lands in the script.
         env:
@@ -457,7 +451,6 @@ jobs:
           TEST_WALLET_PRIVATE_KEY: ${{ steps.wallet.outputs.private-key }}
         run: |
           flutter build ios \
-            --config-only \
             --flavor internal \
             --simulator \
             --debug \
@@ -465,43 +458,12 @@ jobs:
             --dart-define="ENABLE_TEST_MODE=true" \
             --dart-define="TEST_WALLET_PRIVATE_KEY=$TEST_WALLET_PRIVATE_KEY"
 
-      - name: Install Pods
-        working-directory: packages/reown_walletkit/example/ios
-        run: pod install
-
-      - name: Build Runner.app via xcodebuild (unsigned)
-        id: build_ios
-        working-directory: packages/reown_walletkit/example/ios
-        # Build the simulator app for x86_64. mobile_scanner pulls in Google
-        # MLKit, whose .frameworks are fat binaries with an arm64-*device*
-        # slice and an x86_64-*simulator* slice, but NO arm64-simulator slice.
-        # On the Apple Silicon runner the default arm64 simulator build fails
-        # to link MLKit ("building for 'iOS-simulator', but linking in object
-        # file ... built for 'iOS'"). x86_64 is the only working simulator
-        # slice; it runs on the simulator via Rosetta 2. EXCLUDED_ARCHS alone
-        # isn't enough (arm64 is the standard arch here), so pin ARCHS=x86_64
-        # with ONLY_ACTIVE_ARCH=NO.
-        run: |
-          set -o pipefail && env NSUnbufferedIO=YES \
-            xcodebuild \
-              -workspace Runner.xcworkspace \
-              -scheme internal \
-              -configuration Debug-internal \
-              -sdk iphonesimulator \
-              -destination "generic/platform=iOS Simulator" \
-              -derivedDataPath ../build/ios-ddcache \
-              ARCHS=x86_64 \
-              ONLY_ACTIVE_ARCH=NO \
-              CODE_SIGNING_ALLOWED=NO \
-              build
-
       - name: Install app on simulators
         run: |
           set -euo pipefail
-          APP_PATH=$(find packages/reown_walletkit/example/build/ios-ddcache \
-            -name "Runner.app" -path "*/Debug-internal-iphonesimulator/*" | head -1)
-          if [ -z "$APP_PATH" ]; then
-            echo "ERROR: Runner.app not found in DerivedData"
+          APP_PATH=packages/reown_walletkit/example/build/ios/iphonesimulator/Runner.app
+          if [ ! -d "$APP_PATH" ]; then
+            echo "ERROR: Runner.app not found at $APP_PATH"
             find packages/reown_walletkit/example/build -name "Runner.app" || true
             exit 1
           fi
