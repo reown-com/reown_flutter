@@ -52,7 +52,7 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
-      # mobile_scanner (GoogleMLKit) requires iOS 15.5+; keep every pod aligned.
+      # Keep every pod on the Runner's deployment target.
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
     end
   end
