@@ -27,6 +27,10 @@ on:
       - 'packages/reown_walletkit/example/**'
       - 'packages/walletconnect_pay/**'
       - '.github/workflows/ci_e2e_pay_tests.yml'
+      - '.github/workflows/e2e_balance_check.yml'
+      - '.github/actions/derive-e2e-wallet/**'
+      - '.github/actions/install-cast/**'
+      - '.github/scripts/maestro/**'
   schedule:
     # Run daily at 07:00 UTC
     - cron: '0 7 * * *'
@@ -38,18 +42,43 @@ concurrency:
 jobs:
   check-balance:
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+    # The faucet bot sends from one wallet and drops a same-chain request that
+    # arrives before its previous send is mined, so runs never request at the
+    # same time (e.g. the daily cron and a PR run).
+    concurrency:
+      group: e2e-faucet-requests
+      cancel-in-progress: false
     uses: ./.github/workflows/e2e_balance_check.yml
     secrets: inherit
 
   pay-tests-android:
     needs: check-balance
-    if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios')) }}
+    # !cancelled() rather than always(): still runs when check-balance fails or
+    # is skipped, but Cancel stops it (GitHub leaves an `always()` job running).
+    if: ${{ !cancelled() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'ios')) }}
     runs-on: ubuntu-16core
     timeout-minutes: 45
+    # This leg's own test wallet (see derive-e2e-wallet): runs from other refs
+    # queue instead of paying from the same account at the same time. GitHub
+    # keeps one pending run per group; a newer one replaces it.
+    concurrency:
+      group: e2e-wallet-flutter-android
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # This leg's account in the mnemonic shared with the other SDK repos
+      # (index 5; see the action for the reserved indexes), so no other repo or
+      # leg races this suite on the Polygon nonce or the Permit2 allowance.
+      - name: Derive E2E wallet
+        id: wallet
+        uses: ./.github/actions/derive-e2e-wallet
+        with:
+          mnemonic: ${{ secrets.TEST_WALLET_MNEMONIC }}
+          index: 5
+          expected-address: ${{ vars.TEST_WALLET_ADDRESS_ANDROID }}
 
       - name: Enable KVM
         run: |
@@ -69,15 +98,12 @@ jobs:
         with:
           flutter-version: "3.38.3"
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('packages/reown_walletkit/example/android/**/*.gradle*', 'packages/reown_walletkit/example/android/**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      # setup-gradle caches Gradle User Home (dependencies, wrapper, transforms)
+      # and cleans out unused entries. It only writes from the default branch
+      # (develop: the daily cron); PR and dispatch runs restore develop's latest
+      # entry read-only. Cache stats go to the job summary.
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
 
       - name: Cache Pub
         uses: actions/cache@v4
@@ -93,21 +119,29 @@ jobs:
 
       - name: Add Secrets file
         working-directory: packages/reown_walletkit/example/android
-        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+        env:
+          SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
+        run: touch secrets.properties && echo "$SECRETS_FILE" >> secrets.properties
 
       - name: Add Keystore file
         working-directory: packages/reown_walletkit/example/android
-        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+        run: echo "$KEYSTORE" | base64 --decode >> app/debug.keystore
 
       - name: Build APK with test mode
         id: build
         working-directory: packages/reown_walletkit/example
+        # Via env, not inline ${{ }}, so the key never lands in the script.
+        env:
+          PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
+          TEST_WALLET_PRIVATE_KEY: ${{ steps.wallet.outputs.private-key }}
         run: |
           flutter build apk \
             --flavor internal \
-            --dart-define="PROJECT_ID=${{ secrets.WALLET_PROJECT_ID }}" \
+            --dart-define="PROJECT_ID=$PROJECT_ID" \
             --dart-define="ENABLE_TEST_MODE=true" \
-            --dart-define="TEST_WALLET_PRIVATE_KEY=${{ secrets.TEST_WALLET_PRIVATE_KEY }}" \
+            --dart-define="TEST_WALLET_PRIVATE_KEY=$TEST_WALLET_PRIVATE_KEY" \
             --release \
             --target-platform android-x64 \
             --split-per-abi
@@ -123,6 +157,10 @@ jobs:
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@390045a88d335d438c972b422090144158df6823
+        with:
+          # Pinned so run timings and multi-device (--shard-split) behavior are
+          # comparable across runs; bump deliberately (the default is latest).
+          version: '2.10.0'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -137,7 +175,9 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         env:
           APP_ID: com.walletconnect.flutterwallet.internal
+          APK_PATH: packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
           DEEPLINK_PREFIX: wcflutterwallet-internal://wc?uri=
+          ARTIFACTS_DIR: /tmp/e2e-artifacts
           WPAY_CUSTOMER_KEY_SINGLE_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }}
           WPAY_MERCHANT_ID_SINGLE_NOKYC: ${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }}
           WPAY_CUSTOMER_KEY_MULTI_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }}
@@ -157,12 +197,10 @@ jobs:
           disable-animations: true
           emulator-boot-timeout: 900
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-load
-          script: |
-            mkdir -p /tmp/maestro-output
-            adb logcat -c
-            adb logcat > /tmp/logcat.txt 2>&1 &
-            adb install -r packages/reown_walletkit/example/build/app/outputs/flutter-apk/app-x86_64-internal-release.apk
-            maestro test --include-tags pay --env "APP_ID=$APP_ID" --env "DEEPLINK_PREFIX=$DEEPLINK_PREFIX" --env "WPAY_CUSTOMER_KEY_SINGLE_NOKYC=$WPAY_CUSTOMER_KEY_SINGLE_NOKYC" --env "WPAY_MERCHANT_ID_SINGLE_NOKYC=$WPAY_MERCHANT_ID_SINGLE_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_NOKYC=$WPAY_CUSTOMER_KEY_MULTI_NOKYC" --env "WPAY_MERCHANT_ID_MULTI_NOKYC=$WPAY_MERCHANT_ID_MULTI_NOKYC" --env "WPAY_CUSTOMER_KEY_MULTI_KYC=$WPAY_CUSTOMER_KEY_MULTI_KYC" --env "WPAY_MERCHANT_ID_MULTI_KYC=$WPAY_MERCHANT_ID_MULTI_KYC" --test-output-dir /tmp/maestro-output .maestro/
+          # android-emulator-runner runs each `script` line in its own `sh -c`,
+          # so the whole leg lives in one script. It retries only the failed
+          # flows once.
+          script: bash .github/scripts/maestro/maestro-android.sh
 
       # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
       # run re-exercises the on-chain approve step. Runs even when the suite
@@ -175,9 +213,9 @@ jobs:
         uses: WalletConnect/actions/maestro/permit2-reset@390045a88d335d438c972b422090144158df6823
         with:
           chain-id: eip155:137
-          rpc-url: https://polygon-bor-rpc.publicnode.com
+          rpc-url: https://polygon.drpc.org
           token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
-          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
+          private-key: ${{ steps.wallet.outputs.private-key }}
 
       # Clean up APK before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -190,14 +228,26 @@ jobs:
         with:
           name: pay-tests-debug-android
           path: |
-            /tmp/logcat.txt
-            /tmp/maestro-output/**/*.png
-            /tmp/maestro-output/**/*.jpg
-            /tmp/maestro-output/**/*.jpeg
-            /tmp/maestro-output/**/*.mp4
-            /tmp/maestro-output/**/*.mov
-            /tmp/maestro-output/**/*.webm
-            /tmp/maestro-output/**/*.gif
+            /tmp/e2e-artifacts/maestro-output/**/*.png
+            /tmp/e2e-artifacts/maestro-output/**/*.jpg
+            /tmp/e2e-artifacts/maestro-output/**/*.jpeg
+            /tmp/e2e-artifacts/maestro-output/**/*.mp4
+            /tmp/e2e-artifacts/maestro-output/**/*.mov
+            /tmp/e2e-artifacts/maestro-output/**/*.webm
+            /tmp/e2e-artifacts/maestro-output/**/*.gif
+            /tmp/e2e-artifacts/maestro-output.log
+            /tmp/e2e-artifacts/junit-attempt-*.xml
+            /tmp/e2e-artifacts/android-logcat*.log
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # The full logcat is large and only useful when something failed.
+      - name: Upload full logcat
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pay-tests-full-logcat-android
+          path: /tmp/e2e-artifacts/full-logcat.txt
           retention-days: 14
           if-no-files-found: ignore
 
@@ -252,40 +302,133 @@ jobs:
 
   pay-tests-ios:
     needs: check-balance
-    if: ${{ always() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android')) }}
+    # !cancelled() rather than always(): see pay-tests-android.
+    if: ${{ !cancelled() && ((github.event_name == 'pull_request' && github.event.pull_request.draft == false) || github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android')) }}
     runs-on: macos-latest-xlarge
     timeout-minutes: 60
+    # This leg's own test wallet; see pay-tests-android.
+    concurrency:
+      group: e2e-wallet-flutter-ios
+      cancel-in-progress: false
+    env:
+      # Simulators the Maestro suite is split across (--shard-split). Slim
+      # simulators peak at ~2.3 GB each (stock ~5.5 GB); set 1 to run serially.
+      IOS_SIMULATORS: 2
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # Index 6; see pay-tests-android.
+      - name: Derive E2E wallet
+        id: wallet
+        uses: ./.github/actions/derive-e2e-wallet
+        with:
+          mnemonic: ${{ secrets.TEST_WALLET_MNEMONIC }}
+          index: 6
+          expected-address: ${{ vars.TEST_WALLET_ADDRESS_IOS }}
 
       - name: Select Xcode 26 (iOS 26 SDK)
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: '26'
 
-      - name: Boot iOS simulator
+      # simslim disables simulator services the suite doesn't need before the
+      # first boot (profile: .github/scripts/maestro/simslim-ci.json).
+      - name: Install simslim
+        env:
+          # Pinned release + checksum: simslim is young and ships often.
+          SIMSLIM_VERSION: '0.11.0'
+          SIMSLIM_SHA256: d7ae4d0c834dfea9911f113cf60e98c25ee61f2a3a85ca22d0c28c43b39ccfaf
         run: |
-          # Pick whatever iPhone simulator the runner actually has, so this
-          # doesn't break each time the Xcode/runner image bumps the model.
-          SIMULATOR_UDID=$(xcrun simctl list devices available \
-            | grep -Eo 'iPhone[^(]*\([A-Fa-f0-9-]{36}\)' \
-            | grep -Eo '[A-Fa-f0-9-]{36}' | head -n 1)
-          if [ -z "$SIMULATOR_UDID" ]; then
+          set -uo pipefail
+          DIR="$RUNNER_TEMP/simslim"
+          install_simslim() {
+            mkdir -p "$DIR" &&
+              curl -fsSL --retry 5 --retry-all-errors --retry-delay 3 \
+                --connect-timeout 20 --max-time 300 -o "$DIR/simslim.tar.gz" \
+                "https://github.com/MobAI-App/simslim/releases/download/v${SIMSLIM_VERSION}/simslim-v${SIMSLIM_VERSION}-macos-arm64.tar.gz" &&
+              echo "$SIMSLIM_SHA256  $DIR/simslim.tar.gz" | shasum -a 256 -c - &&
+              tar -xzf "$DIR/simslim.tar.gz" -C "$DIR" simslim
+          }
+          if install_simslim; then
+            echo "$DIR" >> "$GITHUB_PATH"
+            "$DIR/simslim" --version
+          else
+            echo "::error::Could not install simslim v$SIMSLIM_VERSION"
+            exit 1
+          fi
+
+      - name: Boot iOS simulators
+        env:
+          # A first boot can be slow on a loaded runner (10m default).
+          SIMSLIM_BOOT_TIMEOUT: 15m
+        run: |
+          set -euo pipefail
+          if ! [[ "$IOS_SIMULATORS" =~ ^[1-9]$ ]]; then
+            echo "::error::IOS_SIMULATORS must be 1-9, got '$IOS_SIMULATORS'"
+            exit 1
+          fi
+          # Don't hardcode a model: Xcode/runner image bumps drop old devices.
+          # Create fresh devices from the newest iPhone device type, falling back
+          # to one already-available iPhone simulator. `simctl list devicetypes`
+          # is newest-first, so take the first match. Filter by name too: the
+          # iPod touch also has productFamily "iPhone" (current runtimes can't
+          # create it).
+          DEVICE_TYPE=$(xcrun simctl list devicetypes -j | \
+            jq -r 'first(.devicetypes[] | select(.productFamily == "iPhone" and (.name | startswith("iPhone"))) | .identifier) // empty')
+          DEVICE_IDS=()
+          FRESH=true
+          : > "$RUNNER_TEMP/simctl-create.err"
+          for i in $(seq 1 "$IOS_SIMULATORS"); do
+            if [ -n "$DEVICE_TYPE" ] && ID=$(xcrun simctl create "E2E-iPhone-$i" "$DEVICE_TYPE" 2>"$RUNNER_TEMP/simctl-create.err"); then
+              DEVICE_IDS+=("$ID")
+            else
+              break
+            fi
+          done
+          if [ "${#DEVICE_IDS[@]}" -eq 0 ]; then
+            echo "::warning::Could not create a simulator from '${DEVICE_TYPE:-<none>}' ($(cat "$RUNNER_TEMP/simctl-create.err" 2>/dev/null)); falling back to an existing iPhone simulator"
+            DEVICE_TYPE=""
+            FRESH=false
+            ID=$(xcrun simctl list devices available -j | \
+              jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.name | startswith("iPhone")) | .udid' | head -1)
+            [ -n "$ID" ] && DEVICE_IDS=("$ID")
+          fi
+          if [ "${#DEVICE_IDS[@]}" -eq 0 ]; then
             echo "ERROR: no available iPhone simulator found"
             xcrun simctl list devices available
             exit 1
           fi
-          echo "Using simulator: $SIMULATOR_UDID"
-          xcrun simctl boot "$SIMULATOR_UDID" 2>/dev/null || true
-          # Wait for full boot before configuring the simulator
-          xcrun simctl bootstatus "$SIMULATOR_UDID" -b
-          # Disable UIKit animations to reduce Maestro timing flakiness.
-          # Target the UDID we just booted, not `booted` — if the runner has
-          # another simulator up, `booted` is ambiguous (simctl errors on
-          # multiple) and could configure the wrong device.
-          xcrun simctl spawn "$SIMULATOR_UDID" defaults write com.apple.UIKit UIAnimationDragCoefficient -float 0 || true
+          if [ "${#DEVICE_IDS[@]}" -lt "$IOS_SIMULATORS" ]; then
+            echo "::warning::Only ${#DEVICE_IDS[@]} of $IOS_SIMULATORS simulators available; running on ${#DEVICE_IDS[@]}"
+          fi
+          echo "Using simulator device type: ${DEVICE_TYPE:-<fallback>}, ids: ${DEVICE_IDS[*]}"
+          SIMSLIM_PROFILE="$GITHUB_WORKSPACE/.github/scripts/maestro/simslim-ci.json"
+          # Slim and boot all devices in parallel. simslim writes its overrides
+          # while the device is still off, so it only applies to freshly created
+          # devices; the existing-simulator fallback boots stock.
+          PIDS=()
+          for ID in "${DEVICE_IDS[@]}"; do
+            if [ "$FRESH" = "true" ]; then
+              # Fails on drift rather than silently testing on a stock
+              # simulator.
+              ( simslim on "$ID" --profile "$SIMSLIM_PROFILE" &&
+                  simslim verify "$ID" --profile "$SIMSLIM_PROFILE" ) &
+            else
+              ( xcrun simctl boot "$ID" || true ) &
+            fi
+            PIDS+=($!)
+          done
+          for PID in "${PIDS[@]}"; do wait "$PID" || exit 1; done
+          for ID in "${DEVICE_IDS[@]}"; do
+            # Wait for full boot so the steps below don't race a not-ready
+            # simulator.
+            xcrun simctl bootstatus "$ID" -b
+            # Disable UIKit animations to reduce Maestro timing flakiness.
+            xcrun simctl spawn "$ID" defaults write com.apple.UIKit UIAnimationDragCoefficient -float 0 || true
+          done
+          echo "DEVICE_IDS=$(IFS=,; echo "${DEVICE_IDS[*]}")" >> "$GITHUB_ENV"
 
       - name: Install Flutter
         uses: subosito/flutter-action@v2
@@ -308,15 +451,19 @@ jobs:
       # associated-domains entitlement needs to survive.
       - name: Prepare Flutter iOS artifacts
         working-directory: packages/reown_walletkit/example
+        # Via env, not inline ${{ }}, so the key never lands in the script.
+        env:
+          PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
+          TEST_WALLET_PRIVATE_KEY: ${{ steps.wallet.outputs.private-key }}
         run: |
           flutter build ios \
             --config-only \
             --flavor internal \
             --simulator \
             --debug \
-            --dart-define="PROJECT_ID=${{ secrets.WALLET_PROJECT_ID }}" \
+            --dart-define="PROJECT_ID=$PROJECT_ID" \
             --dart-define="ENABLE_TEST_MODE=true" \
-            --dart-define="TEST_WALLET_PRIVATE_KEY=${{ secrets.TEST_WALLET_PRIVATE_KEY }}"
+            --dart-define="TEST_WALLET_PRIVATE_KEY=$TEST_WALLET_PRIVATE_KEY"
 
       - name: Install Pods
         working-directory: packages/reown_walletkit/example/ios
@@ -348,8 +495,9 @@ jobs:
               CODE_SIGNING_ALLOWED=NO \
               build
 
-      - name: Install app on simulator
+      - name: Install app on simulators
         run: |
+          set -euo pipefail
           APP_PATH=$(find packages/reown_walletkit/example/build/ios-ddcache \
             -name "Runner.app" -path "*/Debug-internal-iphonesimulator/*" | head -1)
           if [ -z "$APP_PATH" ]; then
@@ -358,7 +506,13 @@ jobs:
             exit 1
           fi
           echo "Installing: $APP_PATH"
-          xcrun simctl install booted "$APP_PATH"
+          echo "APP_PATH=$APP_PATH" >> "$GITHUB_ENV"
+          # Target each UDID, not `booted`: with several simulators up,
+          # `booted` is ambiguous.
+          IFS=, read -ra IDS <<< "$DEVICE_IDS"
+          PIDS=()
+          for ID in "${IDS[@]}"; do xcrun simctl install "$ID" "$APP_PATH" & PIDS+=($!); done
+          for PID in "${PIDS[@]}"; do wait "$PID"; done
 
       # The merchant inputs enable the expired-payment pool for pay_expired_link:
       # payments only expire 15 min after creation, so each run uses one an
@@ -371,22 +525,52 @@ jobs:
 
       - name: Install Maestro CLI
         uses: WalletConnect/actions/maestro/setup@390045a88d335d438c972b422090144158df6823
+        with:
+          # Pinned so run timings and multi-device (--shard-split) behavior are
+          # comparable across runs; bump deliberately (the default is latest).
+          version: '2.10.0'
 
       - name: Run Maestro iOS tests
         id: maestro_ios
+        env:
+          APP_ID: com.walletconnect.flutterwallet.internal
+          DEEPLINK_PREFIX: wcflutterwallet-internal://wc?uri=
+          ARTIFACTS_DIR: /tmp/e2e-artifacts
+          WPAY_CUSTOMER_KEY_SINGLE_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }}
+          WPAY_MERCHANT_ID_SINGLE_NOKYC: ${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }}
+          WPAY_CUSTOMER_KEY_MULTI_NOKYC: ${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }}
+          WPAY_MERCHANT_ID_MULTI_NOKYC: ${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }}
+          WPAY_CUSTOMER_KEY_MULTI_KYC: ${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }}
+          WPAY_MERCHANT_ID_MULTI_KYC: ${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }}
         run: |
-          maestro test \
-            --env APP_ID=com.walletconnect.flutterwallet.internal \
-            --env "DEEPLINK_PREFIX=wcflutterwallet-internal://wc?uri=" \
-            --env WPAY_CUSTOMER_KEY_SINGLE_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_SINGLE_NOKYC }} \
-            --env WPAY_MERCHANT_ID_SINGLE_NOKYC=${{ secrets.WPAY_MERCHANT_ID_SINGLE_NOKYC }} \
-            --env WPAY_CUSTOMER_KEY_MULTI_NOKYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_NOKYC }} \
-            --env WPAY_MERCHANT_ID_MULTI_NOKYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_NOKYC }} \
-            --env WPAY_CUSTOMER_KEY_MULTI_KYC=${{ secrets.WPAY_CUSTOMER_KEY_MULTI_KYC }} \
-            --env WPAY_MERCHANT_ID_MULTI_KYC=${{ secrets.WPAY_MERCHANT_ID_MULTI_KYC }} \
-            --include-tags pay \
-            --test-output-dir /tmp/maestro-output \
-            .maestro/
+          IFS=, read -ra IDS <<< "$DEVICE_IDS"
+          mkdir -p "$ARTIFACTS_DIR"
+          # App-process-only syslog at the default level (no debug/info noise),
+          # one per simulator. Only uploaded on failure (see below). The process
+          # name is read from the built app.
+          APP_PROCESS=$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$APP_PATH/Info.plist" 2>/dev/null || echo Runner)
+          SYSLOG_PIDS=()
+          for i in "${!IDS[@]}"; do
+            xcrun simctl spawn "${IDS[$i]}" log stream \
+              --style=compact \
+              --predicate "process == \"$APP_PROCESS\"" \
+              > "$ARTIFACTS_DIR/ios-syslog-$((i + 1)).log" 2>&1 &
+            SYSLOG_PIDS+=($!)
+          done
+          # With several simulators, one Maestro process splits the flows across
+          # them. Only pay_usdt_polygon sends txs from the wallet (Polygon Permit2
+          # approve); Base/Optimism payments are gasless EIP-3009 authorizations,
+          # so any split is nonce-safe.
+          # The default `bash -e` would exit on a failed suite before the syslog
+          # streams are stopped and the crash reports copied.
+          set +e
+          MAESTRO_DEVICES="$DEVICE_IDS" bash .github/scripts/maestro/maestro-suite.sh iOS
+          maestro_exit_code=$?
+          kill "${SYSLOG_PIDS[@]}" 2>/dev/null || true
+          wait "${SYSLOG_PIDS[@]}" 2>/dev/null || true
+          mkdir -p "$ARTIFACTS_DIR/ios-crash-reports"
+          cp -R "$HOME/Library/Logs/DiagnosticReports/." "$ARTIFACTS_DIR/ios-crash-reports/" 2>/dev/null || true
+          exit "$maestro_exit_code"
 
       # Reset the USDT Permit2 allowance back to 0 so the next pay_usdt_polygon
       # run re-exercises the on-chain approve step. Runs even when the suite
@@ -399,9 +583,9 @@ jobs:
         uses: WalletConnect/actions/maestro/permit2-reset@390045a88d335d438c972b422090144158df6823
         with:
           chain-id: eip155:137
-          rpc-url: https://polygon-bor-rpc.publicnode.com
+          rpc-url: https://polygon.drpc.org
           token-address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
-          private-key: ${{ secrets.TEST_WALLET_PRIVATE_KEY }}
+          private-key: ${{ steps.wallet.outputs.private-key }}
 
       # Clean up app build before uploading artifacts — never upload APK/IPA
       - name: Clean up build artifacts
@@ -414,13 +598,26 @@ jobs:
         with:
           name: pay-tests-debug-ios
           path: |
-            /tmp/maestro-output/**/*.png
-            /tmp/maestro-output/**/*.jpg
-            /tmp/maestro-output/**/*.jpeg
-            /tmp/maestro-output/**/*.mp4
-            /tmp/maestro-output/**/*.mov
-            /tmp/maestro-output/**/*.webm
-            /tmp/maestro-output/**/*.gif
+            /tmp/e2e-artifacts/maestro-output/**/*.png
+            /tmp/e2e-artifacts/maestro-output/**/*.jpg
+            /tmp/e2e-artifacts/maestro-output/**/*.jpeg
+            /tmp/e2e-artifacts/maestro-output/**/*.mp4
+            /tmp/e2e-artifacts/maestro-output/**/*.mov
+            /tmp/e2e-artifacts/maestro-output/**/*.webm
+            /tmp/e2e-artifacts/maestro-output/**/*.gif
+            /tmp/e2e-artifacts/maestro-output.log
+            /tmp/e2e-artifacts/junit-attempt-*.xml
+            /tmp/e2e-artifacts/ios-crash-reports/**
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # The app syslog is only useful when something failed.
+      - name: Upload iOS syslog
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pay-tests-ios-syslog
+          path: /tmp/e2e-artifacts/ios-syslog-*.log
           retention-days: 14
           if-no-files-found: ignore
 

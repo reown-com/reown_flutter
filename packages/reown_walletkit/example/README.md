@@ -72,11 +72,18 @@ The flows don't scan or type payment URLs. They deliver each one with Maestro `o
 
 The CI workflow (`.github/workflows/ci_e2e_pay_tests.yml`) runs Pay E2E on:
 1. Android (`ubuntu-16core`) using an emulator
-2. iOS (`macos-26-xlarge`) using a simulator
+2. iOS (`macos-latest-xlarge`) using two slim simulators
 
 For each platform lane it:
-1. Builds a test-mode wallet binary with a funded test wallet
-2. Downloads shared Maestro Pay flows via
+1. Derives the lane's funded test wallet from the `TEST_WALLET_MNEMONIC` secret
+   (index 5 for Android, 6 for iOS; see `.github/actions/derive-e2e-wallet`)
+2. Builds a test-mode wallet binary with that wallet's key
+3. Downloads shared Maestro Pay flows via
    `WalletConnect/actions/maestro/pay-tests`
-3. Runs pay-tagged Maestro tests on emulator/simulator
-4. Uploads only debug output (never APK/IPA)
+4. Runs pay-tagged Maestro tests on emulator/simulator, retrying only the
+   failed flows once (`.github/scripts/maestro/maestro-suite.sh`)
+5. Resets the USDT Permit2 allowance on Polygon
+6. Uploads only debug output (never APK/IPA)
+
+Local runs are unchanged: pass a funded key with
+`--dart-define="TEST_WALLET_PRIVATE_KEY=..."`.
