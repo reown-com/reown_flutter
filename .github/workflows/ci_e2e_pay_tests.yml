@@ -98,15 +98,12 @@ jobs:
         with:
           flutter-version: "3.38.3"
 
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('packages/reown_walletkit/example/android/**/*.gradle*', 'packages/reown_walletkit/example/android/**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      # setup-gradle caches Gradle User Home (dependencies, wrapper, transforms)
+      # and cleans out unused entries. It only writes from the default branch
+      # (develop: the daily cron); PR and dispatch runs restore develop's latest
+      # entry read-only. Cache stats go to the job summary.
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
 
       - name: Cache Pub
         uses: actions/cache@v4
