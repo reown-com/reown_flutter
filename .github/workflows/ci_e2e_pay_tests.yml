@@ -122,11 +122,15 @@ jobs:
 
       - name: Add Secrets file
         working-directory: packages/reown_walletkit/example/android
-        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+        env:
+          SECRETS_FILE: ${{ secrets.SECRETS_FILE }}
+        run: touch secrets.properties && echo "$SECRETS_FILE" >> secrets.properties
 
       - name: Add Keystore file
         working-directory: packages/reown_walletkit/example/android
-        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+        run: echo "$KEYSTORE" | base64 --decode >> app/debug.keystore
 
       - name: Build APK with test mode
         id: build

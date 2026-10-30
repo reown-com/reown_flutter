@@ -46,6 +46,8 @@ jobs:
             address: ${{ vars.TEST_WALLET_ADDRESS_IOS }}
     env:
       SLACK_FAUCETBOT_WEBHOOK_URL: ${{ secrets.SLACK_FAUCETBOT_WEBHOOK_URL }}
+      # Read from env in the scripts below, never interpolated into them.
+      ADDRESS: ${{ matrix.address }}
     steps:
       # Only the shared install-cast action is needed from the repo.
       - name: Checkout install-cast action
@@ -58,8 +60,6 @@ jobs:
         uses: ./.github/actions/install-cast
 
       - name: Check wallet address is configured
-        env:
-          ADDRESS: ${{ matrix.address }}
         run: |
           if [ -z "$ADDRESS" ]; then
             echo "::error::No wallet address for ${{ matrix.platform }}: set the TEST_WALLET_ADDRESS_<PLATFORM> repo variable (see .github/actions/derive-e2e-wallet)."
@@ -71,7 +71,7 @@ jobs:
         run: |
           BALANCE=$(cast call --rpc-url "$BASE_RPC" "$BASE_USDC" \
             "balanceOf(address)(uint256)" \
-            "${{ matrix.address }}" | sed 's/\[.*\]//' | tr -d '[:space:]')
+            "$ADDRESS" | sed 's/\[.*\]//' | tr -d '[:space:]')
           echo "balance=$BALANCE" >> $GITHUB_OUTPUT
           BALANCE_HUMAN=$(echo "scale=2; $BALANCE / 1000000" | bc)
           echo "USDC on Base: $BALANCE_HUMAN ($BALANCE raw)"
@@ -85,7 +85,7 @@ jobs:
             BALANCE_HUMAN=$(echo "scale=2; $BALANCE / 1000000" | bc)
             THRESHOLD_HUMAN=$(echo "scale=2; $THRESHOLD / 1000000" | bc)
             ALERT_TEXT="[request] Can i have ${THRESHOLD_HUMAN} USDC on Base in wallet: \
-              ${{ matrix.address }}"
+              ${ADDRESS}"
             echo "should_alert=true" >> "$GITHUB_OUTPUT"
             echo "text=$ALERT_TEXT" >> "$GITHUB_OUTPUT"
             echo "::warning::$ALERT_TEXT"
@@ -116,7 +116,7 @@ jobs:
         run: |
           BALANCE=$(cast call --rpc-url "$OP_RPC" "$OP_USDC" \
             "balanceOf(address)(uint256)" \
-            "${{ matrix.address }}" | sed 's/\[.*\]//' | tr -d '[:space:]')
+            "$ADDRESS" | sed 's/\[.*\]//' | tr -d '[:space:]')
           echo "balance=$BALANCE" >> $GITHUB_OUTPUT
           BALANCE_HUMAN=$(echo "scale=2; $BALANCE / 1000000" | bc)
           echo "USDC on Optimism: $BALANCE_HUMAN ($BALANCE raw)"
@@ -130,7 +130,7 @@ jobs:
             BALANCE_HUMAN=$(echo "scale=2; $BALANCE / 1000000" | bc)
             THRESHOLD_HUMAN=$(echo "scale=2; $THRESHOLD / 1000000" | bc)
             ALERT_TEXT="[request] Can i have ${THRESHOLD_HUMAN} USDC on Optimism in wallet: \
-              ${{ matrix.address }}"
+              ${ADDRESS}"
             echo "should_alert=true" >> "$GITHUB_OUTPUT"
             echo "text=$ALERT_TEXT" >> "$GITHUB_OUTPUT"
             echo "::warning::$ALERT_TEXT"
@@ -162,7 +162,7 @@ jobs:
         run: |
           BALANCE=$(cast call --rpc-url "$POLYGON_RPC" "$POLYGON_USDT" \
             "balanceOf(address)(uint256)" \
-            "${{ matrix.address }}" | sed 's/\[.*\]//' | tr -d '[:space:]')
+            "$ADDRESS" | sed 's/\[.*\]//' | tr -d '[:space:]')
           echo "balance=$BALANCE" >> $GITHUB_OUTPUT
           BALANCE_HUMAN=$(echo "scale=2; $BALANCE / 1000000" | bc)
           echo "USDT0 on Polygon: $BALANCE_HUMAN ($BALANCE raw)"
@@ -176,7 +176,7 @@ jobs:
             BALANCE_HUMAN=$(echo "scale=2; $BALANCE / 1000000" | bc)
             THRESHOLD_HUMAN=$(echo "scale=2; $THRESHOLD / 1000000" | bc)
             ALERT_TEXT="[request] Can i have ${THRESHOLD_HUMAN} USDT0 on Polygon in wallet: \
-              ${{ matrix.address }}"
+              ${ADDRESS}"
             echo "should_alert=true" >> "$GITHUB_OUTPUT"
             echo "text=$ALERT_TEXT" >> "$GITHUB_OUTPUT"
             echo "::warning::$ALERT_TEXT"
@@ -207,7 +207,7 @@ jobs:
       - name: Check POL gas balance on Polygon
         id: poly_pol_balance
         run: |
-          BALANCE=$(cast balance --rpc-url "$POLYGON_RPC" "${{ matrix.address }}" | tr -d '[:space:]')
+          BALANCE=$(cast balance --rpc-url "$POLYGON_RPC" "$ADDRESS" | tr -d '[:space:]')
           echo "balance=$BALANCE" >> $GITHUB_OUTPUT
           BALANCE_HUMAN=$(echo "scale=6; $BALANCE / 1000000000000000000" | bc)
           echo "POL on Polygon: $BALANCE_HUMAN ($BALANCE wei)"
@@ -222,7 +222,7 @@ jobs:
             BALANCE_HUMAN=$(echo "scale=6; $BALANCE / 1000000000000000000" | bc)
             THRESHOLD_HUMAN=$(echo "scale=6; $THRESHOLD / 1000000000000000000" | bc)
             ALERT_TEXT="[request] Can i have ${THRESHOLD_HUMAN} POL (gas) on Polygon in wallet: \
-              ${{ matrix.address }} (currently ${BALANCE_HUMAN})"
+              ${ADDRESS} (currently ${BALANCE_HUMAN})"
             echo "should_alert=true" >> "$GITHUB_OUTPUT"
             echo "text=$ALERT_TEXT" >> "$GITHUB_OUTPUT"
             echo "::warning::$ALERT_TEXT"
