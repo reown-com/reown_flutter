@@ -9,7 +9,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class WebSocketHandler implements IWebSocketHandler {
   /// How long [connect] waits for the WebSocket handshake to complete.
   /// `WebSocket.connect` has no timeout of its own, so a connection attempt
-  /// on a blocked network (e.g. an app in the background on Android 15+)
+  /// on a blocked network (e.g. an app in the background on Android 17)
   /// could otherwise stay pending forever.
   final Duration connectTimeout;
 

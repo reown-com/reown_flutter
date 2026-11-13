@@ -1,6 +1,6 @@
 ## 1.5.2
 
-- Fixed the relay client never reconnecting after a failed connection attempt (e.g. the app was in the background on Android 15+ and its network was cut): WebSocket connect and close are now time-bounded, concurrent connects share one attempt and the heartbeat retries a failed connection.
+- Fixed the relay client never reconnecting after a failed connection attempt (e.g. Android 17 cut the network of the backgrounded app): WebSocket connect and close are now time-bounded, concurrent connects share one attempt and the heartbeat retries a failed connection.
 - Delete the corrupt store bucket on GenericStore restore failure instead of the version metadata key.
 
 ## 1.5.1
