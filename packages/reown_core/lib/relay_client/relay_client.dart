@@ -234,30 +234,51 @@ class RelayClient implements IRelayClient {
       return;
     }
 
+    // Only one connection attempt at a time: concurrent callers (relay close
+    // handler, heartbeat, app resume, connectivity) join the attempt in flight
+    // instead of tearing its socket down.
+    if (_connecting) {
+      core.logger.d('[$runtimeType]: _connect already in progress, waiting');
+      try {
+        await _connectingFuture;
+      } catch (_) {
+        // The attempt in flight already reported its error
+      }
+      return;
+    }
+
+    _connecting = true;
+    final attempt = Completer<void>();
+    _connectingFuture = attempt.future;
+    // Nobody may be waiting on the attempt, don't let its error go unhandled
+    _connectingFuture.catchError((_) {});
+
     core.relayUrl = relayUrl ?? core.relayUrl;
     core.logger.i('[$runtimeType] Connecting to relay url ${core.relayUrl}');
 
-    // If we have tried connecting to the relay before, disconnect
-    if (_active) {
-      await _disconnect();
-    }
-
     try {
-      // Connect and track the connection progress, then start the heartbeat
-      _connectingFuture = _createJsonRPCProvider();
-      await _connectingFuture;
-      _connecting = false;
-      _subscribeToHeartbeat();
-      //
+      // If we have tried connecting to the relay before, disconnect
+      if (_active) {
+        await _disconnect();
+      }
+      // Connect, then start the heartbeat
+      await _createJsonRPCProvider();
+      attempt.complete();
     } on TimeoutException catch (e, s) {
       core.logger.e('[$runtimeType], _connect timeout: $e', stackTrace: s);
+      attempt.completeError(e, s);
       onRelayClientError.broadcast(ErrorEvent('Connection to relay timeout'));
-      _connecting = false;
-      _connect();
     } catch (e, s) {
       core.logger.e('[$runtimeType], _connect error: $e', stackTrace: s);
+      attempt.completeError(e, s);
       onRelayClientError.broadcast(ErrorEvent(e));
+    } finally {
       _connecting = false;
+      // Keep the heartbeat running after a failed attempt too: it retries the
+      // connection while the relay client is still meant to be active.
+      if (_active) {
+        _subscribeToHeartbeat();
+      }
     }
   }
 
@@ -278,7 +299,6 @@ class RelayClient implements IRelayClient {
   }
 
   Future<void> _createJsonRPCProvider() async {
-    _connecting = true;
     _active = true;
     final signedJWT = await core.crypto.signJWT(core.relayUrl);
     core.logger.d('[$runtimeType]: Signed JWT: $signedJWT');
@@ -377,6 +397,11 @@ class RelayClient implements IRelayClient {
   void _heartbeatSubscription(EventArgs? args) async {
     if (_relayIsClosed) {
       await _handleRelayClose(10002, null);
+    } else if (_active && !_connecting && jsonRPC == null) {
+      // A previous connection attempt failed (e.g. no network while the app
+      // was in the background): retry it.
+      core.logger.d('[$runtimeType]: Retrying relay connection');
+      await _connect();
     }
   }
 
@@ -509,7 +534,11 @@ class RelayClient implements IRelayClient {
     else {
       return null;
     }
-    return await jsonRPC!.sendRequest(method, parameters, id);
+    final rpc = jsonRPC;
+    if (rpc == null || rpc.isClosed) {
+      throw const ReownCoreError(code: -1, message: 'Relay is not connected');
+    }
+    return await rpc.sendRequest(method, parameters, id);
   }
 
   Future<String> _onSubscribe(SubscribeOptions options) async {
