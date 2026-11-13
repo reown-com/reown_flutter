@@ -115,15 +115,6 @@ class WebSocketHandler implements IWebSocketHandler {
 
     _channel = StreamChannel(_inputController!.stream, _outputController!.sink);
 
-    if (_channel == null) {
-      // print('Socket channel is null, waiting...');
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (_channel == null) {
-        // print('Socket channel is still null, throwing ');
-        throw Exception('Socket channel is null');
-      }
-    }
-
     try {
       await _socket?.ready.timeout(connectTimeout);
     } catch (e) {

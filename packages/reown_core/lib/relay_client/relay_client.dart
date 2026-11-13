@@ -524,7 +524,12 @@ class RelayClient implements IRelayClient {
     }
     // If we are connecting, then wait for the connection to establish and then send the message
     else if (_connecting) {
-      await _connectingFuture;
+      try {
+        await _connectingFuture;
+      } catch (_) {
+        // The attempt in flight already reported its error, the connection
+        // check below throws a uniform one for this request
+      }
     }
     // If we aren't connected but should be (active), try to (re)connect and then send the message
     else if (!isConnected && _active) {

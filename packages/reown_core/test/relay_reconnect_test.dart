@@ -115,6 +115,42 @@ void main() {
       expect(core.relayClient.isConnected, isFalse);
     });
 
+    test('requests waiting on a failed connect get a uniform error', () async {
+      final pending = Completer<void>();
+      when(socketHandler.connect()).thenAnswer((_) => pending.future);
+
+      final errors = <Object>[];
+      core.relayClient.onRelayClientError.subscribe((args) {
+        errors.add(args.error);
+      });
+
+      final connecting = core.relayClient.connect();
+      await pumpEventQueue();
+      final publishing = core.relayClient.publish(
+        topic: 'abc',
+        message: 'msg',
+        options: const PublishOptions(ttl: 300, tag: 1),
+      );
+      await pumpEventQueue();
+
+      pending.completeError(TimeoutException('handshake'));
+      await Future.wait([
+        connecting,
+        publishing,
+      ]).timeout(const Duration(seconds: 2));
+
+      expect(
+        errors,
+        contains(
+          isA<ReownCoreError>().having(
+            (e) => e.message,
+            'message',
+            'Relay is not connected',
+          ),
+        ),
+      );
+    });
+
     test('heartbeat retries the connection after a failed attempt', () async {
       core.heartbeat.onPulse.broadcast();
       await pumpEventQueue();
