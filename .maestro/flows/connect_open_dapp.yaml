@@ -17,7 +17,9 @@ appId: ${APP_ID}
       id: "connect-button"
     timeout: 30000
 # AppKit keeps the connect button disabled until it is initialised (relay
-# connected); a tap before that does nothing.
+# connected); a tap before that does nothing. The connect-button wrapper's
+# Semantics merges into the button's, so its label is
+# "connect-button\nAppKitModalConnectButton enabled" (hence (?s).*).
 - extendedWaitUntil:
-    visible: "AppKitModalConnectButton enabled"
+    visible: "(?s).*AppKitModalConnectButton enabled"
     timeout: 30000
