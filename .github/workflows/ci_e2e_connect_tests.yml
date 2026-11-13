@@ -13,12 +13,16 @@ name: E2E Connect Tests
 # Kept apart from ci_e2e_pay_tests.yml so the E2E KPI job (WalletConnect/actions
 # metrics/config/workflows.json) reports the Connect pass rate on its own.
 # "(skip-metrics)" tells that job to drop this run. Don't change/remove it.
-run-name: "E2E Connect Tests (${{ github.event.inputs.platform || (github.event_name == 'schedule' && 'both' || 'android') }})${{ ((github.event_name == 'pull_request' && github.event.pull_request.draft) || (github.event_name == 'workflow_dispatch' && github.ref_name != 'develop')) && ' (skip-metrics)' || '' }}"
+run-name: "E2E Connect Tests (${{ github.event.inputs.platform || (github.event_name == 'schedule' && 'both' || 'android') }})${{ ((github.event_name == 'pull_request' && github.event.pull_request.draft) || (github.event_name == 'workflow_dispatch' && github.ref_name != 'develop') || github.event_name == 'push') && ' (skip-metrics)' || '' }}"
 
 permissions:
   contents: read
 
 on:
+  # TEMP: run iOS on CI before this workflow is on develop. Revert before merge.
+  push:
+    branches:
+      - feat/slo2-maestro-connect-e2e
   workflow_dispatch:
     inputs:
       platform:
@@ -228,7 +232,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Send Slack notification
-        if: failure() && github.event_name != 'pull_request'
+        if: failure() && github.event_name != 'pull_request' && github.event_name != 'push'
         uses: slackapi/slack-github-action@b0fa283ad8fea605de13dc3f449259339835fc52 # v2.1.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -280,6 +284,7 @@ jobs:
     # macOS xlarge is expensive: nightly and dispatch only, never on PRs.
     if: >-
       github.event_name == 'schedule'
+      || github.event_name == 'push'
       || (github.event_name == 'workflow_dispatch' && github.event.inputs.platform != 'android')
     # The KPI job matches this name (job_pattern) to get a per-platform rate.
     name: E2E Connect - iOS
@@ -483,7 +488,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Send Slack notification
-        if: failure()
+        if: failure() && github.event_name != 'push'
         uses: slackapi/slack-github-action@b0fa283ad8fea605de13dc3f449259339835fc52 # v2.1.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
