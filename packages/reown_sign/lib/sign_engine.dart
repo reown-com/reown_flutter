@@ -1893,7 +1893,22 @@ class ReownSign implements IReownSign {
         projectId,
       );
 
-      return isValid;
+      if (isValid || walletAddress == walletAddress.toEIP55()) {
+        return isValid;
+      }
+
+      // Older SDKs signed the address as received; accept that exact message.
+      final legacy = reconstructed.replaceFirst(
+        walletAddress.toEIP55(),
+        walletAddress,
+      );
+      return await AuthSignature.verifySignature(
+        walletAddress,
+        legacy,
+        signature,
+        chainId,
+        projectId,
+      );
     } catch (e) {
       return false;
     }
