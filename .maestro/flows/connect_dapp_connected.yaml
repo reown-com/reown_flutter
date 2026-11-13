@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: wait until the session is settled on the dApp side (a
+# full relay round trip, slowest on CI). The connected view shows "Connected
+# with <wallet name>".
+- extendedWaitUntil:
+    visible: "Connected with .*"
+    timeout: 60000

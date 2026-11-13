@@ -37,16 +37,25 @@ class MethodDialogState extends State<MethodDialog> {
     return FutureBuilder<dynamic>(
       future: widget.response,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        // A rejected request throws (hasError), completes with no result
+        // (some SDK errors) or with a JSON-RPC error object; all are an
+        // error. The title ("<method> success" / "<method> error") is what
+        // the connect E2E flows check
+        // (.maestro/flows/connect_dapp_sign_result.yaml).
+        final done = snapshot.connectionState == ConnectionState.done;
         String result = '';
-        if (snapshot.hasData) {
-          final response = jsonEncode(snapshot.data).replaceAll('"', '');
-          result = response.contains('error') ? ' error' : ' success';
+        if (done) {
+          final data = snapshot.data;
+          final isError = snapshot.hasError ||
+              data == null ||
+              (data is Map && data.containsKey('error'));
+          result = isError ? ' error' : ' success';
         }
         return AlertDialog(
           title: Text('${widget.method}$result'),
           content: Builder(
             builder: (BuildContext context) {
-              if (!snapshot.hasData && !snapshot.hasError) {
+              if (!done) {
                 return const SizedBox(
                   width: StyleConstants.linear48,
                   height: StyleConstants.linear48,

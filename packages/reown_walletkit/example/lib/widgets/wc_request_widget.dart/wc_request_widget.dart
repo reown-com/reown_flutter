@@ -5,6 +5,7 @@ import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
+import 'package:reown_walletkit_wallet/utils/test_ids.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connection_request_widget.dart';
 
@@ -35,6 +36,7 @@ class WCRequestWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomButton(
+              testId: TestIds.walletRequestReject,
               onTap: onReject ??
                   () {
                     if (Navigator.canPop(context)) {
@@ -50,6 +52,7 @@ class WCRequestWidget extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.s4),
             CustomButton(
+              testId: TestIds.walletRequestApprove,
               onTap: onAccept ??
                   () {
                     if (Navigator.canPop(context)) {

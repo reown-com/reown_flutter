@@ -57,8 +57,12 @@ app.*.map.json
 # run_tests_all.sh
 *.env.secret*
 
-# Maestro test flows (downloaded from WalletConnect/actions, not checked in)
-.maestro/
+# Shared Maestro Pay flows (downloaded from WalletConnect/actions by
+# setup-maestro-pay-tests.sh / CI, not checked in). The connect flows
+# (connect_*, sign_*) are tracked.
+.maestro/pay_*.yaml
+.maestro/flows/pay_*.yaml
+.maestro/scripts/
 .env.maestro
 
 # fvm local SDK cache (version pin lives in .fvmrc)

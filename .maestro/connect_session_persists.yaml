@@ -1,0 +1,50 @@
+appId: ${APP_ID}
+name: WalletKit Connect - Session survives a wallet restart
+tags:
+  - connect
+---
+# Connect, kill the wallet, start it again: the session must be restored from
+# storage and listed under "Connected apps".
+# Env: APP_ID (wallet), DAPP_APP_ID (dApp), DAPP_NAME (regex for the dApp's
+# metadata name, which the wallet's session rows show).
+
+- clearState
+- runFlow: flows/connect_launch_wallet.yaml
+- runFlow: flows/connect_open_dapp.yaml
+
+- startRecording: "Connect - Session survives a wallet restart"
+
+# Connect
+- runFlow: flows/connect_select_wallet.yaml
+- tapOn:
+    id: "wallet-request-approve"
+- extendedWaitUntil:
+    notVisible:
+      id: "wallet-request-approve"
+    timeout: 30000
+- runFlow: flows/connect_back_to_dapp.yaml
+- runFlow: flows/connect_dapp_connected.yaml
+
+# Close the wallet (stopApp, so nothing stays in memory) and start it again.
+- runFlow: flows/connect_launch_wallet.yaml
+
+# The sample wallets call the tab "Connected apps" or "Connected Apps", and
+# Flutter adds "\nTab 2 of 3" to its label (hence (?is)). Right after launch
+# the tab bar can ignore a tap; retry until the tab opens (empty state or a
+# session row).
+- retry:
+    maxRetries: 3
+    commands:
+      - tapOn: "(?is)connected apps.*"
+      - extendedWaitUntil:
+          visible: "(?s)${DAPP_NAME}.*|No connected apps yet"
+          timeout: 15000
+# After a cold start WalletKit takes a few seconds to reconnect and load the
+# stored sessions, and until then the tab shows the empty state. So wait for
+# the session row itself instead of failing on the empty state.
+- extendedWaitUntil:
+    visible: "(?s)${DAPP_NAME}.*"
+    timeout: 10000
+- assertNotVisible: "No connected apps yet"
+
+- stopRecording
