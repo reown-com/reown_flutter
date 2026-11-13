@@ -393,6 +393,8 @@ The goal is one set of YAML for every platform in `WalletConnect/actions`, so th
 ./scripts/run-maestro-connect-tests.sh
 ```
 
+With more than one device up, pass `--device <serial|udid>` (Maestro refuses to guess). Use an API 34 emulator like CI: on Android 17 (API 37) the dApp's relay socket drops a few seconds after it goes to the background and doesn't come back, so the `personal_sign` response never arrives and the sign flows hang. iOS needs a simulator runtime that still runs x86_64 apps (iOS 26 or older, as CI's Xcode 26): the wallet is built x86_64-only because of MLKit, and iOS 27 simulators can't run it.
+
 ### Platform-Specific Code
 
 - **Android**: Native code in `android/` directories
