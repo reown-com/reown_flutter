@@ -18,7 +18,7 @@ This skill encodes project-specific conventions including interface-based design
 - **Published Packages**: https://pub.dev/publishers/reown.com/packages
 - **Documentation**: 
   - AppKit: https://docs.reown.com/appkit/flutter/core/installation
-  - WalletKit: https://docs.walletconnect.network/wallet-sdk/flutter/installation
+  - WalletKit: https://docs.walletconnect.com/wallets/flutter/installation
 - **License**: Apache 2.0
 
 ### Tech Stack
@@ -341,11 +341,13 @@ Most packages use code generation:
 
 WalletConnect Pay flows are tested with [Maestro](https://maestro.mobile.dev/) E2E tests. Test flows are **shared** across RN, Kotlin, and Flutter wallet samples and live in the [WalletConnect/actions](https://github.com/WalletConnect/actions) repo (not in this repo).
 
-**Test ID convention**: Flutter widgets use `Semantics(identifier: 'test-id', label: 'test-id')` which maps to Android `resource-id` for Maestro's `id:` selector. Most Pay-specific IDs are prefixed with `pay-` (e.g. `pay-button-pay`, `pay-option-0`, `pay-result-success-icon`), while scan modal URL controls currently use `input-paste-url` and `button-submit-url`. Select-screen option rows additionally expose a stable, network+token-keyed id `pay-option-{assetSymbol}-{networkName}` (lowercased, spaces → `-`, e.g. `pay-option-usdt-polygon`) wrapping the index-based `pay-option-{index}`, so a flow can pick a specific asset+network when a token appears on multiple networks. The first-time token-setup note (e.g. the USDT Permit2 `approve` step) is exposed as `pay-loading-setup-note`.
+**Test ID convention**: Flutter widgets use `Semantics(identifier: 'test-id', label: 'test-id')` which maps to Android `resource-id` for Maestro's `id:` selector. Pay-specific IDs are prefixed with `pay-` (e.g. `pay-button-pay`, `pay-option-0`, `pay-result-success-icon`); `button-scan` is only used to detect that the home screen has rendered. Select-screen option rows additionally expose a stable, network+token-keyed id `pay-option-{assetSymbol}-{networkName}` (lowercased, spaces → `-`, e.g. `pay-option-usdt-polygon`) wrapping the index-based `pay-option-{index}`, so a flow can pick a specific asset+network when a token appears on multiple networks. The first-time token-setup note (e.g. the USDT Permit2 `approve` step) is exposed as `pay-loading-setup-note`.
 
 **USDT-on-Polygon (Permit2) flow** (`pay_usdt_polygon`): USDT on Polygon is a plain ERC-20 (no EIP-3009/2612), so WC Pay uses the Permit2 path — the wallet sends an on-chain `approve` (allowance) tx **and then** the payment tx. (USDT on Arbitrum is EIP-3009 / signature-based, so it never needs an on-chain approve; Polygon is used precisely because it does.) To keep `approve` exercised on every run, CI resets the Permit2 allowance back to `0` after the suite via the shared `WalletConnect/actions/maestro/permit2-reset` action (a Node step that signs a tx — the private key goes via env, never the CLI). The test wallet must hold USDT **and** a little POL (gas) on Polygon.
 
-**Test mode**: Build with `--dart-define="ENABLE_TEST_MODE=true"` to enable the URL paste flow used by Maestro tests. In current behavior, scan/paste options are still shown and the URL controls are exposed via `input-paste-url` and `button-submit-url`. Build with `--dart-define="TEST_WALLET_PRIVATE_KEY=<hex>"` to use a funded wallet.
+**Payment link delivery**: Flows open each payment link as a deep link, `<DEEPLINK_PREFIX><encodeURIComponent(payment link)>`, via Maestro `openLink`. For the internal flavor the prefix is `wcflutterwallet-internal://wc?uri=` (passed with `--env DEEPLINK_PREFIX=...` in CI and by `run-maestro-pay-tests.sh`). `DeepLinkHandler` unwraps the `uri` payload and routes pay links to `IWalletKitService.pair` (the payment flow), not raw WalletConnect pairing.
+
+**Test mode**: Build with `--dart-define="ENABLE_TEST_MODE=true"` and `--dart-define="TEST_WALLET_PRIVATE_KEY=<hex>"` to use a funded wallet.
 
 **Running locally**:
 1. `./scripts/setup-maestro-pay-tests.sh` — downloads test flows from WalletConnect/actions
@@ -353,7 +355,21 @@ WalletConnect Pay flows are tested with [Maestro](https://maestro.mobile.dev/) E
 3. Build APK with test mode + funded wallet private key
 4. `APP_ID=com.walletconnect.flutterwallet.internal ./scripts/run-maestro-pay-tests.sh`
 
-**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs Android (`ubuntu-16core`, emulator) and iOS (`macos-26-xlarge`, simulator) lanes. It uses shared pay test flows and never uploads APK/IPA — only debug output.
+**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs Android (`ubuntu-16core`, emulator) and iOS (`macos-latest-xlarge`, simulator) lanes. It uses shared pay test flows and never uploads APK/IPA — only debug output.
+
+**CI test wallets**: CI doesn't store a private key. `.github/actions/derive-e2e-wallet` derives each lane's account from the `TEST_WALLET_MNEMONIC` secret, which the other SDK repos share: `m/44'/60'/0'/0/5` for Android and `/6` for iOS. Each repo and lane has its own index, so no other run's Permit2 reset or `approve` nonce races with this suite. The job fails if the derived address doesn't match the `TEST_WALLET_ADDRESS_ANDROID` / `TEST_WALLET_ADDRESS_IOS` repo variable. Each lane runs in its own `e2e-wallet-flutter-<platform>` concurrency group, so runs from different refs queue instead of paying at the same time. `e2e_balance_check.yml` checks both addresses (Base USDC, Optimism USDC, Polygon USDT and POL), one at a time, in the `e2e-faucet-requests` concurrency group. To set or rotate the wallets (keep `--mnemonic-index` in sync with `index` in `ci_e2e_pay_tests.yml`):
+
+```bash
+gh secret set TEST_WALLET_MNEMONIC -R reown-com/reown_flutter < mnemonic.txt
+gh variable set TEST_WALLET_ADDRESS_ANDROID -R reown-com/reown_flutter \
+  --body "$(cast wallet address --mnemonic mnemonic.txt --mnemonic-index 5)"
+gh variable set TEST_WALLET_ADDRESS_IOS -R reown-com/reown_flutter \
+  --body "$(cast wallet address --mnemonic mnemonic.txt --mnemonic-index 6)"
+```
+
+A new address must be funded (Base USDC, Optimism USDC, Polygon USDT and POL, each token under $9.99 so `pay_insufficient_funds` stays unaffordable) and must submit Pay's compliance details form once, or the no-KYC flows fail.
+
+**CI retry and iOS simulators**: Both lanes run `.github/scripts/maestro/maestro-suite.sh`. If any flow fails, it re-runs only the flows the JUnit report marks as failed, once (the full suite when there's no report; no retry after a cancel). Android runs it via `maestro-android.sh`, which installs and smoke-checks the APK and captures logcat. iOS creates `IOS_SIMULATORS` (2) fresh simulators from the newest iPhone device type, slims them with [simslim](https://github.com/MobAI-App/simslim) (`.github/scripts/maestro/simslim-ci.json`), and splits the suite across them with `--shard-split`. Sharding is nonce-safe because only `pay_usdt_polygon` sends txs. Maestro is pinned to 2.10.0. Debug artifacts always include recordings, JUnit reports and the Maestro console log (no `--debug-output`: its `commands-*.json` hold the WPAY values). The full Android logcat and the iOS app syslog are uploaded only when the job fails.
 
 ### Platform-Specific Code
 

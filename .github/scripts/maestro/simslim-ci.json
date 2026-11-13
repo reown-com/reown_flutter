@@ -1,0 +1,5 @@
+{
+  "name": "walletkit-flutter-e2e",
+  "description": "WalletKit Flutter Maestro E2E, same profile as react-native-examples. siri stays enabled: with assistantd off, iOS's in-app keyboard setup loops on Siri preference lookups and Maestro times out. icloud and web stay enabled (the Pay KYC flows use a webview).",
+  "except": ["icloud", "web", "siri"]
+}
