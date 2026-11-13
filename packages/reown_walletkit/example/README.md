@@ -62,17 +62,28 @@ maestro studio
 
 ### Test Mode
 
-When built with `ENABLE_TEST_MODE=true`, the scan modal shows a text input field in addition to the camera/paste options, allowing tests to paste WalletConnect Pay URLs directly.
+When built with `ENABLE_TEST_MODE=true`, the wallet restores `TEST_WALLET_PRIVATE_KEY` instead of generating a random wallet.
+
+### Payment Link Deep Links
+
+The flows don't scan or type payment URLs. They deliver each one with Maestro `openLink` as `<DEEPLINK_PREFIX><url-encoded payment link>`. For the internal flavor the prefix is `wcflutterwallet-internal://wc?uri=`, which `run-maestro-pay-tests.sh` passes by default (override with `DEEPLINK_PREFIX=...`). `DeepLinkHandler` unwraps the `uri` payload and sends pay links to the payment flow, the same one scanned QR codes use.
 
 ### CI
 
 The CI workflow (`.github/workflows/ci_e2e_pay_tests.yml`) runs Pay E2E on:
 1. Android (`ubuntu-16core`) using an emulator
-2. iOS (`macos-26-xlarge`) using a simulator
+2. iOS (`macos-latest-xlarge`) using two slim simulators
 
 For each platform lane it:
-1. Builds a test-mode wallet binary with a funded test wallet
-2. Downloads shared Maestro Pay flows via
+1. Derives the lane's funded test wallet from the `TEST_WALLET_MNEMONIC` secret
+   (index 5 for Android, 6 for iOS; see `.github/actions/derive-e2e-wallet`)
+2. Builds a test-mode wallet binary with that wallet's key
+3. Downloads shared Maestro Pay flows via
    `WalletConnect/actions/maestro/pay-tests`
-3. Runs pay-tagged Maestro tests on emulator/simulator
-4. Uploads only debug output (never APK/IPA)
+4. Runs pay-tagged Maestro tests on emulator/simulator, retrying only the
+   failed flows once (`.github/scripts/maestro/maestro-suite.sh`)
+5. Resets the USDT Permit2 allowance on Polygon
+6. Uploads only debug output (never APK/IPA)
+
+Local runs are unchanged: pass a funded key with
+`--dart-define="TEST_WALLET_PRIVATE_KEY=..."`.
