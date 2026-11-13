@@ -7,6 +7,22 @@ import 'package:stream_channel/stream_channel.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketHandler implements IWebSocketHandler {
+  /// How long [connect] waits for the WebSocket handshake to complete.
+  /// `WebSocket.connect` has no timeout of its own, so a connection attempt
+  /// on a blocked network (e.g. an app in the background on Android 17)
+  /// could otherwise stay pending forever.
+  final Duration connectTimeout;
+
+  /// How long [close] waits for the socket's sink to close.
+  /// `WebSocketChannel.sink.close()` never completes if the connection
+  /// failed or is still pending, so it must not be awaited unbounded.
+  final Duration closeTimeout;
+
+  WebSocketHandler({
+    this.connectTimeout = const Duration(seconds: 10),
+    this.closeTimeout = const Duration(seconds: 2),
+  });
+
   String? _url;
   @override
   String? get url => _url;
@@ -99,17 +115,8 @@ class WebSocketHandler implements IWebSocketHandler {
 
     _channel = StreamChannel(_inputController!.stream, _outputController!.sink);
 
-    if (_channel == null) {
-      // print('Socket channel is null, waiting...');
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (_channel == null) {
-        // print('Socket channel is still null, throwing ');
-        throw Exception('Socket channel is null');
-      }
-    }
-
     try {
-      await _socket?.ready;
+      await _socket?.ready.timeout(connectTimeout);
     } catch (e) {
       await close();
       throw ReownCoreError(
@@ -121,42 +128,51 @@ class WebSocketHandler implements IWebSocketHandler {
 
   @override
   Future<void> close() async {
-    // Cancel subscriptions first to prevent writes to closed sinks
-    try {
-      await _inputSubscription?.cancel();
-    } catch (e) {
-      debugPrint('[WebSocketHandler] inputSubscription.cancel failed: $e');
-    }
-    try {
-      await _outputSubscription?.cancel();
-    } catch (e) {
-      debugPrint('[WebSocketHandler] outputSubscription.cancel failed: $e');
-    }
+    // Cancel subscriptions first to prevent writes to closed sinks, then
+    // detach everything so a concurrent connect() never reuses a socket that
+    // is being torn down.
+    final cancellations = <Future<void>?>[
+      _inputSubscription?.cancel(),
+      _outputSubscription?.cancel(),
+    ];
+    final socket = _socket;
+    final inputController = _inputController;
+    final outputController = _outputController;
+    _socket = null;
+    _channel = null;
     _inputSubscription = null;
     _outputSubscription = null;
+    _inputController = null;
+    _outputController = null;
 
+    for (final cancellation in cancellations) {
+      try {
+        await cancellation;
+      } catch (e) {
+        debugPrint('[WebSocketHandler] subscription.cancel failed: $e');
+      }
+    }
+
+    // sink.close() only completes once the socket was connected and its close
+    // handshake finished: it hangs forever after a failed connection attempt
+    // or while the handshake is still pending, so bound it.
     try {
-      await _socket?.sink.close();
+      await socket?.sink.close().timeout(closeTimeout, onTimeout: () {});
     } catch (e) {
       debugPrint('[WebSocketHandler] socket.sink.close failed: $e');
     }
 
     // Close the controllers to prevent further messages and race conditions
     try {
-      await _inputController?.close();
+      await inputController?.close();
     } catch (e) {
       debugPrint('[WebSocketHandler] inputController.close failed: $e');
     }
     try {
-      await _outputController?.close();
+      await outputController?.close();
     } catch (e) {
       debugPrint('[WebSocketHandler] outputController.close failed: $e');
     }
-
-    _inputController = null;
-    _outputController = null;
-    _channel = null;
-    _socket = null;
   }
 
   @override
