@@ -1,11 +1,14 @@
 #!/bin/bash
-# Runs the Maestro Pay suite (--include-tags pay) with one retry that re-runs
-# only the flows that failed. Shared by the Android and iOS legs. Ported from
-# react-native-examples' walletkit-build-and-maestro/maestro/maestro-suite.sh.
+# Runs a tagged Maestro suite (MAESTRO_TAGS: pay, connect) with one retry that
+# re-runs only the flows that failed. Shared by the Android and iOS legs of
+# the Pay and Connect workflows. Ported from react-native-examples'
+# walletkit-build-and-maestro/maestro/maestro-suite.sh.
 #
 # Usage: maestro-suite.sh <label>
 # Env:
-#   APP_ID, DEEPLINK_PREFIX, WPAY_*   passed to the flows as --env
+#   MAESTRO_TAGS      --include-tags value (default: pay)
+#   APP_ID, DEEPLINK_PREFIX   passed to the flows as --env
+#   DAPP_APP_ID, DAPP_NAME, WPAY_*   passed as --env only when set
 #   MAESTRO_DEVICES   optional comma-separated device IDs; more than one splits
 #                     the flows across them (`--shard-split`)
 #   ARTIFACTS_DIR     output root (default: debug-artifacts)
@@ -29,7 +32,18 @@ fi
 
 # Attempt 1 runs the tagged suite; the retry runs only the flows that failed.
 FLOW_ARGS=(.maestro/)
-TAG_ARGS=(--include-tags pay)
+MAESTRO_TAGS="${MAESTRO_TAGS:-pay}"
+TAG_ARGS=(--include-tags "$MAESTRO_TAGS")
+
+# Optional flow inputs: only the flows that use them need them (WPAY_* for Pay,
+# DAPP_APP_ID and DAPP_NAME for Connect).
+ENV_ARGS=()
+for name in DAPP_APP_ID DAPP_NAME \
+  WPAY_CUSTOMER_KEY_SINGLE_NOKYC WPAY_MERCHANT_ID_SINGLE_NOKYC \
+  WPAY_CUSTOMER_KEY_MULTI_NOKYC WPAY_MERCHANT_ID_MULTI_NOKYC \
+  WPAY_CUSTOMER_KEY_MULTI_KYC WPAY_MERCHANT_ID_MULTI_KYC; do
+  [ -n "${!name:-}" ] && ENV_ARGS+=(--env "$name=${!name}")
+done
 
 mkdir -p "$ARTIFACTS_DIR"
 rm -f "$ARTIFACTS_DIR"/maestro-output-attempt-*.log "$ARTIFACTS_DIR"/junit-attempt-*.xml
@@ -40,7 +54,7 @@ rm -f "$ARTIFACTS_DIR"/maestro-output-attempt-*.log "$ARTIFACTS_DIR"/junit-attem
 # regressions.
 maestro_exit_code=0
 for attempt in 1 2; do
-  echo "=== Maestro attempt $attempt/2 ($LABEL) ==="
+  echo "=== Maestro attempt $attempt/2 ($LABEL, tags: $MAESTRO_TAGS) ==="
   # Split across the devices, but never into more shards than failed flows
   # (TAG_ARGS is empty only when retrying a failed-flow list; a full-suite
   # retry keeps every device).
@@ -52,12 +66,7 @@ for attempt in 1 2; do
   "$MAESTRO_BIN" "${DEVICE_ARGS[@]}" test "${SHARD_ARGS[@]}" \
     --env APP_ID="${APP_ID:?APP_ID is required}" \
     --env DEEPLINK_PREFIX="${DEEPLINK_PREFIX:?DEEPLINK_PREFIX is required}" \
-    --env WPAY_CUSTOMER_KEY_SINGLE_NOKYC="${WPAY_CUSTOMER_KEY_SINGLE_NOKYC:-}" \
-    --env WPAY_MERCHANT_ID_SINGLE_NOKYC="${WPAY_MERCHANT_ID_SINGLE_NOKYC:-}" \
-    --env WPAY_CUSTOMER_KEY_MULTI_NOKYC="${WPAY_CUSTOMER_KEY_MULTI_NOKYC:-}" \
-    --env WPAY_MERCHANT_ID_MULTI_NOKYC="${WPAY_MERCHANT_ID_MULTI_NOKYC:-}" \
-    --env WPAY_CUSTOMER_KEY_MULTI_KYC="${WPAY_CUSTOMER_KEY_MULTI_KYC:-}" \
-    --env WPAY_MERCHANT_ID_MULTI_KYC="${WPAY_MERCHANT_ID_MULTI_KYC:-}" \
+    "${ENV_ARGS[@]}" \
     "${TAG_ARGS[@]}" \
     --format junit --output "$JUNIT" \
     --test-output-dir "$ARTIFACTS_DIR/maestro-output/attempt-${attempt}" \

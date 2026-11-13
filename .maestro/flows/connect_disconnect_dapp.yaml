@@ -1,0 +1,22 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: disconnect the dApp. Close the request result dialog if
+# it is open, tap "Disconnect" (shown while connected, right under "Connected
+# with ...") and wait for the logged-out state.
+- runFlow:
+    when:
+      visible: "Close"
+    commands:
+      - tapOn: "Close"
+# connect_send_sign.yaml may have scrolled it away.
+- scrollUntilVisible:
+    element:
+      id: "disconnect-button"
+    direction: UP
+    timeout: 10000
+- tapOn:
+    id: "disconnect-button"
+- extendedWaitUntil:
+    visible:
+      id: "connect-button"
+    timeout: 30000

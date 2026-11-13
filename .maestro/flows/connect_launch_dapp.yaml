@@ -1,0 +1,21 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: (re)start the Flutter AppKit sample dApp
+# (packages/reown_appkit/example/base, internal flavor) and wait for its home
+# screen. The title is the dApp's metadata name ("Reown's AppKit internal"),
+# shown both while disconnected and once a session exists. Same retry as
+# connect_launch_wallet.yaml: a launch right after clearState/stopApp can be
+# killed by the old task's teardown on a slow emulator.
+- runFlow: connect_dapp_id.yaml
+- retry:
+    maxRetries: 3
+    commands:
+      - stopApp:
+          appId: ${output.dappAppId}
+      - launchApp:
+          appId: ${output.dappAppId}
+          permissions:
+            all: allow
+      - extendedWaitUntil:
+          visible: "Reown's AppKit.*"
+          timeout: 45000

@@ -3,121 +3,36 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+# Integration tests (reown_core, reown_sign, reown_appkit, reown_walletkit)
+# against the live relay. The Maestro E2E suites live in
+# ci_e2e_connect_tests.yml (WalletKit connect, SLO 2) and ci_e2e_pay_tests.yml.
 name: E2E Tests
 permissions:
   contents: read
 
 on:
-  # pull_request:
-  #   types: [closed]
-  #   branches: [develop]
   workflow_dispatch:
-    inputs:
-      integration:
-        description: 'Run integration tests?'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
-      maestro:
-        description: 'Run maestro tests?'
-        required: false
-        default: 'true'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
-      yttrium-version:
-        description: 'Android Yttrium version for CI'
-        required: false
-        default: '0.0.19-ci'
-      ios:
-        description: 'Run iOS tests?'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
 
 concurrency:
-  # Support push/pr as event types with different behaviors each:
-  # 1. push: queue up builds by branch
-  # 2. pr: only allow one run per PR
-  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref_name }}
-  # If there is already a workflow running for the same pull request, cancel it
-  # For non-PR triggers queue up builds
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   tests:
-    # if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
-    strategy:
-      matrix:
-        include:
-          - platform: android
-            runner: ubuntu-16core
-          - platform: ios
-            runner: macos-26-xlarge
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-16core
 
     steps:
       # Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Set up environment 
+      # Set up environment
       - uses: ./.github/actions/dependencies
-        with:
-          platform: ${{ matrix.platform }}
-      
-      # Add Secrets file on dapp
-      - name: Add Secrets file to AppKit
-        if: matrix.platform == 'android'
-        working-directory: packages/reown_appkit/example/base/android
-        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
-
-      # Add Keystore file on dapp
-      - name: Add Keystore file to AppKit
-        if: matrix.platform == 'android'
-        working-directory: packages/reown_appkit/example/base/android
-        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
-
-      # Add Secrets file on wallet
-      - name: Add Secrets file to WalletKit
-        if: matrix.platform == 'android'
-        working-directory: packages/reown_walletkit/example/android
-        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
-
-      # Add Keystore file on wallet
-      - name: Add Keystore file to WalletKit
-        if: matrix.platform == 'android'
-        working-directory: packages/reown_walletkit/example/android
-        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
       # Run Integration Tests
       - name: Run Integration Tests
-        if: github.event.inputs.integration == 'true'
         uses: ./.github/actions/tests
         with:
           type: "integration-tests"
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
-          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
-
-      # Run Maestro Tests
-      - name: Run Maestro Tests
-        if: github.event.inputs.maestro == 'true' && (matrix.platform == 'android' || (matrix.platform == 'ios' && github.event.inputs.ios == 'true'))
-        uses: ./.github/actions/tests
-        with:
-          type: "maestro-tests"
-          platform: ${{ matrix.platform }}
-          relay-endpoint: "wss://relay.walletconnect.org"
-          project-id: ${{ secrets.DAPP_PROJECT_ID }}
-          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
-          yttrium-version: ${{ github.event.inputs.yttrium-version }}
-
-# Launch locally
-# act --container-architecture linux/amd64 -P ubuntu-16core=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android

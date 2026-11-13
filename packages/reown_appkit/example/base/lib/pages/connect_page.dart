@@ -165,9 +165,14 @@ class ConnectPageState extends State<ConnectPage> {
                     closeAfterPick: true,
                   ),
                   const SizedBox.square(dimension: 8.0),
-                  AppKitModalConnectButton(
-                    appKit: widget.appKitModal,
-                    size: BaseButtonSize.small,
+                  // Maestro test id (connect flows), only while disconnected:
+                  // the same button reads "Disconnect" once connected.
+                  _testId(
+                    widget.appKitModal.isConnected ? null : 'connect-button',
+                    AppKitModalConnectButton(
+                      appKit: widget.appKitModal,
+                      size: BaseButtonSize.small,
+                    ),
                   ),
                 ],
               ),
@@ -217,6 +222,17 @@ class ConnectPageState extends State<ConnectPage> {
                     Divider(color: themeColors.grayGlass010),
                     Text(
                       'Connected with ${widget.appKitModal.session?.connectedWalletName ?? 'Unknown wallet'}',
+                    ),
+                    const SizedBox.square(dimension: 8.0),
+                    // One-tap disconnect; the WalletKit connect E2E flows use
+                    // it to reset the dApp between runs
+                    // (.maestro/flows/connect_disconnect_dapp.yaml).
+                    _testId(
+                      'disconnect-button',
+                      ElevatedButton(
+                        onPressed: () => widget.appKitModal.disconnect(),
+                        child: const Text('Disconnect'),
+                      ),
                     ),
                     const SizedBox.square(dimension: 8.0),
                     _RequestButtons(appKitModal: widget.appKitModal),
@@ -407,57 +423,61 @@ class __RequestButtonsState extends State<_RequestButtons> {
           .toSet()
           .intersection(implemented.toSet())
           .map(
-            (method) => PrimaryButton(
-              title: method,
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              buttonSize: BaseButtonSize.regular,
-              onTap: () async {
-                // Uncomment to sign and submit real transaction
-                // if (method == 'polkadot_signTransaction') {
-                //   final future = Polkadot.createAndSubmitTransferKeepAlive(
-                //     widget.appKitModal,
-                //   );
-                //   await MethodDialog.show(
-                //     context,
-                //     method,
-                //     future,
-                //   );
-                // } else {
-                final params = await getParams(
-                  method,
-                  address,
-                  chainInfo!,
-                  session: widget.appKitModal.session,
-                );
-                if (params?.params != null) {
-                  final future = widget.appKitModal.request(
-                    topic: topic,
-                    chainId: chainId,
-                    request: params!,
-                  );
-                  final result = await MethodDialog.show(
-                    context,
+            (method) => _testId(
+              // personal_sign is what the connect E2E flows send.
+              method == 'personal_sign' ? 'sign-message-button' : null,
+              PrimaryButton(
+                title: method,
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                buttonSize: BaseButtonSize.regular,
+                onTap: () async {
+                  // Uncomment to sign and submit real transaction
+                  // if (method == 'polkadot_signTransaction') {
+                  //   final future = Polkadot.createAndSubmitTransferKeepAlive(
+                  //     widget.appKitModal,
+                  //   );
+                  //   await MethodDialog.show(
+                  //     context,
+                  //     method,
+                  //     future,
+                  //   );
+                  // } else {
+                  final params = await getParams(
                     method,
-                    future,
+                    address,
+                    chainInfo!,
+                    session: widget.appKitModal.session,
                   );
-                  if (params.method == 'tron_signTransaction') {
-                    final broadcast = Tron.broadcastTransaction(
-                      chainData: chainInfo,
-                      signedTransaction: result,
+                  if (params?.params != null) {
+                    final future = widget.appKitModal.request(
+                      topic: topic,
+                      chainId: chainId,
+                      request: params!,
                     );
-                    await MethodDialog.show(context, 'Broadcast', broadcast);
+                    final result = await MethodDialog.show(
+                      context,
+                      method,
+                      future,
+                    );
+                    if (params.method == 'tron_signTransaction') {
+                      final broadcast = Tron.broadcastTransaction(
+                        chainData: chainInfo,
+                        signedTransaction: result,
+                      );
+                      await MethodDialog.show(context, 'Broadcast', broadcast);
+                    }
+                  } else {
+                    toastification.show(
+                      type: ToastificationType.error,
+                      title: const Text('Method not implemented'),
+                      context: context,
+                      autoCloseDuration: Duration(seconds: 2),
+                      alignment: Alignment.bottomCenter,
+                    );
                   }
-                } else {
-                  toastification.show(
-                    type: ToastificationType.error,
-                    title: const Text('Method not implemented'),
-                    context: context,
-                    autoCloseDuration: Duration(seconds: 2),
-                    alignment: Alignment.bottomCenter,
-                  );
-                }
-                // }
-              },
+                  // }
+                },
+              ),
             ),
           )
           .toList(),
@@ -520,4 +540,17 @@ class _TitleSection extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Wraps [child] with a Maestro test id (Semantics identifier, which maps to
+/// Android `resource-id` and iOS `accessibilityIdentifier`).
+Widget _testId(String? id, Widget child) {
+  // Always a Semantics (a no-op without an id), so toggling the id doesn't
+  // change the widget tree and recreate [child]'s state.
+  return Semantics(
+    container: id != null,
+    identifier: id,
+    label: id,
+    child: child,
+  );
 }

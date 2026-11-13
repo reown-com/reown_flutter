@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: after the wallet rejected the session proposal, the
+# AppKit modal shows the rejection and the dApp never gets a session.
+- extendedWaitUntil:
+    visible: "(?i).*(rejected|declined|denied).*"
+    timeout: 30000
+- assertNotVisible: "Connected with .*"

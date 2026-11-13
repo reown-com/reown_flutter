@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: start the Flutter AppKit sample dApp from a clean state.
+# clearState resets its settings, so Link Mode (and SIWE, which the sample only
+# turns on with Link Mode) is off and connecting is a plain session proposal
+# over the relay.
+# Env: DAPP_APP_ID (com.walletconnect.flutterdapp.internal for this repo).
+
+- runFlow: connect_dapp_id.yaml
+
+- clearState: ${output.dappAppId}
+- runFlow:
+    file: connect_launch_dapp.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: "connect-button"
+    timeout: 30000
+# AppKit keeps the connect button disabled until it is initialised (relay
+# connected); a tap before that does nothing.
+- extendedWaitUntil:
+    visible: "AppKitModalConnectButton enabled"
+    timeout: 30000

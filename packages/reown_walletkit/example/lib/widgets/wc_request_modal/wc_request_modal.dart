@@ -6,6 +6,7 @@ import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/utils/test_ids.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/chain_icon_widget.dart';
@@ -127,6 +128,7 @@ class WCRequestModal extends StatelessWidget {
         Row(
           children: [
             CustomButton(
+              testId: TestIds.walletRequestReject,
               onTap: () => _onReject(context),
               style: CustomButtonStyle.outlined,
               child: Text(
@@ -141,6 +143,7 @@ class WCRequestModal extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.s3),
             CustomButton(
+              testId: TestIds.walletRequestApprove,
               onTap: () => _onApprove(context),
               type: CustomButtonType.normal,
               child: Text(

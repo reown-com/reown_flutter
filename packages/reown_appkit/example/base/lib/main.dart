@@ -327,6 +327,23 @@ class _MyHomePageState extends State<MyHomePage> {
       // `getBalanceFallback` will be triggered if getting the balance from our blockchain API fails. You could place here your own getBalance method
       disconnectOnDispose: true,
       customWallets: [
+        // Our Flutter sample wallet (packages/reown_walletkit/example) of the
+        // same flavor, first in the connect list so it's one tap away. Also
+        // what the WalletKit connect E2E flows tap
+        // (.maestro/flows/connect_select_wallet.yaml).
+        ReownAppKitModalWalletInfo(
+          listing: AppKitModalWalletListing(
+            id: '00000',
+            name: 'Flutter Sample Wallet',
+            homepage: 'https://github.com/reown-com/reown_flutter',
+            imageId:
+                'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/walletkit-icon$_flavor.png',
+            order: 0,
+            mobileLink: 'wcflutterwallet$_flavor://',
+            androidAppId:
+                'com.walletconnect.flutterwallet${_flavor.replaceAll('-', '.')}',
+          ),
+        ),
         ReownAppKitModalWalletInfo(
           listing: AppKitModalWalletListing(
             id: '00001',

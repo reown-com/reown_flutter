@@ -5,6 +5,7 @@ import 'package:kadena_dart_sdk/kadena_dart_sdk.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/utils/test_ids.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/request_info_row.dart';
@@ -127,6 +128,7 @@ class _KadenaRequestWidgetState extends State<KadenaRequestWidget> {
         Row(
           children: [
             CustomButton(
+              testId: TestIds.walletRequestReject,
               onTap: _onReject,
               style: CustomButtonStyle.outlined,
               child: Text(
@@ -141,6 +143,7 @@ class _KadenaRequestWidgetState extends State<KadenaRequestWidget> {
             ),
             const SizedBox(width: AppSpacing.s3),
             CustomButton(
+              testId: TestIds.walletRequestApprove,
               onTap: _onApprove,
               type: CustomButtonType.normal,
               child: Text(

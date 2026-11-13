@@ -6,6 +6,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/utils/test_ids.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/network_section.dart';
@@ -206,6 +207,7 @@ class _WCConnectModalState extends State<WCConnectModal> {
         Row(
           children: [
             CustomButton(
+              testId: TestIds.walletRequestReject,
               onTap: _onCancel,
               style: CustomButtonStyle.outlined,
               child: Text(
@@ -220,6 +222,7 @@ class _WCConnectModalState extends State<WCConnectModal> {
             ),
             const SizedBox(width: AppSpacing.s3),
             CustomButton(
+              testId: TestIds.walletRequestApprove,
               onTap: hasSelection ? _onConnect : null,
               type: CustomButtonType.normal,
               child: Text(
