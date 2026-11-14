@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Allowed `package_info_plus` 10.x.
+
 ## 1.1.0
 
 - Bump yttrium-wcpay to 0.10.60 (Android) / YttriumWrapper 0.10.59 (iOS).
