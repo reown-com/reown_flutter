@@ -1,8 +1,0 @@
-appId: com.walletconnect.flutterwallet.internal
----
-
-# Launch and verify initial state
-- launchApp
-- waitForAnimationToEnd:
-    timeout: 30000
-

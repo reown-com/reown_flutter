@@ -14,6 +14,10 @@ class CustomButton extends StatelessWidget {
   final VoidCallback? onTap;
   final bool expanded;
 
+  /// Maestro test id (Semantics identifier, which maps to Android
+  /// `resource-id` and iOS `accessibilityIdentifier`).
+  final String? testId;
+
   const CustomButton({
     super.key,
     required this.child,
@@ -21,6 +25,7 @@ class CustomButton extends StatelessWidget {
     this.type,
     this.style = CustomButtonStyle.filled,
     this.expanded = true,
+    this.testId,
   });
 
   Color _getBackgroundColor(BuildContext context) {
@@ -58,7 +63,7 @@ class CustomButton extends StatelessWidget {
     final isDisabled = onTap == null;
     final opacity = isDisabled ? 0.5 : 1.0;
 
-    final button = Opacity(
+    Widget button = Opacity(
       opacity: opacity,
       child: InkWell(
         onTap: onTap,
@@ -77,6 +82,15 @@ class CustomButton extends StatelessWidget {
         ),
       ),
     );
+
+    if (testId != null) {
+      button = Semantics(
+        container: true,
+        identifier: testId,
+        label: testId,
+        child: button,
+      );
+    }
 
     if (expanded) return Expanded(child: button);
     return button;

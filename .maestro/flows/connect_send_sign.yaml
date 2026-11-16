@@ -1,0 +1,12 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: from the connected dApp, send personal_sign (the
+# "personal_sign" button of the selected EVM chain). The caller then brings
+# the wallet forward (connect_wallet_request.yaml).
+- scrollUntilVisible:
+    element:
+      id: "sign-message-button"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "sign-message-button"
