@@ -1,6 +1,11 @@
 import Flutter
 import Foundation
+// CocoaPods ships Yttrium as the YttriumWrapper pod; Swift Package Manager as the Yttrium package.
+#if canImport(YttriumWrapper)
 import YttriumWrapper
+#else
+import Yttrium
+#endif
 
 class WalletConnectPayClient {
     private static var walletConnectPayClient: WalletConnectPayJson?
