@@ -321,7 +321,14 @@ class RelayClient implements IRelayClient {
     await socketHandler.setup(url: url);
     await socketHandler.connect();
 
-    jsonRPC = Peer(socketHandler.channel!, logCallback: _handleJsonRpcLog);
+    final channel = socketHandler.channel;
+    if (channel == null) {
+      throw const ReownCoreError(
+        code: -1,
+        message: 'WebSocket channel is null after connect',
+      );
+    }
+    jsonRPC = Peer(channel, logCallback: _handleJsonRpcLog);
 
     jsonRPC!.registerMethod(
       _buildIRNMethod(IRN_SUBSCRIPTION),
@@ -518,26 +525,21 @@ class RelayClient implements IRelayClient {
     int? id,
     dynamic parameters,
   }) async {
-    // If we are connected and we know it send the message!
-    if (isConnected) {
-      // Here so we dont return null
-    }
-    // If we are connecting, then wait for the connection to establish and then send the message
-    else if (_connecting) {
-      try {
-        await _connectingFuture;
-      } catch (_) {
-        // The attempt in flight already reported its error, the connection
-        // check below throws a uniform one for this request
+    if (!isConnected) {
+      if (_connecting) {
+        // A connection is being established, wait for it
+        try {
+          await _connectingFuture;
+        } catch (_) {
+          // The attempt in flight already reported its error, the connection
+          // check below throws a uniform one for this request
+        }
+      } else if (_active) {
+        // Not connected but should be, try to (re)connect
+        await connect();
+      } else {
+        return null;
       }
-    }
-    // If we aren't connected but should be (active), try to (re)connect and then send the message
-    else if (!isConnected && _active) {
-      await connect();
-    }
-    // In all other cases return null
-    else {
-      return null;
     }
     final rpc = jsonRPC;
     if (rpc == null || rpc.isClosed) {
