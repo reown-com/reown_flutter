@@ -245,6 +245,65 @@ void main() {
       });
     });
 
+    group('attestationResponseFromClaims', () {
+      VerifyClaims claims({
+        String id = 'message-id',
+        String origin = 'https://example.com',
+        bool isScam = false,
+        bool isVerified = true,
+      }) {
+        return VerifyClaims(
+          origin: origin,
+          id: id,
+          isScam: isScam,
+          expiration:
+              DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+              1000,
+          isVerified: isVerified,
+        );
+      }
+
+      test('returns the attestation when id matches and it is verified', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'message-id', isVerified: true),
+        );
+
+        expect(result, isNotNull);
+        expect(result!.origin, 'https://example.com');
+        expect(result.attestationId, 'message-id');
+        expect(result.isScam, isNot(true));
+      });
+
+      test('returns null when the claim id does not match the message', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'other-message-id', isVerified: true),
+        );
+
+        expect(result, isNull);
+      });
+
+      test('returns null when the attestation is not verified', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'message-id', isVerified: false),
+        );
+
+        expect(result, isNull);
+      });
+
+      test('surfaces a scam attestation regardless of id or verified flag', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'other-message-id', isScam: true, isVerified: false),
+        );
+
+        expect(result, isNotNull);
+        expect(result!.isScam, true);
+      });
+    });
+
     group('getValidation', () {
       test('should return SCAM when attestation is scam', () {
         // Arrange
