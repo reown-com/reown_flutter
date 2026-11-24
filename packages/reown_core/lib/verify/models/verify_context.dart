@@ -64,8 +64,8 @@ extension VerifyClaimsExtension on VerifyClaims {
 }
 
 class AttestationNotFound implements Exception {
-  int code;
-  String message;
+  final int code;
+  final String message;
 
   AttestationNotFound({required this.code, required this.message}) : super();
 }
@@ -74,8 +74,8 @@ class AttestationNotFound implements Exception {
 /// verify context resolves to [Validation.UNKNOWN] in this case; the request is
 /// not retried against the v1 endpoint.
 class AttestationNotValid implements Exception {
-  int code;
-  String message;
+  final int code;
+  final String message;
 
   AttestationNotValid({required this.code, required this.message}) : super();
 }

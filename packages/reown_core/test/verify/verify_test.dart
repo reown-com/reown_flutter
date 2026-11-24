@@ -193,7 +193,7 @@ void main() {
         },
       );
 
-      test('should fallback to v1 when v2 fails', () async {
+      test('should use v1 lookup when no JWT is provided', () async {
         // Arrange
         const attestationId = 'test-id';
         const attestationJWT = null;
