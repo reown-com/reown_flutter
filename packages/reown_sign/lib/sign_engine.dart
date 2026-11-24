@@ -1811,6 +1811,11 @@ class ReownSign implements IReownSign {
         attestationJWT: attestationJWT,
       );
       final validation = core.verify.getValidation(attestation, metadataUri);
+      // When the origin cannot be attested the verify context must not surface
+      // the requester's self-reported URL, on both the success and error paths.
+      if (validation == Validation.UNKNOWN) {
+        return unknownVerifyContext(verifyUrl);
+      }
       final origin = attestation?.origin;
       return VerifyContext(
         origin: (origin ?? metadataUri?.origin) ?? proposerMetada.url,
