@@ -1823,12 +1823,22 @@ class ReownSign implements IReownSign {
         '[$runtimeType] VerifyContext error ${e.runtimeType}: $e',
         stackTrace: s,
       );
-      return VerifyContext(
-        origin: proposerMetada.url,
-        verifyUrl: verifyUrl,
-        validation: Validation.UNKNOWN,
-      );
+      return unknownVerifyContext(verifyUrl);
     }
+  }
+
+  /// Builds the verify context used when the requester's origin cannot be
+  /// attested, i.e. [Validation.UNKNOWN]. The origin is left empty because an
+  /// unverified origin should not be surfaced as if it had been checked. This
+  /// aligns the Flutter SDK with the Swift and Kotlin SDKs, which also leave
+  /// the origin empty for UNKNOWN.
+  @visibleForTesting
+  VerifyContext unknownVerifyContext(String verifyUrl) {
+    return VerifyContext(
+      origin: '',
+      verifyUrl: verifyUrl,
+      validation: Validation.UNKNOWN,
+    );
   }
 
   Future<VerifyContext> _getVerifyContextLinkMode(
