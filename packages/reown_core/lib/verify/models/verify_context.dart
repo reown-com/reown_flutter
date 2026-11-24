@@ -69,3 +69,13 @@ class AttestationNotFound implements Exception {
 
   AttestationNotFound({required this.code, required this.message}) : super();
 }
+
+/// Thrown when a v2 attestation is present but could not be validated. The
+/// verify context resolves to [Validation.UNKNOWN] in this case; the request is
+/// not retried against the v1 endpoint.
+class AttestationNotValid implements Exception {
+  int code;
+  String message;
+
+  AttestationNotValid({required this.code, required this.message}) : super();
+}
