@@ -1795,7 +1795,7 @@ class ReownSign implements IReownSign {
     TransportType transportType,
   ) async {
     if (transportType.isLinkMode) {
-      return await _getVerifyContextLinkMode(payload, proposerMetada);
+      return await getVerifyContextLinkMode(payload, proposerMetada);
     }
 
     final defaultVerifyUrl = ReownConstants.VERIFY_SERVER;
@@ -1831,38 +1831,18 @@ class ReownSign implements IReownSign {
     }
   }
 
-  Future<VerifyContext> _getVerifyContextLinkMode(
+  /// Link mode messages are not attested by the Verify service, so the verify
+  /// context for link mode always resolves to [Validation.UNKNOWN] with an
+  /// empty origin.
+  @visibleForTesting
+  Future<VerifyContext> getVerifyContextLinkMode(
     JsonRpcRequest payload,
     PairingMetadata requesterMetadata,
   ) async {
-    final universalLink = requesterMetadata.redirect?.universal ?? '';
-    final domainUrl = requesterMetadata.url;
-
-    if (universalLink.isEmpty || domainUrl.isEmpty) {
-      return VerifyContext(
-        origin: requesterMetadata.url,
-        verifyUrl: ReownConstants.VERIFY_SERVER,
-        validation: Validation.INVALID,
-      );
-    }
-
-    final universalHost = Uri.parse(universalLink).host;
-    final domainHost = Uri.parse(domainUrl).host;
-
-    final matches =
-        universalHost == domainHost || universalHost.endsWith('.$domainHost');
-    if (matches) {
-      return VerifyContext(
-        origin: domainHost,
-        verifyUrl: ReownConstants.VERIFY_SERVER,
-        validation: Validation.VALID,
-      );
-    }
-
     return VerifyContext(
-      origin: domainHost,
+      origin: '',
       verifyUrl: ReownConstants.VERIFY_SERVER,
-      validation: Validation.INVALID,
+      validation: Validation.UNKNOWN,
     );
   }
 
