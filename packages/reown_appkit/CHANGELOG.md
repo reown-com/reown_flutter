@@ -1,5 +1,6 @@
 ## 1.9.1
 
+- Dependency updates (`reown_core` 1.5.2, `reown_sign` 1.4.2): verify context fixes for link mode and Verify v2 attestation validation.
 - Show the Magic approve page from `ReownAppKitModal` when social login SIWE asks for `personal_sign`, so verification can run without keeping `AppKitModalAccountButton` mounted.
 - Handle Magic Farcaster login requests from `ReownAppKitModal` so `AppKitModalAccountButton` no longer depends on `IMagicService` or `IWidgetStack`.
 - Stamp SIWE `iat` with real UTC instead of labeling local wall-clock time as `Z`.
