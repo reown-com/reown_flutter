@@ -293,14 +293,23 @@ void main() {
         expect(result, isNull);
       });
 
-      test('surfaces a scam attestation regardless of id or verified flag', () {
+      test('surfaces a scam attestation regardless of the verified flag', () {
         final result = verify.attestationResponseFromClaims(
           'message-id',
-          claims(id: 'other-message-id', isScam: true, isVerified: false),
+          claims(id: 'message-id', isScam: true, isVerified: false),
         );
 
         expect(result, isNotNull);
         expect(result!.isScam, true);
+      });
+
+      test('returns null for a scam attestation with another claim id', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'other-message-id', isScam: true, isVerified: true),
+        );
+
+        expect(result, isNull);
       });
     });
 

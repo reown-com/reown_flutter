@@ -189,8 +189,9 @@ extension VerifyV2 on Verify {
   ///
   /// The signed claims are trusted only when they are bound to the message
   /// being verified (the `id` claim equals [attestationId]) and the server
-  /// marked the attestation as verified (`isVerified`). A scam attestation is
-  /// always surfaced so it can be shown to the user. Returns null when the
+  /// marked the attestation as verified (`isVerified`). A scam attestation
+  /// bound to the message is surfaced even when it is not marked as verified,
+  /// so it can be shown to the user. Returns null when the
   /// attestation must not be trusted, which resolves to an unknown/invalid
   /// verify context rather than a valid one.
   @visibleForTesting
@@ -198,14 +199,6 @@ extension VerifyV2 on Verify {
     String attestationId,
     VerifyClaims claims,
   ) {
-    // Always surface a scam attestation.
-    if (claims.isScam == true) {
-      return AttestationResponse(
-        origin: claims.origin,
-        attestationId: attestationId,
-        isScam: true,
-      );
-    }
     // The attestation must be bound to this message: the JWT `id` claim must
     // match [attestationId].
     if (claims.id != attestationId) {
@@ -213,6 +206,14 @@ extension VerifyV2 on Verify {
         '[$runtimeType] attestation id does not match the message',
       );
       return null;
+    }
+    // Surface a scam attestation even when it is not marked as verified.
+    if (claims.isScam == true) {
+      return AttestationResponse(
+        origin: claims.origin,
+        attestationId: attestationId,
+        isScam: true,
+      );
     }
     // Honour the server's verification flag.
     if (!claims.isVerified) {
