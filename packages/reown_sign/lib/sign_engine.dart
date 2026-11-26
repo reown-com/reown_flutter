@@ -1811,6 +1811,11 @@ class ReownSign implements IReownSign {
         attestationJWT: attestationJWT,
       );
       final validation = core.verify.getValidation(attestation, metadataUri);
+      // When the origin cannot be attested the verify context must not surface
+      // the requester's self-reported URL, on both the success and error paths.
+      if (validation == Validation.UNKNOWN) {
+        return unknownVerifyContext(verifyUrl);
+      }
       final origin = attestation?.origin;
       return VerifyContext(
         origin: (origin ?? metadataUri?.origin) ?? proposerMetada.url,
@@ -1823,12 +1828,22 @@ class ReownSign implements IReownSign {
         '[$runtimeType] VerifyContext error ${e.runtimeType}: $e',
         stackTrace: s,
       );
-      return VerifyContext(
-        origin: proposerMetada.url,
-        verifyUrl: verifyUrl,
-        validation: Validation.UNKNOWN,
-      );
+      return unknownVerifyContext(verifyUrl);
     }
+  }
+
+  /// Builds the verify context used when the requester's origin cannot be
+  /// attested, i.e. [Validation.UNKNOWN]. The origin is left empty because an
+  /// unverified origin should not be surfaced as if it had been checked. This
+  /// aligns the Flutter SDK with the Swift and Kotlin SDKs, which also leave
+  /// the origin empty for UNKNOWN.
+  @visibleForTesting
+  VerifyContext unknownVerifyContext(String verifyUrl) {
+    return VerifyContext(
+      origin: '',
+      verifyUrl: verifyUrl,
+      validation: Validation.UNKNOWN,
+    );
   }
 
   /// Link mode messages are not attested by the Verify service, so the verify
@@ -1839,11 +1854,7 @@ class ReownSign implements IReownSign {
     JsonRpcRequest payload,
     PairingMetadata requesterMetadata,
   ) async {
-    return VerifyContext(
-      origin: '',
-      verifyUrl: ReownConstants.VERIFY_SERVER,
-      validation: Validation.UNKNOWN,
-    );
+    return unknownVerifyContext(ReownConstants.VERIFY_SERVER);
   }
 
   // NEW 1-CA METHOD (Should this be private?)

@@ -40,9 +40,19 @@ class Verify implements IVerify {
   }) async {
     try {
       // resolve v2
+      final hasAttestationJWT = (attestationJWT ?? '').isNotEmpty;
       final v2Response = await resolveV2(attestationId, attestationJWT);
       if (v2Response != null) {
         return v2Response;
+      }
+
+      // A v2 attestation was present but could not be validated. Do not fall
+      // back to the v1 lookup; resolve to UNKNOWN instead.
+      if (hasAttestationJWT) {
+        throw AttestationNotValid(
+          code: 400,
+          message: 'Attestation for this dapp could not be validated',
+        );
       }
 
       // resolve v1
@@ -62,7 +72,7 @@ class Verify implements IVerify {
       }
       return AttestationResponse.fromJson(jsonDecode(response.body));
     } catch (e, s) {
-      if (e is! AttestationNotFound) {
+      if (e is! AttestationNotFound && e is! AttestationNotValid) {
         _core.logger.e('[$runtimeType] resolve error: $e, $s');
       }
       rethrow;

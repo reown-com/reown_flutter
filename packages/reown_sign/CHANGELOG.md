@@ -1,6 +1,7 @@
 ## 1.4.2
 
 - Resolve the verify context for link mode messages to `unknown` with an empty origin. Link mode messages are not attested by the Verify service, so link mode requests report `unknown` validation.
+- Leave the verify context `origin` empty when `validation` is `unknown`, aligning with the Swift and Kotlin SDKs.
 - Stamp SIWE / CACAO `iat` with real UTC instead of labeling local wall-clock time as `Z`.
 - Parse SIWE `Chain ID` from the structured field so a statement that mentions another chain does not change `personal_sign` routing.
 
