@@ -1,3 +1,5 @@
+import 'package:wallet/wallet.dart' as wallet;
+
 class AddressUtils {
   static List<String> _getDidAddressSegments(String iss) {
     return iss.split(':');
@@ -43,9 +45,19 @@ class AddressUtils {
   }
 }
 
+final _evmAddress = RegExp(r'^(0[xX])?[0-9a-fA-F]{40}$');
+
 extension AddressUtilsExtension on String {
+  /// Checksums an EVM address per EIP-55. Non-EVM values are returned unchanged
+  /// so Solana / Bitcoin accounts are not forced through EthereumAddress.
   String toEIP55() {
-    return this;
-    // return EthereumAddress.fromHex(this).hexEip55;
+    if (!_evmAddress.hasMatch(this)) {
+      return this;
+    }
+    try {
+      return wallet.EthereumAddress.fromHex(this).eip55With0x;
+    } catch (_) {
+      return this;
+    }
   }
 }
