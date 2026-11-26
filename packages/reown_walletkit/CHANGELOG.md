@@ -1,3 +1,7 @@
+## 1.5.2
+
+- Dependency updates (`reown_core` 1.5.2, `reown_sign` 1.4.2): verify context fixes for link mode and Verify v2 attestation validation.
+
 ## 1.5.1
 
 - Updated `walletconnect_pay` to 1.1.0: `ConfirmPaymentRequest.data` carries wallet RPC results as plain strings or JSON objects (e.g. TRON's `raw_data_hex` + `signature` confirm payload); `signatures` is deprecated and used as fallback.
