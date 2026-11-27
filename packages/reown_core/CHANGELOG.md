@@ -1,5 +1,8 @@
 ## 1.5.2
 
+- Bind the Verify v2 attestation to the message being verified (the JWT `id` claim must match) and honour the attestation's `isVerified` flag when resolving the verify context.
+- Resolve the verify context to `unknown` when a v2 attestation is present but cannot be validated, instead of falling back to the v1 attestation lookup.
+- Fixed the relay client never reconnecting after a failed connection attempt (e.g. Android 17 cut the network of the backgrounded app): WebSocket connect and close are now time-bounded, concurrent connects share one attempt and the heartbeat retries a failed connection.
 - Delete the corrupt store bucket on GenericStore restore failure instead of the version metadata key.
 - Allowed `package_info_plus` 10.x.
 

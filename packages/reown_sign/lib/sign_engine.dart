@@ -1795,7 +1795,7 @@ class ReownSign implements IReownSign {
     TransportType transportType,
   ) async {
     if (transportType.isLinkMode) {
-      return await _getVerifyContextLinkMode(payload, proposerMetada);
+      return await getVerifyContextLinkMode(payload, proposerMetada);
     }
 
     final defaultVerifyUrl = ReownConstants.VERIFY_SERVER;
@@ -1811,6 +1811,11 @@ class ReownSign implements IReownSign {
         attestationJWT: attestationJWT,
       );
       final validation = core.verify.getValidation(attestation, metadataUri);
+      // When the origin cannot be attested the verify context must not surface
+      // the requester's self-reported URL, on both the success and error paths.
+      if (validation == Validation.UNKNOWN) {
+        return unknownVerifyContext(verifyUrl);
+      }
       final origin = attestation?.origin;
       return VerifyContext(
         origin: (origin ?? metadataUri?.origin) ?? proposerMetada.url,
@@ -1823,47 +1828,33 @@ class ReownSign implements IReownSign {
         '[$runtimeType] VerifyContext error ${e.runtimeType}: $e',
         stackTrace: s,
       );
-      return VerifyContext(
-        origin: proposerMetada.url,
-        verifyUrl: verifyUrl,
-        validation: Validation.UNKNOWN,
-      );
+      return unknownVerifyContext(verifyUrl);
     }
   }
 
-  Future<VerifyContext> _getVerifyContextLinkMode(
+  /// Builds the verify context used when the requester's origin cannot be
+  /// attested, i.e. [Validation.UNKNOWN]. The origin is left empty because an
+  /// unverified origin should not be surfaced as if it had been checked. This
+  /// aligns the Flutter SDK with the Swift and Kotlin SDKs, which also leave
+  /// the origin empty for UNKNOWN.
+  @visibleForTesting
+  VerifyContext unknownVerifyContext(String verifyUrl) {
+    return VerifyContext(
+      origin: '',
+      verifyUrl: verifyUrl,
+      validation: Validation.UNKNOWN,
+    );
+  }
+
+  /// Link mode messages are not attested by the Verify service, so the verify
+  /// context for link mode always resolves to [Validation.UNKNOWN] with an
+  /// empty origin.
+  @visibleForTesting
+  Future<VerifyContext> getVerifyContextLinkMode(
     JsonRpcRequest payload,
     PairingMetadata requesterMetadata,
   ) async {
-    final universalLink = requesterMetadata.redirect?.universal ?? '';
-    final domainUrl = requesterMetadata.url;
-
-    if (universalLink.isEmpty || domainUrl.isEmpty) {
-      return VerifyContext(
-        origin: requesterMetadata.url,
-        verifyUrl: ReownConstants.VERIFY_SERVER,
-        validation: Validation.INVALID,
-      );
-    }
-
-    final universalHost = Uri.parse(universalLink).host;
-    final domainHost = Uri.parse(domainUrl).host;
-
-    final matches =
-        universalHost == domainHost || universalHost.endsWith('.$domainHost');
-    if (matches) {
-      return VerifyContext(
-        origin: domainHost,
-        verifyUrl: ReownConstants.VERIFY_SERVER,
-        validation: Validation.VALID,
-      );
-    }
-
-    return VerifyContext(
-      origin: domainHost,
-      verifyUrl: ReownConstants.VERIFY_SERVER,
-      validation: Validation.INVALID,
-    );
+    return unknownVerifyContext(ReownConstants.VERIFY_SERVER);
   }
 
   // NEW 1-CA METHOD (Should this be private?)

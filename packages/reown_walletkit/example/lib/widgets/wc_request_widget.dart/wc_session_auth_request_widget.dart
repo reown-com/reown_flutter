@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/theme/app_typography.dart';
+import 'package:reown_walletkit_wallet/utils/test_ids.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 
 class WCSessionAuthRequestWidget extends StatelessWidget {
@@ -20,6 +21,7 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomButton(
+              testId: TestIds.walletRequestReject,
               onTap: () {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop(WCBottomSheetResult.reject);
@@ -48,6 +50,7 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
             ),
             const SizedBox(width: AppSpacing.s2),
             CustomButton(
+              testId: TestIds.walletRequestApprove,
               onTap: () {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop(WCBottomSheetResult.all);

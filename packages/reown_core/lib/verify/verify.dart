@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:reown_core/i_core_impl.dart';
 import 'package:reown_core/relay_client/websocket/i_http_client.dart';
 import 'package:reown_core/verify/i_verify.dart';
@@ -40,9 +41,19 @@ class Verify implements IVerify {
   }) async {
     try {
       // resolve v2
+      final hasAttestationJWT = (attestationJWT ?? '').isNotEmpty;
       final v2Response = await resolveV2(attestationId, attestationJWT);
       if (v2Response != null) {
         return v2Response;
+      }
+
+      // A v2 attestation was present but could not be validated. Do not fall
+      // back to the v1 lookup; resolve to UNKNOWN instead.
+      if (hasAttestationJWT) {
+        throw AttestationNotValid(
+          code: 400,
+          message: 'Attestation for this dapp could not be validated',
+        );
       }
 
       // resolve v1
@@ -62,7 +73,7 @@ class Verify implements IVerify {
       }
       return AttestationResponse.fromJson(jsonDecode(response.body));
     } catch (e, s) {
-      if (e is! AttestationNotFound) {
+      if (e is! AttestationNotFound && e is! AttestationNotValid) {
         _core.logger.e('[$runtimeType] resolve error: $e, $s');
       }
       rethrow;
@@ -158,35 +169,72 @@ extension VerifyV2 on Verify {
   ) async {
     final key = await getPublicKey();
     _core.logger.d('[$runtimeType] validating v2 public key: ${key?.toJson()}');
+    VerifyClaims? claims;
     try {
       if (key != null) {
-        final claims = validateAttestation(attestationJWT, key);
+        claims = validateAttestation(attestationJWT, key);
         _core.logger.d('[$runtimeType] claims: $claims');
-        return AttestationResponse(
-          origin: claims.origin,
-          attestationId: attestationId,
-          isScam: claims.isScam,
-        );
       }
     } catch (e) {
       _core.logger.e('[$runtimeType] error validating attestation: $e');
     }
 
-    final newKey = await fetchAndPersistPublicKey();
-    try {
-      if (newKey != null) {
-        final claims = validateAttestation(attestationJWT, newKey);
-        _core.logger.d('[$runtimeType] claims: $claims');
-        return AttestationResponse(
-          origin: claims.origin,
-          attestationId: attestationId,
-          isScam: claims.isScam,
-        );
+    if (claims == null) {
+      final newKey = await fetchAndPersistPublicKey();
+      try {
+        if (newKey != null) {
+          claims = validateAttestation(attestationJWT, newKey);
+          _core.logger.d('[$runtimeType] claims: $claims');
+        }
+      } catch (e) {
+        _core.logger.e('[$runtimeType] error validating attestation: $e');
       }
-    } catch (e) {
-      _core.logger.e('[$runtimeType] error validating attestation: $e');
     }
-    return null;
+
+    if (claims == null) return null;
+    return attestationResponseFromClaims(attestationId, claims);
+  }
+
+  /// Applies attestation policy to signature-validated JWT claims.
+  ///
+  /// The signed claims are trusted only when they are bound to the message
+  /// being verified (the `id` claim equals [attestationId]) and the server
+  /// marked the attestation as verified (`isVerified`). A scam attestation
+  /// bound to the message is surfaced even when it is not marked as verified,
+  /// so it can be shown to the user. Returns null when the
+  /// attestation must not be trusted, which resolves to an unknown/invalid
+  /// verify context rather than a valid one.
+  @visibleForTesting
+  AttestationResponse? attestationResponseFromClaims(
+    String attestationId,
+    VerifyClaims claims,
+  ) {
+    // The attestation must be bound to this message: the JWT `id` claim must
+    // match [attestationId].
+    if (claims.id != attestationId) {
+      _core.logger.e(
+        '[$runtimeType] attestation id does not match the message',
+      );
+      return null;
+    }
+    // Surface a scam attestation even when it is not marked as verified.
+    if (claims.isScam == true) {
+      return AttestationResponse(
+        origin: claims.origin,
+        attestationId: attestationId,
+        isScam: true,
+      );
+    }
+    // Honour the server's verification flag.
+    if (!claims.isVerified) {
+      _core.logger.e('[$runtimeType] attestation is not verified');
+      return null;
+    }
+    return AttestationResponse(
+      origin: claims.origin,
+      attestationId: attestationId,
+      isScam: claims.isScam,
+    );
   }
 
   Future<JWK?> getPublicKey() async {

@@ -134,51 +134,66 @@ void main() {
     });
 
     group('resolve', () {
-      test('should resolve v2 first when JWT is provided', () async {
-        // Arrange
-        const attestationId = 'test-id';
-        const attestationJWT = 'test-jwt';
+      test(
+        'should resolve to not-valid and not fall back to v1 when a present '
+        'JWT cannot be validated',
+        () async {
+          // Arrange
+          const attestationId = 'test-id';
+          const attestationJWT = 'test-jwt';
 
-        when(mockVerifyStore.getItem()).thenReturn(
-          JWK(
-            publicKey: PublicKey(
-              crv: 'P-256',
-              ext: true,
-              keyOps: ['verify'],
-              kty: 'EC',
-              x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
-              y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+          when(mockVerifyStore.getItem()).thenReturn(
+            JWK(
+              publicKey: PublicKey(
+                crv: 'P-256',
+                ext: true,
+                keyOps: ['verify'],
+                kty: 'EC',
+                x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
+                y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+              ),
+              expiresAt:
+                  DateTime.now()
+                      .add(Duration(hours: 1))
+                      .millisecondsSinceEpoch ~/
+                  1000,
             ),
-            expiresAt:
-                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
-                1000,
-          ),
-        );
+          );
 
-        // Mock HTTP client for v1 fallback
-        when(mockHttpClient.get(any)).thenAnswer(
-          (_) async => http.Response(
-            jsonEncode({
-              'origin': 'https://example.com',
-              'attestationId': attestationId,
-              'isScam': false,
-            }),
-            200,
-          ),
-        );
+          // A v1 attestation endpoint would return a valid-looking response,
+          // but it must never be consulted once a JWT is present.
+          when(mockHttpClient.get(any)).thenAnswer(
+            (_) async => http.Response(
+              jsonEncode({
+                'origin': 'https://example.com',
+                'attestationId': attestationId,
+                'isScam': false,
+              }),
+              200,
+            ),
+          );
 
-        // Act
-        await verify.resolve(
-          attestationId: attestationId,
-          attestationJWT: attestationJWT,
-        );
+          // Act & Assert
+          await expectLater(
+            verify.resolve(
+              attestationId: attestationId,
+              attestationJWT: attestationJWT,
+            ),
+            throwsA(isA<AttestationNotValid>()),
+          );
 
-        // Assert
-        // Since JWT validation is complex, we expect v1 fallback
-        verifyInOrder([mockHttpClient.get(any)]);
-      });
+          // The v1 attestation endpoint must not be hit for a present JWT.
+          verifyNever(
+            mockHttpClient.get(
+              argThat(
+                predicate<Uri>((uri) => uri.path.contains('/attestation/')),
+              ),
+            ),
+          );
+        },
+      );
 
-      test('should fallback to v1 when v2 fails', () async {
+      test('should use v1 lookup when no JWT is provided', () async {
         // Arrange
         const attestationId = 'test-id';
         const attestationJWT = null;
@@ -242,6 +257,74 @@ void main() {
           ),
           throwsA(isA<Exception>()),
         );
+      });
+    });
+
+    group('attestationResponseFromClaims', () {
+      VerifyClaims claims({
+        String id = 'message-id',
+        String origin = 'https://example.com',
+        bool isScam = false,
+        bool isVerified = true,
+      }) {
+        return VerifyClaims(
+          origin: origin,
+          id: id,
+          isScam: isScam,
+          expiration:
+              DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+              1000,
+          isVerified: isVerified,
+        );
+      }
+
+      test('returns the attestation when id matches and it is verified', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'message-id', isVerified: true),
+        );
+
+        expect(result, isNotNull);
+        expect(result!.origin, 'https://example.com');
+        expect(result.attestationId, 'message-id');
+        expect(result.isScam, isNot(true));
+      });
+
+      test('returns null when the claim id does not match the message', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'other-message-id', isVerified: true),
+        );
+
+        expect(result, isNull);
+      });
+
+      test('returns null when the attestation is not verified', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'message-id', isVerified: false),
+        );
+
+        expect(result, isNull);
+      });
+
+      test('surfaces a scam attestation regardless of the verified flag', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'message-id', isScam: true, isVerified: false),
+        );
+
+        expect(result, isNotNull);
+        expect(result!.isScam, true);
+      });
+
+      test('returns null for a scam attestation with another claim id', () {
+        final result = verify.attestationResponseFromClaims(
+          'message-id',
+          claims(id: 'other-message-id', isScam: true, isVerified: true),
+        );
+
+        expect(result, isNull);
       });
     });
 

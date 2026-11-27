@@ -1,0 +1,9 @@
+appId: ${APP_ID}
+---
+# dApp-specific flow: wait for the outcome of the personal_sign request the
+# dApp sent. The result dialog's title is "personal_sign success" or
+# "personal_sign error" (widgets/method_dialog.dart).
+# Env: SIGN_RESULT, "success" or "failed" (set by the caller).
+- extendedWaitUntil:
+    visible: "personal_sign ${SIGN_RESULT == 'success' ? 'success' : 'error'}"
+    timeout: 30000

@@ -355,7 +355,45 @@ WalletConnect Pay flows are tested with [Maestro](https://maestro.mobile.dev/) E
 3. Build APK with test mode + funded wallet private key
 4. `APP_ID=com.walletconnect.flutterwallet.internal ./scripts/run-maestro-pay-tests.sh`
 
-**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs Android (`ubuntu-16core`, emulator) and iOS (`macos-26-xlarge`, simulator) lanes. It uses shared pay test flows and never uploads APK/IPA — only debug output.
+**CI**: `.github/workflows/ci_e2e_pay_tests.yml` runs Android (`ubuntu-16core`, emulator) and iOS (`macos-latest-xlarge`, simulator) lanes. It uses shared pay test flows and never uploads APK/IPA — only debug output.
+
+**CI test wallets**: CI doesn't store a private key. `.github/actions/derive-e2e-wallet` derives each lane's account from the `TEST_WALLET_MNEMONIC` secret, which the other SDK repos share: `m/44'/60'/0'/0/5` for Android and `/6` for iOS. Each repo and lane has its own index, so no other run's Permit2 reset or `approve` nonce races with this suite. The job fails if the derived address doesn't match the `TEST_WALLET_ADDRESS_ANDROID` / `TEST_WALLET_ADDRESS_IOS` repo variable. Each lane runs in its own `e2e-wallet-flutter-<platform>` concurrency group, so runs from different refs queue instead of paying at the same time. `e2e_balance_check.yml` checks both addresses (Base USDC, Optimism USDC, Polygon USDT and POL), one at a time, in the `e2e-faucet-requests` concurrency group. To set or rotate the wallets (keep `--mnemonic-index` in sync with `index` in `ci_e2e_pay_tests.yml`):
+
+```bash
+gh secret set TEST_WALLET_MNEMONIC -R reown-com/reown_flutter < mnemonic.txt
+gh variable set TEST_WALLET_ADDRESS_ANDROID -R reown-com/reown_flutter \
+  --body "$(cast wallet address --mnemonic mnemonic.txt --mnemonic-index 5)"
+gh variable set TEST_WALLET_ADDRESS_IOS -R reown-com/reown_flutter \
+  --body "$(cast wallet address --mnemonic mnemonic.txt --mnemonic-index 6)"
+```
+
+A new address must be funded (Base USDC, Optimism USDC, Polygon USDT and POL, each token under $9.99 so `pay_insufficient_funds` stays unaffordable) and must submit Pay's compliance details form once, or the no-KYC flows fail.
+
+**CI retry and iOS simulators**: Both lanes run `.github/scripts/maestro/maestro-suite.sh`. If any flow fails, it re-runs only the flows the JUnit report marks as failed, once (the full suite when there's no report; no retry after a cancel). Android runs it via `maestro-android.sh`, which installs and smoke-checks the APK and captures logcat. iOS creates `IOS_SIMULATORS` (2) fresh simulators from the newest iPhone device type, slims them with [simslim](https://github.com/MobAI-App/simslim) (`.github/scripts/maestro/boot-simulators.sh`, profile `simslim-ci.json`), and splits the suite across them with `--shard-split`. Sharding is nonce-safe because only `pay_usdt_polygon` sends txs. Maestro is pinned to 2.10.0. Debug artifacts always include recordings, JUnit reports and the Maestro console log (no `--debug-output`: its `commands-*.json` hold the WPAY values). The full Android logcat and the iOS app syslog are uploaded only when the job fails.
+
+### Maestro E2E Connect Tests (WX SLO 2)
+
+`.github/workflows/ci_e2e_connect_tests.yml` (jobs `E2E Connect - Android` / `E2E Connect - iOS`) runs the WalletKit connect suite: dApp → pairing → session proposal → wallet approves → session settled → `personal_sign`. The Flutter sample wallet (`packages/reown_walletkit/example`) and the Flutter AppKit sample dApp (`packages/reown_appkit/example/base`), both internal flavor, run on the same emulator/simulator. Android runs on PRs, nightly (03:00 UTC) and on dispatch; iOS nightly and on dispatch only. The wallet is unfunded (fresh account, no test mode): `personal_sign` needs no gas. Flows live in `.maestro/` (tag `connect`): `connect_approve_sign`, `connect_reject`, `sign_reject`, `connect_session_persists`. Names, tag, env and test ids match react-native-examples, reown-kotlin and reown-swift.
+
+The goal is one set of YAML for every platform in `WalletConnect/actions`, so the flows are split in three:
+
+- **Top-level flows** (`.maestro/connect_*.yaml`, `sign_reject.yaml`) have nothing platform-specific: every dApp check goes through a dApp-specific sub-flow, and the wallet's "Connected apps" check matches all samples' wording. They can move to `WalletConnect/actions` as they are.
+- **Shared wallet-side sub-flows** (`flows/connect_launch_wallet`, `connect_wallet_request`, `connect_settle`, `connect_back_to_dapp`, `connect_ios_open_prompt`, `connect_dapp_id`) are byte-identical to react-native-examples' (and reown-swift's). Don't edit them here only; change them in all repos.
+- **dApp-specific sub-flows** (the only files each repo keeps): `connect_launch_dapp`, `connect_open_dapp`, `connect_select_wallet` (taps the "Flutter Sample Wallet" custom wallet), `connect_send_sign`, `connect_disconnect_dapp`, `connect_dapp_connected` (session settled), `connect_dapp_rejected` (proposal rejected), `connect_dapp_sign_result` (env `SIGN_RESULT`: `success` / `failed`).
+
+**Env**: `APP_ID` (wallet), `DAPP_APP_ID` (dApp), `DAPP_NAME` (regex for the dApp's metadata name, which the wallet's session rows show; `Reown's AppKit` here). `maestro-suite.sh` takes the tag from `MAESTRO_TAGS` and passes `DAPP_APP_ID` / `DAPP_NAME` only when set; `maestro-android.sh` also installs and smoke-checks `DAPP_APK_PATH` when `DAPP_APP_ID` is set.
+
+**Ids the flows rely on**: wallet `button-scan` (header scan button), `wallet-request-approve` / `wallet-request-reject` (`CustomButton.testId`, ids in `lib/utils/test_ids.dart`; set on the session proposal, session authenticate, sign/send and Kadena request sheets); dApp `connect-button` (AppKit connect button while disconnected), `disconnect-button` and `sign-message-button` (`personal_sign`) in `pages/connect_page.dart`, plus the result dialog title `personal_sign success` / `personal_sign error` (`widgets/method_dialog.dart`). The dApp lists the sample wallet as an AppKit custom wallet (`wcflutterwallet-internal://`, `com.walletconnect.flutterwallet.internal`) so it's on the modal's first screen.
+
+`.maestro/` is tracked except the downloaded Pay flows (`pay_*.yaml`, `flows/pay_*.yaml`, `scripts/`).
+
+**Running locally** (build and install both internal apps with a `PROJECT_ID` on a running emulator/simulator, then):
+
+```bash
+./scripts/run-maestro-connect-tests.sh
+```
+
+With more than one device up, pass `--device <serial|udid>` (Maestro refuses to guess). Use an API 34 emulator like CI: on Android 17 (API 37) the dApp's relay socket drops a few seconds after it goes to the background and doesn't come back, so the `personal_sign` response never arrives and the sign flows hang. iOS needs a simulator runtime that still runs x86_64 apps (iOS 26 or older, as CI's Xcode 26): the wallet is built x86_64-only because of MLKit, and iOS 27 simulators can't run it.
 
 ### Platform-Specific Code
 
@@ -582,3 +620,8 @@ For issues or questions:
 - GitHub Issues: https://github.com/reown-com/reown_flutter/issues
 - Documentation: https://docs.reown.com
 - Community: Check Reown Discord/community channels
+
+## Pull Requests
+
+- Opening a PR or refreshing its description: `/pr-handoff` (`.claude/skills/pr-handoff/`), which writes the agent blocks through `/visual-recap`.
+- `Why`, `Decisions`, `Worth looking at` and the Breaking change checkbox in `.github/pull_request_template.md` are author-owned. Never write them unless the author supplies or approves the exact text in the current conversation.
