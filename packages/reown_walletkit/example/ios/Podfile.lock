@@ -15,7 +15,7 @@ PODS:
     - FlutterMacOS
   - reown_yttrium_utils (0.0.1):
     - Flutter
-    - YttriumUtilsWrapper (= 0.10.57)
+    - YttriumUtilsWrapper (= 0.10.59)
   - Sentry/HybridSDK (8.58.4)
   - sentry_flutter (9.30.0):
     - Flutter
@@ -35,7 +35,7 @@ PODS:
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
-  - YttriumUtilsWrapper (0.10.57)
+  - YttriumUtilsWrapper (0.10.59)
   - YttriumWrapper (0.10.59)
 
 DEPENDENCIES:
@@ -94,7 +94,7 @@ SPEC CHECKSUMS:
   mobile_scanner: 9157936403f5a0644ca3779a38ff8404c5434a93
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
-  reown_yttrium_utils: f6834c869af607ef3e35bd4a5a1279d8a6e9205b
+  reown_yttrium_utils: cff4dd6742d204274628aaaa62dcd1df56637ea3
   Sentry: 5321d74bdd28d6f6f8beaa1ca06f1fdc746bff49
   sentry_flutter: 52a33f5c4c91b05015a6d8c0b26c155776a07d7f
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
@@ -102,7 +102,7 @@ SPEC CHECKSUMS:
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   walletconnect_pay: f32ca9b9f5c9e29583072b082a6ef7b5d4e12288
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
-  YttriumUtilsWrapper: 6b8e25838fc8a62098b562ca650682040cf9f0bc
+  YttriumUtilsWrapper: aa0b3e617e7835c844d315ab0cf0901cdd93bd6f
   YttriumWrapper: 64983f0edbf609b800ac3074010224fc5341aaeb
 
 PODFILE CHECKSUM: 3a680e3bf3329c8bf679d61a40c5c699696fe52f

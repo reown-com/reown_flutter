@@ -6,7 +6,11 @@
 //
 import Flutter
 import UIKit
+#if canImport(YttriumUtilsWrapper)
 import YttriumUtilsWrapper
+#else
+import YttriumUtils
+#endif
 
 class Ton {
     private let tonClient: TonClient
