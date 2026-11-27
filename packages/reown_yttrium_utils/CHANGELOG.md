@@ -1,3 +1,8 @@
+## 0.0.4
+
+- iOS: add Swift Package Manager support. The plugin now ships `ios/reown_yttrium_utils/Package.swift` and still ships the podspec, so apps work with either dependency manager.
+- iOS: bumped Yttrium Utils to 0.10.59 (YttriumUtilsWrapper pod and Swift package), the same Yttrium version `walletconnect_pay` uses. Swift Package Manager resolves one Yttrium version per app.
+
 ## 0.0.3
 
 - Bumped Yttrium Utils to 0.10.58 (Android) / 0.10.57 (iOS).

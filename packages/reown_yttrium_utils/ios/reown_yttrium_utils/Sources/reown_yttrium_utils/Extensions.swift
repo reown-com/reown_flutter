@@ -1,4 +1,8 @@
+#if canImport(YttriumUtilsWrapper)
 import YttriumUtilsWrapper
+#else
+import YttriumUtils
+#endif
 
 //extension Eip1559Estimation {
 //    func toJson() -> [String: Any] {
