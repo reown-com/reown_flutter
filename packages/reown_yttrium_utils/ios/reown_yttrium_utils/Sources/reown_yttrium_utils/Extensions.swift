@@ -1,7 +1,11 @@
 #if canImport(YttriumUtilsWrapper)
 import YttriumUtilsWrapper
+// The Yttrium module is YttriumUtilsWrapper under CocoaPods and YttriumUtils
+// under Swift Package Manager; qualify its types through this alias.
+typealias YttriumSendTxMessage = YttriumUtilsWrapper.SendTxMessage
 #else
 import YttriumUtils
+typealias YttriumSendTxMessage = YttriumUtils.SendTxMessage
 #endif
 
 //extension Eip1559Estimation {
@@ -258,7 +262,7 @@ extension Currency {
 }
 
 extension Dictionary where Key == String, Value == Any {
-    func toSendTxMessage() throws -> YttriumUtilsWrapper.SendTxMessage {
+    func toSendTxMessage() throws -> YttriumSendTxMessage {
         guard let address = self["address"] as? String, !address.isEmpty else {
             throw NSError(domain: "SendTxMessage", code: 1, userInfo: [NSLocalizedDescriptionKey: "Missing or invalid 'address'"])
         }
@@ -269,7 +273,7 @@ extension Dictionary where Key == String, Value == Any {
         let stateInit = self["stateInit"] as? String
         let payload = self["payload"] as? String
 
-        return YttriumUtilsWrapper.SendTxMessage(
+        return YttriumSendTxMessage(
             address: address,
             amount: amount,
             stateInit: stateInit,
@@ -279,7 +283,7 @@ extension Dictionary where Key == String, Value == Any {
 }
 
 extension Array where Element == [String: Any] {
-    func toSendTxMessageList() -> [YttriumUtilsWrapper.SendTxMessage] {
+    func toSendTxMessageList() -> [YttriumSendTxMessage] {
         return compactMap { dict in
             do {
                 return try dict.toSendTxMessage()
