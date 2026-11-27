@@ -620,3 +620,8 @@ For issues or questions:
 - GitHub Issues: https://github.com/reown-com/reown_flutter/issues
 - Documentation: https://docs.reown.com
 - Community: Check Reown Discord/community channels
+
+## Pull Requests
+
+- Opening a PR or refreshing its description: `/pr-handoff` (`.claude/skills/pr-handoff/`), which writes the agent blocks through `/visual-recap`.
+- `Why`, `Decisions`, `Worth looking at` and the Breaking change checkbox in `.github/pull_request_template.md` are author-owned. Never write them unless the author supplies or approves the exact text in the current conversation.
