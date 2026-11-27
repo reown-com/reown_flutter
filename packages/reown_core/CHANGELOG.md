@@ -1,3 +1,7 @@
+## 1.5.3
+
+- Allowed `package_info_plus` 10.x.
+
 ## 1.5.2
 
 - Bind the Verify v2 attestation to the message being verified (the JWT `id` claim must match) and honour the attestation's `isVerified` flag when resolving the verify context.

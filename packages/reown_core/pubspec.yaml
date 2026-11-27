@@ -1,6 +1,6 @@
 name: reown_core
 description: "Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network"
-version: 1.5.2
+version: 1.5.3
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_core
 
@@ -23,7 +23,7 @@ dependencies:
   json_annotation: ^4.9.0
   logger: ^2.5.0
   msgpack_dart: ^1.0.1
-  package_info_plus: '>=8.1.2 <10.0.0'
+  package_info_plus: '>=8.1.2 <11.0.0'
   pointycastle: '>=3.9.1 <5.0.0'
   # reown_yttrium:
   #   path: ../reown_yttrium/

@@ -30,4 +30,4 @@ dev_dependencies:
   json_serializable: ^6.10.0
   logger: ^2.5.0
   mockito: ^5.4.4
-  package_info_plus: ^8.1.2
+  package_info_plus: '>=8.1.2 <11.0.0'
