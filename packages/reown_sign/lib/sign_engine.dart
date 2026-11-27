@@ -1868,6 +1868,13 @@ class ReownSign implements IReownSign {
     final CacaoPayload payload = cacao.p;
 
     try {
+      if (!AuthSignature.isWithinValidityWindow(
+        exp: payload.exp,
+        nbf: payload.nbf,
+      )) {
+        return false;
+      }
+
       final reconstructed = formatAuthMessage(
         iss: payload.iss,
         cacaoPayload: CacaoRequestPayload.fromCacaoPayload(payload),
