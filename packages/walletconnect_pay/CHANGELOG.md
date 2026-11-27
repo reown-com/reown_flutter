@@ -1,3 +1,8 @@
+## 1.2.0
+
+- iOS: add Swift Package Manager support. The plugin now ships `ios/walletconnect_pay/Package.swift` (Yttrium 0.10.59) and still ships the podspec (YttriumWrapper 0.10.59), so apps work with either dependency manager.
+- Allowed `package_info_plus` 10.x (#435).
+
 ## 1.1.0
 
 - Bump yttrium-wcpay to 0.10.60 (Android) / YttriumWrapper 0.10.59 (iOS).
