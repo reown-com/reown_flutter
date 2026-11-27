@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-26
+    runs-on: xcode-27-xlarge
 
     steps:
       - name: Show Xcode versions
@@ -18,4 +18,7 @@ jobs:
           echo "Looking for installed Xcode bundles in /Applications..."
           INSTALLED=$(ls -1 /Applications | grep -i Xcode || true)
           echo "Installed: $INSTALLED"
+
+          echo "Simulator runtimes:"
+          xcrun simctl list runtimes || true
         shell: bash

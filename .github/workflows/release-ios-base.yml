@@ -52,10 +52,18 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-26
+    # App Store Connect stops accepting iOS 26 SDK builds; Xcode 27 is only on
+    # GitHub's xcode-27 preview image (actions/runner-images#14404).
+    runs-on: xcode-27-xlarge
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      # Before `flutter build ios --config-only`, which runs `pod install`.
+      - name: Select Xcode 27 (iOS 27 SDK)
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: '27'
 
       - name: Setup SSH for Match
         uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
@@ -98,14 +106,6 @@ jobs:
           BUILD_ARGS="$BUILD_ARGS --config-only --release"
 
           flutter build ios $BUILD_ARGS
-
-      - name: Set Xcode Version
-        run: |
-          if [ ! -d "/Applications/Xcode_26.2.app/Contents/Developer" ]; then
-            echo "Xcode_26.2 not found at /Applications/Xcode_26.2.app"
-            exit 1
-          fi
-          sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer
 
       - name: Fastlane
         id: fastlane
