@@ -1,3 +1,4 @@
+import Foundation
 #if canImport(YttriumUtilsWrapper)
 import YttriumUtilsWrapper
 // The Yttrium module is YttriumUtilsWrapper under CocoaPods and YttriumUtils
